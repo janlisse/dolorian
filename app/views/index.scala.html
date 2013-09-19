@@ -1,0 +1,81 @@
+@(timeForm: Form[Work])
+
+
+    @main(title = "Home") {
+
+
+        <h2>Track your work</h2>
+
+        <form id="form" class="form-horizontal" action="@routes.Application.submit()" method="POST">
+
+            <div class="control-group">
+                <label class="control-label" for="startTime">Datum:</label>
+                <div class="controls">
+                    <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker" >
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="startTime">Start:</label>
+                <div class="controls">
+                    <div class="input-append bootstrap-timepicker">
+                        <input type="text" id="startTime" name="startTime" class="input-small timepicker">
+                        <span class="add-on">
+                            <i class="icon-time"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="endTime">Ende:</label>
+                <div class="controls">
+                    <div class="input-append bootstrap-timepicker">
+                        <input type="text" id="endTime" name="endTime" class="input-small timepicker">
+                        <span class="add-on">
+                            <i class="icon-time"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="description">Beschreibung:</label>
+                <div class="controls">
+                    <input id="description" name="description" type="text" placeholder="Beschreibung">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+            $ ( '.datepicker' ).datepicker ( 'update', new Date ( ) ) ;
+            $ ( '.timepicker' ).timepicker ( {
+            minuteStep : 1,
+            showSeconds : false,
+            showInputs : false,
+            showMeridian : false
+            } ) ;
+
+            $("#form").submit( function (event) {
+                var date = $ ( '#datepicker' ).val() ;
+                var startTime = $('#startTime').val() ;
+                var endTime =  $('#endTime').val() ;
+                var startDateTime = date + ":" + startTime ;
+                var endDateTime = date + ":" + endTime ;
+                $('#startTime').val(startDateTime) ;
+                $('#endTime').val(endDateTime) ;
+            });
+
+            </script>
+        </form>
+
+    }
+
+
+
+
