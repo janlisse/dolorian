@@ -120,7 +120,7 @@ object WorkItem {
   }
 
   def saveToGoogleSpreadsheet(work: WorkItem) {
-    val service = newSpreadsheetService("jan.lisse", "4ever1968")
+    val service = newSpreadsheetService("", "")
     spreadsheet(service, "Zeiterfassung").fold(
       exception => {
         exception.printStackTrace()
