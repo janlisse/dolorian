@@ -1,0 +1,74 @@
+@(timeForm: Form[WorkItem], projects: List[Project])(implicit flash: Flash, session:Session)
+
+
+    @main(title = "Arbeitszeit") {
+
+        <form id="form" action="@routes.WorkItems.submit()" method="POST">
+
+            <fieldset>
+                <legend>Arbeitszeit erfassen</legend>
+
+                <label class="control-label" for="startTime">Projekt:</label>
+                <select name="projectId">
+                @for(project <- projects) {
+                    <option value="@project.id">@project.name</option>
+                }
+                </select>
+
+                <label class="control-label" for="startTime">Datum:</label>
+                <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker" >
+
+                <label class="control-label" for="startTime">Start:</label>
+                <div class="input-append bootstrap-timepicker">
+                    <input type="text" id="startTime" name="startTime" class="input-small timepicker">
+                    <span class="add-on">
+                        <i class="icon-time"></i>
+                    </span>
+                </div>
+
+                <label class="control-label" for="endTime">Ende:</label>
+                <div class="input-append bootstrap-timepicker">
+                    <input type="text" id="endTime" name="endTime" class="input-small timepicker">
+                    <span class="add-on">
+                        <i class="icon-time"></i>
+                    </span>
+                </div>
+
+                <label class="control-label" for="breakTime">Pause (Minuten):</label>
+                <input type="number" id="breakTime" name="breakTime">
+
+                <label class="control-label" for="description">Beschreibung:</label>
+                <input id="description" class="input-xxlarge" name="description" type="text" placeholder="Beschreibung">
+
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                </div>
+
+                <script type="text/javascript">
+                $ ( '.datepicker' ).datepicker ( 'update', new Date ( ) ) ;
+                $ ( '#breakTime' ).val ( '0' ) ;
+                $ ( '.timepicker' ).timepicker ( {
+                minuteStep : 1,
+                showSeconds : false,
+                showInputs : false,
+                showMeridian : false
+                } ) ;
+                $ ( "#form" ).submit ( function ( event ) {
+                var date = $ ( '#datepicker' ).val ( ) ;
+                var startTime = $ ( '#startTime' ).val ( ) ;
+                var endTime = $ ( '#endTime' ).val ( ) ;
+                var startDateTime = date + ":" + startTime ;
+                var endDateTime = date + ":" + endTime ;
+                $ ( '#startTime' ).val ( startDateTime ) ;
+                $ ( '#endTime' ).val ( endDateTime ) ;
+                } ) ;
+
+                </script>
+            </fieldset>
+        </form>
+
+    }
+
+
+
+

@@ -14,12 +14,14 @@ object ApplicationBuild extends Build {
     "org.webjars" %% "webjars-play" % "2.1.0-2",
     "org.webjars" % "bootstrap" % "2.3.2",
     "org.webjars" % "bootstrap-timepicker" % "0.2.3",
-    "com.google.gdata" % "core" % "1.47.1"
+    "com.google.gdata" % "core" % "1.47.1",
+    "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+    "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
   )
 
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here      
+    testOptions in Test := Nil
   )
 
 }

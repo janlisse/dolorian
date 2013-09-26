@@ -2,12 +2,25 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                           controllers.Application.index
+GET         /                            controllers.WorkItems.index
 
-POST   /                            controllers.Application.submit
+# Authentication
+GET         /login                       controllers.Authentication.login
+POST        /login                       controllers.Authentication.authenticate
+GET         /logout                      controllers.Authentication.logout
+
+GET         /workItems/add               controllers.WorkItems.index
+POST        /workItems/add               controllers.WorkItems.submit
+POST        /workItems/:id/delete        controllers.WorkItems.delete(id: Long)
+GET         /workItems                   controllers.WorkItems.list
+GET         /workItems/export            controllers.WorkItems.export
+
+# Projects
+GET         /projects                    controllers.Projects.list
+GET         /projects/add                controllers.Projects.index
+POST        /projects/:id/delete         controllers.Projects.delete(id: Long)
+POST        /projects/add                controllers.Projects.submit
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-
-GET     /webjars/*file                    controllers.WebJarAssets.at(file)
+GET         /assets/*file                controllers.Assets.at(path="/public", file)
+GET         /webjars/*file               controllers.WebJarAssets.at(file)

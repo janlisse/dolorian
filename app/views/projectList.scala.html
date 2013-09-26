@@ -1,0 +1,37 @@
+@(projects: List[Project])(implicit flash: Flash, session:Session)
+
+
+@main(title = "Projekte") {
+
+    @if(projects.isEmpty) {
+        <div class="alert alert-info">
+            Noch keine Projekte angelegt.
+        </div>
+    } else {
+        <h3>Angelegte Projekte</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nr</th>
+                    <th>Name</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+            @projects.map { project =>
+                <tr>
+                    <td><span class="badge badge-inverse">@project.id.get</span></td>
+                    <td>@project.name</td>
+                    <td>
+                    @helper.form(routes.Projects.delete(project.id.get)) {
+                        <button type="submit" class='btn btn-danger'>Löschen</button>
+                    }
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+
+}

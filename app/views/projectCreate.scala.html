@@ -1,0 +1,22 @@
+@(timeForm: Form[Project])(implicit flash: Flash, session:Session)
+
+
+    @main(title = "Arbeitszeit") {
+
+        <form id="form" action="@routes.Projects.submit()" method="POST">
+            <fieldset>
+                <legend>Neues Projekt anlegen</legend>
+                <label class="control-label" for="description">Name:</label>
+                <input id="name" name="name" type="text" placeholder="Name">
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                </div>
+            </fieldset>
+
+        </form>
+
+    }
+
+
+
+

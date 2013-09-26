@@ -1,0 +1,33 @@
+#breakTime {
+    width : 35px;
+
+}
+
+#contentWrapper {
+    padding-top: 60px;
+}
+
+.sidebar-nav-fixed {
+    padding: 9px 0;
+    position:fixed;
+    left:20px;
+    top:60px;
+    width:250px;
+}
+
+#content {
+    margin-left: 290px;
+}
+
+footer {
+    padding-top: .5em;
+}
+
+.nav-caption {
+    font-weight: bold;
+}
+
+.btn-info {
+    float: left;
+    margin-right: .5em;
+}

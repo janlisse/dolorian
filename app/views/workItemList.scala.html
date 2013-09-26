@@ -1,0 +1,60 @@
+@(works: List[WorkItem])(implicit flash: Flash, session: Session)
+
+@import utils._
+
+@main(title = "Home") {
+
+
+    @if(works.isEmpty) {
+        <div class="alert alert-info">
+            Noch keine Arbeitszeiten angelegt.
+        </div>
+    } else {
+        <h3>Erfasste Arbeitszeiten</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Von</th>
+                    <th>Bis</th>
+                    <th>Pause</th>
+                    <th>Gesamtzeit</th>
+                    <th>Beschreibung</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+            @works.map { work =>
+                <tr>
+                    <td>@FormatUtil.formatDate(work.startTime)</td>
+                    <td>@FormatUtil.formatTime(work.startTime)</td>
+                    <td>@FormatUtil.formatTime(work.endTime)</td>
+                    <td>@work.breakTime</td>
+                    <td>@work.totalTime.getHours:@work.totalTime.getMinutes</td>
+                    <td>@work.description</td>
+                    <td>
+                        <div class='btn btn-info'>Edit</div>
+                        @helper.form(routes.WorkItems.delete(work.id.get)) {
+                            <button type="submit" class='btn btn-danger'>Löschen</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="btn-group">
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+                Export
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="@routes.WorkItems.export()">Letzter Monat</a></li>
+                <li><a href="@routes.WorkItems.export()">Aktueller Monat</a></li>
+            </ul>
+        </div>
+
+    }
+
+
+}
