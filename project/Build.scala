@@ -16,6 +16,7 @@ object ApplicationBuild extends Build {
     "org.webjars" % "bootstrap-timepicker" % "0.2.3",
     "com.google.gdata" % "core" % "1.47.1",
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+    "com.lowagie" % "itext" % "2.1.7",
     "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
   )
 
