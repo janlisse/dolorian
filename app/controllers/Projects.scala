@@ -42,7 +42,7 @@ object Projects extends Controller with Secured {
           BadRequest(views.html.projectCreate(errors))
         },
         project => {
-          Project.save(project.name)
+          Project.save(project)
           Redirect(routes.Projects.list)
         }
       )

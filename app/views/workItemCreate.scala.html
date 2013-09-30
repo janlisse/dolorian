@@ -8,12 +8,7 @@
             <fieldset>
                 <legend>Arbeitszeit erfassen</legend>
 
-                <label class="control-label" for="startTime">Projekt:</label>
-                <select name="projectId">
-                @for(project <- projects) {
-                    <option value="@project.id">@project.name</option>
-                }
-                </select>
+                @projectSelectBox(projects)
 
                 <label class="control-label" for="startTime">Datum:</label>
                 <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker" >

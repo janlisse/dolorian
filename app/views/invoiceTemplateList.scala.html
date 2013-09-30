@@ -1,0 +1,42 @@
+@(templates: List[InvoiceTemplate])(implicit flash: Flash, session:Session)
+
+
+@main(title = "Vorlagen") {
+
+    @if(templates.isEmpty) {
+        <div class="alert alert-info">
+            Noch keine Vorlagen angelegt.
+        </div>
+    } else {
+        <h3>Angelegte Rechnungsvorlagen</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nr</th>
+                    <th>Projekt</th>
+                    <th>Vorlagen Datei</th>
+                    <th>Stundensatz</th>
+                    <th>Rechnungsnummer</th>
+                </tr>
+            </thead>
+            <tbody>
+            @templates.map { template =>
+                <tr>
+                    <td><span class="badge badge-inverse">@template.id.get</span></td>
+                    <td>@template.projectId</td>
+                    <td>@template.templateFile</td>
+                    <td>@template.hourlyRate</td>
+                    <td>@template.invoiceNumber</td>
+                    <td>
+                    @helper.form(routes.Projects.delete(template.id.get)) {
+                        <button type="submit" class='btn btn-danger'>Löschen</button>
+                    }
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+
+}

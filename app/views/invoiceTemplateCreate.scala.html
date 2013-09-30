@@ -1,0 +1,33 @@
+@(invoiceTemplateForm: Form[InvoiceTemplate], projects: List[Project])(implicit flash: Flash, session:Session)
+
+
+    @main(title = "Rechnungs-Vorlage") {
+
+        <form id="form" action="@routes.InvoiceTemplates.submit()" method="POST">
+            <fieldset>
+                <legend>Neue Rechnungsvorlage anlegen</legend>
+                <label class="control-label" for="templateFile">Vorlagen Datei</label>
+                <input id="templateFile" class="input-xlarge" name="templateFile" type="text" placeholder="Vorlagen Datei">
+
+                @projectSelectBox(projects)
+
+                <label class="control-label" for="hourlyRate">Stundensatz</label>
+                <input id="hourlyRate" class="input-mini" name="hourlyRate" type="text" placeholder="65.00">
+                <div class="input-append">
+                    <span class="add-on">€</span>
+                </div>
+
+
+                <label class="control-label" for="invoiceNumber">Rechnungs-Nummer</label>
+                <input id="invoiceNumber" class="input-medium" name="invoiceNumber" type="text" placeholder="Rechnungsnummer">
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                </div>
+            </fieldset>
+        </form>
+
+    }
+
+
+
+

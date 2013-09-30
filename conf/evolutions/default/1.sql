@@ -4,6 +4,7 @@
 
 create sequence s_work_id;
 create sequence s_project_id;
+create sequence s_invoice_template_id;
 
 create table project (
   id    bigint DEFAULT nextval('s_project_id'),
@@ -18,6 +19,14 @@ create table work (
   endTime timestamp,
   breakTime int,
   description  varchar(255)
+);
+
+create table invoice_template (
+  id    bigint DEFAULT nextval('s_invoice_template_id'),
+  projectId bigint references project(id),
+  templateFile varchar(255),
+  hourlyRate decimal,
+  invoiceNumber varchar(50)
 );
 
 create table user (
