@@ -7,7 +7,8 @@ create sequence s_project_id;
 
 create table project (
   id    bigint DEFAULT nextval('s_project_id'),
-  name  varchar(255)
+  name  varchar(255),
+  number varchar(50)
 );
 
 create table work (

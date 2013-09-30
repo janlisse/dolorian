@@ -12,7 +12,8 @@ object Projects extends Controller with Secured {
   val projectForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
-      "name" -> nonEmptyText
+      "name" -> nonEmptyText,
+      "number" -> optional(nonEmptyText)
     )(Project.apply)(Project.unapply)
   )
 

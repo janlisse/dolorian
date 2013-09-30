@@ -13,8 +13,7 @@ import play.api.db.DB
 import models.AnormExtension._
 import play.api.Play.current
 
-case class Project(id: anorm.Pk[Long], name: String)
-
+case class Project(id: anorm.Pk[Long], name: String, number: Option[String] = None)
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 

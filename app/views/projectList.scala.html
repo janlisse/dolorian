@@ -15,6 +15,7 @@
                 <tr>
                     <th>Nr</th>
                     <th>Name</th>
+                    <th>Nummer</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -23,6 +24,7 @@
                 <tr>
                     <td><span class="badge badge-inverse">@project.id.get</span></td>
                     <td>@project.name</td>
+                    <td>@project.number.getOrElse("-")</td>
                     <td>
                     @helper.form(routes.Projects.delete(project.id.get)) {
                         <button type="submit" class='btn btn-danger'>Löschen</button>
