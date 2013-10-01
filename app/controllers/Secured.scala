@@ -30,9 +30,7 @@ trait Secured {
   }
 
   def withUser(f: User => Request[AnyContent] => Result) = withAuth { username => implicit request =>
-    println("before findbyUsername: "+username)
     User.findOneByUsername(username).map { user =>
-      println("Find user by name: "+username)
       f(user)(request)
     }.getOrElse(onUnauthorized(request))
   }
