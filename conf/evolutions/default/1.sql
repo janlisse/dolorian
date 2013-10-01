@@ -2,7 +2,7 @@
 
 # --- !Ups
 
-create sequence s_work_id;
+create sequence s_work_item_id;
 create sequence s_project_id;
 create sequence s_invoice_template_id;
 
@@ -12,8 +12,8 @@ create table project (
   number varchar(50)
 );
 
-create table work (
-  id bigint DEFAULT nextval('s_work_id') PRIMARY KEY ,
+create table work_item (
+  id bigint DEFAULT nextval('s_work_item_id') PRIMARY KEY ,
   projectId bigint references project(id),
   startTime timestamp,
   endTime timestamp,
@@ -39,10 +39,10 @@ create table app_user (
 
 # --- !Downs
 
-drop table if exists work;
+drop table if exists work_item;
 drop table if exists invoice_template;
 drop table if exists project;
-drop sequence s_work_id;
+drop sequence s_work_item_id;
 drop sequence s_project_id;
 drop sequence s_invoice_template_id;
 drop table if exists app_user;
