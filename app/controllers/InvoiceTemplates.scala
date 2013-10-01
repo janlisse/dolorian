@@ -24,7 +24,7 @@ object InvoiceTemplates extends Controller with Secured {
 
   def index = withAuth {
     username => implicit request =>
-      Ok(views.html.invoiceTemplateCreate(invoiceTemplateForm,Project.getAll()))
+      Ok(views.html.invoiceTemplateCreate(invoiceTemplateForm,Project.getAll))
   }
 
   def list = withAuth {
@@ -36,7 +36,7 @@ object InvoiceTemplates extends Controller with Secured {
     username => implicit request =>
       invoiceTemplateForm.bindFromRequest.fold(
         errors => {
-          BadRequest(views.html.invoiceTemplateCreate(errors, Project.getAll()))
+          BadRequest(views.html.invoiceTemplateCreate(errors, Project.getAll))
         },
         template => {
           InvoiceTemplate.save(template)

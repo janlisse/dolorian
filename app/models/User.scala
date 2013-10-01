@@ -6,7 +6,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class User(email: String, password: String)
+case class User(name: String, email: String, password: String)
 
 
 object User {
@@ -16,9 +16,10 @@ object User {
    * Parse a User from a ResultSet
    */
   val simple = {
-    get[String]("user.email") ~
-      get[String]("user.password") map {
-      case email ~ password => User(email, password)
+    get[String]("name") ~
+      get[String]("email") ~
+      get[String]("password") map {
+      case name ~ email ~ password => User(name, email, password)
     }
   }
 
@@ -28,7 +29,7 @@ object User {
   def findAll: Seq[User] = {
     DB.withConnection {
       implicit connection =>
-        SQL("select * from user").as(User.simple *)
+        SQL("select * from app_user").as(User.simple *)
     }
   }
 
@@ -39,18 +40,19 @@ object User {
   def authenticate(email: String, password: String): Option[User] = {
     DB.withConnection {
       implicit connection =>
-        SQL(
-          """
-select * from user where
-email = {email} and password = {password}
-          """).on(
+        SQL("select * from app_user where email = {email} and password = {password}").
+          on(
           'email -> email,
           'password -> password).as(User.simple.singleOpt)
     }
   }
 
   def findOneByUsername(username: String): Option[User] = {
-    return None
+    DB.withConnection {
+      implicit connection =>
+        SQL("select * from app_user where email = {username}").
+          on('username -> username).as(User.simple.singleOpt)
+    }
   }
 
   /**
@@ -59,17 +61,11 @@ email = {email} and password = {password}
   def create(user: User): User = {
     DB.withConnection {
       implicit connection =>
-        SQL(
-          """
-insert into user values (
-{email}, {password}
-)
-          """).on(
+        SQL("insert into app_user values ({name},{email},{password})").on(
+          'name -> user.name,
           'email -> user.email,
           'password -> user.password).executeUpdate()
-
         user
-
     }
   }
 }

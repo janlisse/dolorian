@@ -29,7 +29,8 @@ create table invoice_template (
   invoiceNumber varchar(50)
 );
 
-create table user (
+create table app_user (
+  name varchar(255) not null,
   email varchar(255) not null primary key,
   password varchar(255) not null
 );
@@ -37,8 +38,10 @@ create table user (
 
 # --- !Downs
 
-drop table work;
-drop table project;
+drop table if exists work;
+drop table if exists invoice_template;
+drop table if exists project;
 drop sequence s_work_id;
 drop sequence s_project_id;
-drop table if exists user;
+drop sequence s_invoice_template_id;
+drop table if exists app_user;

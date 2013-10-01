@@ -14,7 +14,7 @@ case class Project(id: anorm.Pk[Long], name: String, number: Option[String] = No
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 
-  def totalTime() : Period = {
+  def totalTime(): Period = {
     val endTimeMinusBreak = endTime.minusMinutes(breakTime)
     new Period(startTime, endTimeMinusBreak)
   }
@@ -23,16 +23,16 @@ case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, en
 object Project {
 
   val projectParser = {
-    get[Pk[Long]]("id")~
-      get[String]("name")~
+    get[Pk[Long]]("id") ~
+      get[String]("name") ~
       get[Option[String]]("number") map {
-      case (id~name~number) => {
+      case (id ~ name ~ number) => {
         Project(id, name, number)
       }
     }
   }
 
-  def getAll(): List[Project] = {
+  def getAll: List[Project] = {
     DB.withConnection {
       implicit c =>
         val select = SQL("Select * from project")
@@ -40,7 +40,8 @@ object Project {
     }
   }
 
-  def save(project: Project) : Option[Long] = {
+
+  def save(project: Project): Option[Long] = {
     DB.withConnection {
       implicit c =>
         SQL("insert into project(name, number) values ({name},{number})")
@@ -49,12 +50,20 @@ object Project {
   }
 
   def delete(id: Long) {
-    DB.withConnection { implicit connection =>
-      SQL("""
+    DB.withConnection {
+      implicit connection =>
+        SQL( """
           DELETE FROM project where id = {id}
-          """).on(
-        'id -> id
-      ).executeUpdate
+             """).on(
+          'id -> id
+        ).executeUpdate
+    }
+  }
+
+  def findById(id: Long): Project = {
+    DB.withConnection {
+      implicit c =>
+        SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.single
     }
   }
 
@@ -64,28 +73,53 @@ object WorkItem {
 
   val SpreadsheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
 
+  val workItemParser = {
+    get[Pk[Long]]("id") ~
+      get[Long]("projectId") ~
+      get[DateTime]("startTime") ~
+      get[DateTime]("endTime") ~
+      get[Int]("breakTime") ~
+      get[String]("description") map {
+      case (id ~ projectId ~ startTime ~ endTime ~ breakTime ~ description) => WorkItem(id, projectId, startTime, endTime, breakTime, description)
+    }
+  }
 
-  def getAll(): List[WorkItem] = {
+  val projectWorkItemMap = {
+    get[Long]("projectId") ~ workItemParser
+  }
+
+  def getAll: List[WorkItem] = {
     DB.withConnection {
       implicit c =>
-        val select = SQL("Select * from work")
-        select().map(row =>
-          WorkItem(row[anorm.Pk[Long]]("id"), row[Long]("projectId"), row[DateTime]("startTime"), row[DateTime]("endTime"), row[Int]("breakTime"), row[String]("description"))
-        ).toList
+        val select = SQL("Select * from work order by startTime DESC")
+        select.as(workItemParser *)
     }
+  }
+
+  def getByProject(projectId: Long): List[WorkItem] = {
+    DB.withConnection {
+      implicit c =>
+        val select = SQL("Select * from work w where w.projectId = {projectId} order by startTime DESC")
+        select.on("projectId" -> projectId).as(workItemParser *)
+    }
+  }
+
+  def groupedByProjectId: Map[Long, List[WorkItem]] = {
+    getAll.groupBy(_.projectId)
   }
 
   def delete(id: Long) {
-    DB.withConnection { implicit connection =>
-      SQL("""
+    DB.withConnection {
+      implicit connection =>
+        SQL( """
           DELETE FROM work where id = {id}
-          """).on(
-        'id -> id
-      ).executeUpdate
+             """).on(
+          'id -> id
+        ).executeUpdate
     }
   }
 
-  def save(workItem: WorkItem) : Option[Long] = {
+  def save(workItem: WorkItem): Option[Long] = {
     DB.withConnection {
       implicit c =>
         SQL("insert into work(projectId, startTime,endTime,breakTime,description) values ({projectId},{startTime},{endTime},{breakTime},{description},)")

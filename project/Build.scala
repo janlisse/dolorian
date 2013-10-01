@@ -16,8 +16,10 @@ object ApplicationBuild extends Build {
     "org.webjars" % "bootstrap-timepicker" % "0.2.3",
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
     "com.lowagie" % "itext" % "2.1.7",
-    "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test",
-    "net.sf.jodreports" % "jodreports" % "2.4.0"
+    "net.sf.jodreports" % "jodreports" % "2.4.0",
+    "com.amazonaws" % "aws-java-sdk" % "1.3.11",
+    "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
+
  )
 
 
