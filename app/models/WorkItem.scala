@@ -91,7 +91,7 @@ object WorkItem {
   def getAll: List[WorkItem] = {
     DB.withConnection {
       implicit c =>
-        val select = SQL("Select * from work order by startTime DESC")
+        val select = SQL("Select * from work_item order by startTime DESC")
         select.as(workItemParser *)
     }
   }
@@ -99,7 +99,7 @@ object WorkItem {
   def getByProject(projectId: Long): List[WorkItem] = {
     DB.withConnection {
       implicit c =>
-        val select = SQL("Select * from work w where w.projectId = {projectId} order by startTime DESC")
+        val select = SQL("Select * from work_item w where w.projectId = {projectId} order by startTime DESC")
         select.on("projectId" -> projectId).as(workItemParser *)
     }
   }
@@ -112,7 +112,7 @@ object WorkItem {
     DB.withConnection {
       implicit connection =>
         SQL( """
-          DELETE FROM work where id = {id}
+          DELETE FROM work_item where id = {id}
              """).on(
           'id -> id
         ).executeUpdate
@@ -122,7 +122,7 @@ object WorkItem {
   def save(workItem: WorkItem): Option[Long] = {
     DB.withConnection {
       implicit c =>
-        SQL("insert into work(projectId, startTime,endTime,breakTime,description) values ({projectId},{startTime},{endTime},{breakTime},{description},)")
+        SQL("insert into work_item(projectId, startTime,endTime,breakTime,description) values ({projectId},{startTime},{endTime},{breakTime},{description})")
           .on("projectId" -> workItem.projectId,
           "startTime" -> workItem.startTime,
           "endTime" -> workItem.endTime,
