@@ -2,31 +2,34 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                            controllers.WorkItems.index
+GET         /                                  controllers.WorkItems.index
 
 # Authentication
-GET         /login                       controllers.Authentication.login
-POST        /login                       controllers.Authentication.authenticate
-GET         /logout                      controllers.Authentication.logout
+GET         /login                             controllers.Authentication.login
+POST        /login                             controllers.Authentication.authenticate
+GET         /logout                            controllers.Authentication.logout
 
-GET         /workItems/add               controllers.WorkItems.index
-GET         /workItems                   controllers.WorkItems.list
-GET         /workItems/export            controllers.WorkItems.export
-POST        /workItems/add               controllers.WorkItems.submit
-POST        /workItems/:id/delete        controllers.WorkItems.delete(id: Long)
+GET         /workItems/add                     controllers.WorkItems.index
+GET         /workItems/list                    controllers.WorkItems.list
+GET         /workItems/export                  controllers.WorkItems.export
+POST        /workItems/submit                  controllers.WorkItems.submit
+POST        /workItems/:id/delete              controllers.WorkItems.delete(id: Long)
 
 # Projects
-GET         /projects                    controllers.Projects.list
-GET         /projects/add                controllers.Projects.index
-POST        /projects/:id/delete         controllers.Projects.delete(id: Long)
-POST        /projects/add                controllers.Projects.submit
+GET         /projects/list                     controllers.Projects.list
+GET         /projects/add                      controllers.Projects.index
+POST        /projects/:id/delete               controllers.Projects.delete(id: Long)
+POST        /projects/submit                   controllers.Projects.submit
 
 #InvoiceTemplates
-GET         /invoiceTemplate/add         controllers.InvoiceTemplates.index
-GET         /invoiceTemplate/list        controllers.InvoiceTemplates.list
-POST        /invoiceTemplate/add         controllers.InvoiceTemplates.submit
-POST        /invoiceTemplate/:id/delete  controllers.InvoiceTemplates.delete(id: Long)
+GET         /invoiceTemplate/add               controllers.InvoiceTemplates.index
+GET         /invoiceTemplate/list              controllers.InvoiceTemplates.list
+POST        /invoiceTemplate/submit            controllers.InvoiceTemplates.submit
+POST        /invoiceTemplate/:id/delete        controllers.InvoiceTemplates.delete(id: Long)
+
+GET         /invoices/add                      controllers.Invoices.index
+POST        /invoices/submit                   controllers.Invoices.submit
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                controllers.Assets.at(path="/public", file)
-GET         /webjars/*file               controllers.WebJarAssets.at(file)
+GET         /assets/*file                      controllers.Assets.at(path="/public", file)
+GET         /webjars/*file                     controllers.WebJarAssets.at(file)

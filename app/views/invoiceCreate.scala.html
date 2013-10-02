@@ -1,0 +1,44 @@
+@(invoiceForm: Form[Invoice], templates: List[InvoiceTemplate], defaultDate: String)(implicit flash: Flash, session: Session)
+
+@import views.html.helper._
+    @implicitField = @{
+        FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f)
+    }
+
+@main(title = "Neue Rechnung erstellen") {
+
+    @invoiceForm.globalError.map { error =>
+        <div class="alert alert-error">
+            @error.message
+        </div
+    }
+
+    <form id="form" action="@routes.Invoices.submit()" method="POST" enctype="multipart/form-data">
+        <fieldset>
+            <legend>Neue Rechnung erzeugen</legend>
+
+            @select(
+                invoiceForm("templateId"),
+                InvoiceTemplate.options,
+                '_label -> "Vorlage",
+                '_default -> "-- Vorlage auswählen --",
+                '_showConstraints -> false
+            )
+            <label class="control-label" for="date">Datum:</label>
+            <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker"  value="@defaultDate">
+
+            @helper.inputText(invoiceForm("totalHours"), '_label -> "Arbeitsstunden", 'placeholder -> "100.5")
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </fieldset>
+        <script type="text/javascript">
+        $ ( '.datepicker' ).datepicker () ;
+        $ ( "#form" ).submit ( function ( event ) {
+        var date = $ ( '#datepicker' ).val ( ) ;
+        } ) ;
+
+        </script>
+    </form>
+
+}

@@ -39,7 +39,6 @@ object Projects extends Controller with Secured {
     username => implicit request =>
       projectForm.bindFromRequest.fold(
         errors => {
-          println("Error occured: "+errors)
           BadRequest(views.html.projectCreate(errors))
         },
         project => {

@@ -73,6 +73,12 @@ object InvoiceTemplate extends S3Support {
         SQL("Select * from invoice_template t where t.id = {id}").on("id" -> id) as invoiceTemplateParser.single
     }
   }
+
+  def options: Seq[(String,String)]  = {
+    getAll map {
+      c => c.id.toString -> c.templateFileKey.getOrElse("-")
+    }
+  }
 }
 
 trait S3Support {
