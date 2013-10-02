@@ -29,9 +29,16 @@ trait Secured {
     }
   }
 
+  def withAuth[A](p: BodyParser[A])(f: => String => Request[A] => Result) = {
+    Security.Authenticated(username, onUnauthorized) { user =>
+      Action(p)(request => f(user)(request))
+    }
+  }
+
   def withUser(f: User => Request[AnyContent] => Result) = withAuth { username => implicit request =>
     User.findOneByUsername(username).map { user =>
       f(user)(request)
     }.getOrElse(onUnauthorized(request))
   }
+
 }

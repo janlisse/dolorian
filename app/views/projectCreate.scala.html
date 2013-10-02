@@ -1,23 +1,28 @@
-@(timeForm: Form[Project])(implicit flash: Flash, session:Session)
+@(timeForm: Form[Project])(implicit flash: Flash, session: Session)
 
+@import views.html.helper._
+@implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-    @main(title = "Arbeitszeit") {
+@main(title = "Arbeitszeit") {
 
-        <form id="form" action="@routes.Projects.submit()" method="POST">
-            <fieldset>
-                <legend>Neues Projekt anlegen</legend>
-                <label class="control-label" for="name">Name</label>
-                <input id="name" name="name" type="text" placeholder="Name">
-                <label class="control-label" for="number">Nummer</label>
-                <input id="number" name="number" type="text" placeholder="Nummer">
-                <div class="controls">
-                    <button type="submit" class="btn btn-primary">Speichern</button>
-                </div>
-            </fieldset>
-
-        </form>
-
+    @timeForm.globalError.map { error =>
+        <div class="alert alert-error">
+            @error.message
+        </div
     }
+
+    <form id="form" action="@routes.Projects.submit()" method="POST">
+        <fieldset>
+            <legend>Neues Projekt anlegen</legend>
+            @helper.inputText(timeForm("name"),'_label -> "Name")
+            @helper.inputText(timeForm("number"),'_label -> "Nummer")
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </fieldset>
+    </form>
+
+}
 
 
 

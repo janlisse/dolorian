@@ -1,25 +1,26 @@
 @(invoiceTemplateForm: Form[InvoiceTemplate], projects: List[Project])(implicit flash: Flash, session:Session)
 
+@import views.html.helper._
+@implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
     @main(title = "Rechnungs-Vorlage") {
 
-        <form id="form" action="@routes.InvoiceTemplates.submit()" method="POST">
+        @invoiceTemplateForm.globalError.map { error =>
+            <div class="alert alert-error">
+                @error.message
+            </div
+        }
+
+        <form id="form" action="@routes.InvoiceTemplates.submit()" method="POST" enctype="multipart/form-data">
             <fieldset>
                 <legend>Neue Rechnungsvorlage anlegen</legend>
                 <label class="control-label" for="templateFile">Vorlagen Datei</label>
-                <input id="templateFile" class="input-xlarge" name="templateFile" type="text" placeholder="Vorlagen Datei">
+                <input type="file" class="filestyle" id="fileuploadBtn" name="templateFile" data-classButton="btn btn-primary">
 
                 @projectSelectBox(projects)
+                @helper.inputText(invoiceTemplateForm("hourlyRate"),'_label -> "Stundensatz", 'placeholder -> "65.00")
+                @helper.inputText(invoiceTemplateForm("invoiceNumber"),'_label -> "Rechnungsnummer")
 
-                <label class="control-label" for="hourlyRate">Stundensatz</label>
-                <input id="hourlyRate" class="input-mini" name="hourlyRate" type="text" placeholder="65.00">
-                <div class="input-append">
-                    <span class="add-on">€</span>
-                </div>
-
-
-                <label class="control-label" for="invoiceNumber">Rechnungs-Nummer</label>
-                <input id="invoiceNumber" class="input-medium" name="invoiceNumber" type="text" placeholder="Rechnungsnummer">
                 <div class="controls">
                     <button type="submit" class="btn btn-primary">Speichern</button>
                 </div>
@@ -27,6 +28,9 @@
         </form>
 
     }
+
+    <script src='@routes.Assets.at("javascripts/bootstrap-filestyle-1.0.3.min.js")' type='text/javascript' ></script>
+
 
 
 

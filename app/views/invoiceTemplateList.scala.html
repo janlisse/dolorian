@@ -25,11 +25,11 @@
                 <tr>
                     <td><span class="badge badge-inverse">@template.id.get</span></td>
                     <td>@template.projectId</td>
-                    <td>@template.templateFile</td>
+                    <td>@template.templateFileKey.getOrElse("-")</td>
                     <td>@template.hourlyRate</td>
                     <td>@template.invoiceNumber</td>
                     <td>
-                    @helper.form(routes.Projects.delete(template.id.get)) {
+                    @helper.form(routes.InvoiceTemplates.delete(template.id.get)) {
                         <button type="submit" class='btn btn-danger'>Löschen</button>
                     }
                     </td>
