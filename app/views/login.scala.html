@@ -1,5 +1,7 @@
 @(form: Form[(String, String)])(implicit flash: Flash, session:Session)
 
+@implicitField = @{ helper.FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
+
 @main(title = "Login") {
 
 
@@ -9,27 +11,17 @@
         </div
     }
 
-    <form class='form-stacked' action="@routes.Authentication.login()" method="POST">
-        <h3>Login</h3>
+    <form id="form" action="@routes.Authentication.login()" method="POST">
+        <fieldset>
+        <legend>Login</legend>
 
-        <div class='cleaner_h20'></div>
+		@helper.inputText(form("email"),'_label -> "Email")
+        @helper.inputText(form("password"),'_label -> "Passwort")
 
-        <div class="clearfix">
-            <label for="email">Email</label>
-            <div class="input">
-                <input id="email" name="email" size="30" type="text"/>
-            </div>
+        <div class="controls">
+           <button type="submit" class="btn btn-primary">Login</button>
         </div>
-
-        <div class="clearfix">
-            <label for="password">Passwort</label>
-            <div class="input">
-                <input id="password" name="password" size="30" type="password"/>
-            </div>
-        </div>
-
-        <div class='cleaner_h20'></div>
-        <input type='submit' value='Login' id='signup' name='signup' class="btn btn-primary"/>
+        </fieldset>
     </form>
 
 }
