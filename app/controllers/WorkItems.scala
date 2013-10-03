@@ -30,7 +30,7 @@ object WorkItems extends Controller with Secured {
   )
 
 
-  def index = withAuth {
+  def add = withAuth {
     username => implicit request =>
       Ok(views.html.workItemCreate(timeForm, Project.getAll))
   }
@@ -65,7 +65,7 @@ object WorkItems extends Controller with Secured {
       val currentDate = new DateTime
       val lastMonth = currentDate.minusMonths(1)
       val project = Project.getAll.head
-      val workItems = WorkItem.getByProject(project.id.get)
+      val workItems = WorkItem.getByProjectMonthAndYear(project.id.get, lastMonth.monthOfYear.get, lastMonth.year.get)
 
       val document = new Document()
       val baos = new ByteArrayOutputStream()
@@ -76,7 +76,7 @@ object WorkItems extends Controller with Secured {
         val font = new Font(Font.HELVETICA, 16, Font.BOLD, java.awt.Color.BLACK)
         val caption = new Paragraph(new Chunk("Leistungserfassung " + lastMonth.toString("MM/yyyy"), font))
         val customerLine = new Paragraph(new Chunk("Auftragnehmer: "+user.name, defaultFont))
-        val projectLine = new Paragraph(new Chunk("Projektnummer: "+project.number.getOrElse(project.name), defaultFont))
+        val projectLine = new Paragraph(new Chunk("Projektnummer: "+project.number, defaultFont))
         document.add(caption)
         document.add(Chunk.NEWLINE)
         document.add(customerLine)

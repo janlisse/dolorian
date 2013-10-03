@@ -13,7 +13,7 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "A WorkItem" should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val projectId = Project.save(Project(NotAssigned, "testProject", Some("1234-xc")))
+      val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc"))
       val id = WorkItem.save(WorkItem(NotAssigned, projectId.get, new DateTime(), new DateTime(), 30, "description"))
       id should not equal (None)
     }
@@ -21,8 +21,8 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "WorkItems" should "be retrievable by projectId" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val projectId = Project.save(Project(NotAssigned, "testProject", Some("1234-xc")))
-      val projectId2 = Project.save(Project(NotAssigned, "testProject2", Some("666-cv")))
+      val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc"))
+      val projectId2 = Project.save(Project(NotAssigned, "testProject2","666-cv"))
       val id = WorkItem.save(WorkItem(NotAssigned, projectId.get, new DateTime(), new DateTime(), 30, "description"))
       val id2 = WorkItem.save(WorkItem(NotAssigned, projectId2.get, new DateTime(), new DateTime(), 30, "task1"))
       val workItems = WorkItem.getByProject(projectId.get)
@@ -32,8 +32,8 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "WorkItems" should "be retrieved grouped by Project" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val projectId = Project.save(Project(NotAssigned, "testProject", Some("1234-xc")))
-      val projectId2 = Project.save(Project(NotAssigned, "testProject2", Some("666-cv")))
+      val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc"))
+      val projectId2 = Project.save(Project(NotAssigned, "testProject2", "666-cv"))
       val id = WorkItem.save(WorkItem(NotAssigned, projectId.get, new DateTime(), new DateTime(), 30, "description"))
       val id2 = WorkItem.save(WorkItem(NotAssigned, projectId2.get, new DateTime(), new DateTime(), 30, "task1"))
       val id3 = WorkItem.save(WorkItem(NotAssigned, projectId2.get, new DateTime(), new DateTime(), 10, "task2"))
@@ -42,6 +42,16 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
       (groupedMap get projectId.get).get.size should equal (1)
       (groupedMap get projectId2.get).get.size should equal (2)
 
+    }
+  }
+
+  "WorkItems" should "be retrieved by Project, Month and Year" in {
+    running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc")).get
+      val id = WorkItem.save(WorkItem(NotAssigned, projectId, new DateTime(2013,9,10,10,0), new DateTime(), 30, "description"))
+      val id2 = WorkItem.save(WorkItem(NotAssigned, projectId, new DateTime(2013,8,10,10,0), new DateTime(), 30, "task1"))
+      val selected = WorkItem.getByProjectMonthAndYear(projectId, 9, 2013)
+      selected.size should equal (1)
     }
   }
 

@@ -7,17 +7,17 @@ import play.api.data.Forms._
 import anorm.NotAssigned
 import utils.FormFieldImplicits
 import org.joda.time.DateTime
+import org.apache.commons.io.output.ByteArrayOutputStream
 
 
 object Invoices extends Controller with Secured {
 
   val invoiceForm = Form(
-    mapping(
-      "id" -> ignored(NotAssigned: anorm.Pk[Long]),
+    tuple(
       "templateId" -> longNumber,
-      "invoiceDate" -> jodaDate("dd/MM/yyyy:HH:mm"),
+      "invoiceDate" -> jodaDate("dd/MM/yyyy"),
       "totalHours" -> of(FormFieldImplicits.bigDecimalFormat)
-    )(Invoice.apply)(Invoice.unapply)
+    )
   )
 
   def index = withAuth {
@@ -39,9 +39,10 @@ object Invoices extends Controller with Secured {
         errors => {
           BadRequest(views.html.invoiceCreate(errors, InvoiceTemplate.getAll, defaultDate))
         },
-        invoice => {
-          Invoice.save(invoice)
-          Redirect(routes.Projects.list)
+        form => {
+          val template = InvoiceTemplate.findById(form._1)
+          val invoice = Invoice(NotAssigned, template, form._2, form._3)
+          Ok(Invoice.create(invoice)).as(InvoiceTemplate.MIME_TYPE)
         }
       )
   }

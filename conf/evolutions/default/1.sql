@@ -8,25 +8,25 @@ create sequence s_invoice_template_id;
 
 create table project (
   id bigint DEFAULT nextval('s_project_id') PRIMARY KEY,
-  name  varchar(255),
-  number varchar(50)
+  number varchar(50),
+  description varchar(255)
 );
 
 create table work_item (
   id bigint DEFAULT nextval('s_work_item_id') PRIMARY KEY ,
-  projectId bigint references project(id),
-  startTime timestamp,
-  endTime timestamp,
-  breakTime int,
+  project_id bigint references project(id),
+  start_time timestamp,
+  end_time timestamp,
+  break_time int,
   description  varchar(255)
 );
 
 create table invoice_template (
   id bigint DEFAULT nextval('s_invoice_template_id') PRIMARY KEY ,
-  projectId bigint references project(id),
-  templateFile varchar(255),
-  hourlyRate decimal,
-  invoiceNumber varchar(50)
+  project_id bigint references project(id),
+  template_file varchar(255),
+  hourly_rate decimal,
+  invoice_number varchar(50)
 );
 
 create table app_user (

@@ -2,14 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                                  controllers.WorkItems.index
+GET         /                                  controllers.Application.index
 
 # Authentication
 GET         /login                             controllers.Authentication.login
 POST        /login                             controllers.Authentication.authenticate
 GET         /logout                            controllers.Authentication.logout
 
-GET         /workItems/add                     controllers.WorkItems.index
+GET         /workItems/add                     controllers.WorkItems.add
 GET         /workItems/list                    controllers.WorkItems.list
 GET         /workItems/export                  controllers.WorkItems.export
 POST        /workItems/submit                  controllers.WorkItems.submit
@@ -17,7 +17,7 @@ POST        /workItems/:id/delete              controllers.WorkItems.delete(id: 
 
 # Projects
 GET         /projects/list                     controllers.Projects.list
-GET         /projects/add                      controllers.Projects.index
+GET         /projects/add                      controllers.Projects.add
 POST        /projects/:id/delete               controllers.Projects.delete(id: Long)
 POST        /projects/submit                   controllers.Projects.submit
 

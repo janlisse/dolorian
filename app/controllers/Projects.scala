@@ -12,8 +12,8 @@ object Projects extends Controller with Secured {
   val projectForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
-      "name" -> nonEmptyText,
-      "number" -> optional(nonEmptyText)
+      "number" -> nonEmptyText,
+      "description" -> nonEmptyText
     )(Project.apply)(Project.unapply)
   )
 
@@ -24,7 +24,7 @@ object Projects extends Controller with Secured {
   }
 
 
-  def index = withAuth {
+  def add = withAuth {
     username => implicit request =>
       Ok(views.html.projectCreate(projectForm))
   }

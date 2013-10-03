@@ -22,7 +22,7 @@ object TestData {
         User("Joshi", "jan@test.de", "secret")
       ).foreach(User.create)
       Seq(
-        Project(Id(1l), "IS24", Some("xyz-123"))
+        Project(Id(1l), "xyz-123", "Something useful")
       ).foreach(Project.save)
       Seq(
         WorkItem(Id(1l), 1l, new DateTime(2013,7,12,10,0),new DateTime(2013,7,12,20,20), 30,"something"),

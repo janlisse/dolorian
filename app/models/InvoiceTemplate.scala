@@ -8,35 +8,41 @@ import anorm.~
 import play.api.Play
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model.{ObjectMetadata, CannedAccessControlList, PutObjectRequest}
+import com.amazonaws.services.s3.model.{GetObjectRequest, ObjectMetadata, CannedAccessControlList, PutObjectRequest}
 import java.util.UUID
+import java.io.InputStream
 import java.io.File
 
+case class InvoiceTemplate(id: Pk[Long], templateFileKey: Option[String], projectId: Long, hourlyRate: BigDecimal, invoiceNumber: String) {
 
-case class InvoiceTemplate(id: Pk[Long], templateFileKey: Option[String], projectId: Long, hourlyRate: BigDecimal, invoiceNumber: String)
+  def inputStream = InvoiceTemplate.loadFromS3(templateFileKey.get)
+
+}
 
 
 object InvoiceTemplate extends S3Support {
 
   import play.api.Play.current
 
+  val MIME_TYPE = "application/vnd.oasis.opendocument.text"
+
   val invoiceTemplateParser = {
     get[Pk[Long]]("id") ~
-      get[Option[String]]("templateFile") ~
-      get[Long]("projectId") ~
-      get[BigDecimal]("hourlyRate") ~
-      get[String]("invoiceNumber") map {
+      get[Option[String]]("template_file") ~
+      get[Long]("project_id") ~
+      get[BigDecimal]("hourly_rate") ~
+      get[String]("invoice_number") map {
       case (id ~ templateFileKey ~ projectId ~ hourlyRate ~ invoiceNumber) => {
         InvoiceTemplate(id, templateFileKey, projectId, hourlyRate, invoiceNumber)
       }
     }
   }
 
-  def save(invoiceTemplate: InvoiceTemplate, file: File): Option[Long] = {
-    val key = saveToS3(file)
+  def save(invoiceTemplate: InvoiceTemplate, file: File, fileName: String): Option[Long] = {
+    val key = saveToS3(file, fileName)
     DB.withConnection {
       implicit c =>
-        SQL("insert into invoice_template(templateFile, projectId, hourlyRate, invoiceNumber) values ({templateFile},{projectId},{hourlyRate},{invoiceNumber})")
+        SQL("insert into invoice_template(template_file, project_id, hourly_rate, invoice_number) values ({templateFile},{projectId},{hourlyRate},{invoiceNumber})")
           .on("templateFile" -> key,
           "projectId" -> invoiceTemplate.projectId,
           "hourlyRate" -> invoiceTemplate.hourlyRate,
@@ -79,6 +85,8 @@ object InvoiceTemplate extends S3Support {
       c => c.id.toString -> c.templateFileKey.getOrElse("-")
     }
   }
+
+
 }
 
 trait S3Support {
@@ -93,10 +101,10 @@ trait S3Support {
   val amazonS3 = new AmazonS3Client(awsCredentials)
 
 
-  def saveToS3(file: File): String = {
-    val key = UUID.randomUUID.toString + ".odt"
+  def saveToS3(file: File, fileName: String): String = {
+    val key = UUID.randomUUID.toString +"/"+fileName
     val objectMetadata = new ObjectMetadata()
-    objectMetadata.setContentType("application/vnd.oasis.opendocument.text")
+    objectMetadata.setContentType(InvoiceTemplate.MIME_TYPE)
 
     val request = new PutObjectRequest(bucket, key, file)
     request.withCannedAcl(CannedAccessControlList.AuthenticatedRead)
@@ -104,8 +112,12 @@ trait S3Support {
     key
   }
 
-  def deleteFromS3(key: String) {
+  def deleteFromS3(key: String) = {
     amazonS3.deleteObject(bucket, key)
+  }
+
+  def loadFromS3(key: String) : InputStream = {
+    amazonS3.getObject(new GetObjectRequest(bucket, key)).getObjectContent
   }
 
 }

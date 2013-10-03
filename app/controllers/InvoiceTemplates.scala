@@ -45,7 +45,7 @@ object InvoiceTemplates extends Controller with Secured {
               BadRequest(views.html.invoiceTemplateCreate(errors, Project.getAll))
             },
             template => {
-              InvoiceTemplate.save(template, file.ref.file)
+              InvoiceTemplate.save(template, file.ref.file, file.filename)
               Redirect(routes.InvoiceTemplates.list)
             }
           )

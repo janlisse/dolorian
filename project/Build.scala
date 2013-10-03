@@ -1,11 +1,13 @@
 import sbt._
-import Keys._
+import sbt.Keys._
 import play.Project._
+import scala._
 
 object ApplicationBuild extends Build {
 
   val appName         = "dolorian"
   val appVersion      = "1.0-SNAPSHOT"
+
 
   val appDependencies = Seq(
     // Add your project dependencies here,
@@ -24,7 +26,9 @@ object ApplicationBuild extends Build {
 
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    testOptions in Test := Nil
+    testOptions in Test := Nil,
+    scalacOptions ++= Seq( "-deprecation", "-unchecked", "-feature","-language:postfixOps")
+
   )
 
 }
