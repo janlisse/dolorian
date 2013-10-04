@@ -1,7 +1,14 @@
 @(timeForm: Form[WorkItem], projects: List[Project])(implicit flash: Flash, session:Session)
 
 
-    @main(title = "Arbeitszeit") {
+@headContent = {
+	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-datepicker.css")">
+	<link href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-timepicker.min.css"))' rel='stylesheet' >
+	<script src='@routes.Assets.at("javascripts/bootstrap-datepicker.js")' type='text/javascript' ></script>
+	<script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-timepicker.min.js"))' type='text/javascript' ></script>
+}
+
+    @main(title = "Arbeitszeit", headContent) {
 
         <form id="form" action="@routes.WorkItems.submit()" method="POST">
 

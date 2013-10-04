@@ -1,11 +1,14 @@
 @(invoiceForm: Form[(Long, org.joda.time.DateTime, java.math.BigDecimal)], templates: List[InvoiceTemplate], defaultDate: String)(implicit flash: Flash, session: Session)
 
 @import views.html.helper._
-    @implicitField = @{
-        FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f)
-    }
+@implicitField = @{FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f)}
 
-@main(title = "Neue Rechnung erstellen") {
+@headContent = {
+	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-datepicker.css")">
+	<script src='@routes.Assets.at("javascripts/bootstrap-datepicker.js")' type='text/javascript' ></script>
+}
+
+@main(title = "Neue Rechnung erstellen", headContent) {
 
     @invoiceForm.globalError.map { error =>
         <div class="alert alert-error">

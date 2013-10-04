@@ -42,7 +42,8 @@ object Invoices extends Controller with Secured {
         form => {
           val template = InvoiceTemplate.findById(form._1)
           val invoice = Invoice(NotAssigned, template, form._2, form._3)
-          Ok(Invoice.create(invoice)).as(InvoiceTemplate.MIME_TYPE)
+          Ok(Invoice.create(invoice)).as(InvoiceTemplate.MIME_TYPE).
+          withHeaders("Content-Disposition" -> "attachment; filename=rechnung.odt")
         }
       )
   }
