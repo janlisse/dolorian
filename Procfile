@@ -1,1 +1,1 @@
-web: target/start -Dhttp.port=${PORT} -Dconfig.file=conf/prod.conf
+web: target/universal/stage/bin/dolorian -Dhttp.port=${PORT} -Dconfig.file=conf/prod.conf
