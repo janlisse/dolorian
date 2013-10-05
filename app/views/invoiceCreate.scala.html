@@ -13,7 +13,7 @@
     @invoiceForm.globalError.map { error =>
         <div class="alert alert-error">
             @error.message
-        </div
+        </div>
     }
 
     <form id="form" action="@routes.Invoices.submit()" method="POST" enctype="multipart/form-data">

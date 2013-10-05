@@ -14,7 +14,7 @@ case class Project(id: anorm.Pk[Long], number: String, description: String)
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 
-  def totalTime(): Period = {
+  def totalTime: Period = {
     val endTimeMinusBreak = endTime.minusMinutes(breakTime)
     new Period(startTime, endTimeMinusBreak)
   }
@@ -66,12 +66,16 @@ object Project {
         SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.single
     }
   }
+  
+  def options: Seq[(String,String)]  = {
+    getAll map {
+      c => c.id.toString -> c.number
+    }
+  }
 
 }
 
 object WorkItem {
-
-  val SpreadsheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
 
   val workItemParser = {
     get[Pk[Long]]("id") ~
@@ -123,11 +127,8 @@ object WorkItem {
   def delete(id: Long) {
     DB.withConnection {
       implicit connection =>
-        SQL( """
-          DELETE FROM work_item where id = {id}
-             """).on(
-          'id -> id
-        ).executeUpdate
+        SQL("DELETE FROM work_item where id = {id}").
+        on( 'id -> id).executeUpdate
     }
   }
 

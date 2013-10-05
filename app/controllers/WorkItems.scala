@@ -12,11 +12,11 @@ import com.lowagie.text._
 import com.lowagie.text.pdf._
 import java.io.ByteArrayOutputStream
 import com.lowagie.text.pdf.draw.LineSeparator
+import org.joda.time.Minutes
 
 object WorkItems extends Controller with Secured {
 
-  val catFont = new Font(Font.TIMES_ROMAN, 18,
-    Font.BOLD);
+  val catFont = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
 
   val timeForm = Form(
     mapping(
@@ -26,9 +26,10 @@ object WorkItems extends Controller with Secured {
       "endTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "breakTime" -> number,
       "description" -> nonEmptyText
-    )(WorkItem.apply)(WorkItem.unapply)
+    )
+    (WorkItem.apply)(WorkItem.unapply).verifying("Time must be positive", {
+      result => result.totalTime.toStandardMinutes.isGreaterThan(Minutes.ZERO)})
   )
-
 
   def add = withAuth {
     username => implicit request =>

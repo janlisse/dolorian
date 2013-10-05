@@ -1,5 +1,8 @@
 @(timeForm: Form[WorkItem], projects: List[Project])(implicit flash: Flash, session:Session)
 
+@import views.html.helper._
+@import org.joda.time.DateTime
+@implicitField = @{ helper.FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
 @headContent = {
 	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-datepicker.css")">
@@ -10,59 +13,72 @@
 
     @main(title = "Arbeitszeit", headContent) {
 
+	@timeForm.globalError.map { error =>
+        <div class="alert alert-error">
+            @error.message
+        </div>
+    }
+
         <form id="form" action="@routes.WorkItems.submit()" method="POST">
 
             <fieldset>
                 <legend>Arbeitszeit erfassen</legend>
 
-                @projectSelectBox(projects)
+                @select(timeForm("projectId"),Project.options,'_label -> "Projekt")
 
-                <label class="control-label" for="date">Datum:</label>
-                <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker" >
+                <label class="control-label" for="date">Datum</label>
+                <input type="text" id="datepicker" name="date" data-date-format="dd/mm/yyyy" class="datepicker" 
+                       value='@timeForm("date").value.getOrElse(new DateTime().toString("dd/MM/yyyy"))'>
 
-                <label class="control-label" for="startTime">Start:</label>
+                <label class="control-label" for="startTime">Start</label>
                 <div class="input-append bootstrap-timepicker">
-                    <input type="text" id="startTime" name="startTime" class="input-small timepicker">
+                    <input type="text" id="startTime" name="startTime" class="input-small timepicker"
+                    	value='@timeForm("startTime").value.getOrElse("00/00/0000:00:00").substring(11)'>
                     <span class="add-on">
                         <i class="icon-time"></i>
                     </span>
                 </div>
 
-                <label class="control-label" for="endTime">Ende:</label>
+                <label class="control-label" for="endTime">Ende</label>
                 <div class="input-append bootstrap-timepicker">
-                    <input type="text" id="endTime" name="endTime" class="input-small timepicker">
+                    <input type="text" id="endTime" name="endTime" class="input-small timepicker"
+                    value='@timeForm("endTime").value.getOrElse("00/00/0000:00:00").substring(11)'>
                     <span class="add-on">
                         <i class="icon-time"></i>
                     </span>
                 </div>
 
-                <label class="control-label" for="breakTime">Pause (Minuten):</label>
-                <input type="number" id="breakTime" name="breakTime">
+                @helper.inputText(timeForm("breakTime"),'_label -> "Pause")
+				@helper.inputText(timeForm("description"),'_label -> "Beschreibung",'class -> "input-xxlarge")
 
-                <label class="control-label" for="description">Beschreibung:</label>
-                <input id="description" class="input-xxlarge" name="description" type="text" placeholder="Beschreibung">
+				<input id="start" type="hidden" name="start"/>
+				<input id="end" type="hidden" name="end"/>
 
                 <div class="controls">
                     <button type="submit" class="btn btn-primary">Speichern</button>
                 </div>
 
                 <script type="text/javascript">
-                $ ( '.datepicker' ).datepicker ( 'update', new Date ( ) ) ;
-                $ ( '#breakTime' ).val ( '0' ) ;
+                $ ( '.datepicker' ).datepicker();
                 $ ( '.timepicker' ).timepicker ( {
                 minuteStep : 1,
                 showSeconds : false,
                 showInputs : false,
-                showMeridian : false
+                showMeridian : false,
+                defaultTime : false
                 } ) ;
+
+                $("#breakTime").val("0")
                 $ ( "#form" ).submit ( function ( event ) {
                 var date = $ ( '#datepicker' ).val ( ) ;
                 var startTime = $ ( '#startTime' ).val ( ) ;
                 var endTime = $ ( '#endTime' ).val ( ) ;
-                var startDateTime = date + ":" + startTime ;
-                var endDateTime = date + ":" + endTime ;
-                $ ( '#startTime' ).val ( startDateTime ) ;
-                $ ( '#endTime' ).val ( endDateTime ) ;
+                 $('#start').val(startTime);
+                 $('#end').val(endTime);
+                var startDateTime = date + ":" + startTime;
+                var endDateTime = date + ":" + endTime;
+                $ ( '#startTime' ).val ( startDateTime );
+                $ ( '#endTime' ).val ( endDateTime );
                 } ) ;
 
                 </script>

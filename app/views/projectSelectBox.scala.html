@@ -1,8 +1,0 @@
-@(projects: List[Project])
-
-<label class="control-label" for="startTime">Projekt:</label>
-<select name="projectId">
-@for(project <- projects) {
-    <option value="@project.id">@project.number</option>
-}
-</select>
