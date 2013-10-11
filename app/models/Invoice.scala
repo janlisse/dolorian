@@ -20,7 +20,7 @@ case class Invoice(id: anorm.Pk[Long], template: InvoiceTemplate, invoiceDate: D
   def amountFormatted = Invoice.formatMoney(amount)
   def amount = template.hourlyRate.doubleValue * workingHoursTotal.doubleValue
   def amountTaxesFormatted = Invoice.formatMoney(amountTaxes)
-  def amountTaxes =  amount * 0.19
+  def amountTaxes = amount * 0.19
   def amountTotal = amount + amountTaxes
   def amountTotalFormatted = Invoice.formatMoney(amountTotal)
   def invoiceDateFormatted = invoiceDate.toString("dd.MM.yyyy")
@@ -34,7 +34,6 @@ case class Invoice(id: anorm.Pk[Long], template: InvoiceTemplate, invoiceDate: D
   }
 }
 
-
 object Invoice {
 
   import collection.JavaConverters._
@@ -42,7 +41,7 @@ object Invoice {
   val MONEY_FORMAT = NumberFormat.getCurrencyInstance(Locale.GERMANY)
 
   def formatMoney(value: Double): String = {
-     return MONEY_FORMAT.format(value)
+    return MONEY_FORMAT.format(value)
   }
 
   def create(invoice: Invoice) = {
@@ -53,15 +52,14 @@ object Invoice {
       "hours" -> invoice.workingHoursTotal,
       "hourlyRate" -> invoice.hourlyRateFormatted,
       "projectNumber" -> invoice.projectNumber,
-      "invoiceDate"     -> invoice.invoiceDateFormatted,
-      "invoiceMonth"   -> invoice.invoiceMonth,
-      "invoiceYear"    -> invoice.invoiceYear,
-      "invoiceNumber"   -> invoice.invoiceNumber,
+      "invoiceDate" -> invoice.invoiceDateFormatted,
+      "invoiceMonth" -> invoice.invoiceMonth,
+      "invoiceYear" -> invoice.invoiceYear,
+      "invoiceNumber" -> invoice.invoiceNumber,
       "description" -> invoice.projectDescription,
       "amount" -> invoice.amountFormatted,
       "amountTaxes" -> invoice.amountTaxesFormatted,
-      "amountTotal" -> invoice.amountTotalFormatted
-    )
+      "amountTotal" -> invoice.amountTotalFormatted)
     jodTemplate.createDocument(dataMap.toMap.asJava, baos)
     baos.toByteArray
   }

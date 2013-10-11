@@ -1,8 +1,7 @@
 package models
 
 import java.net.URL
-import org.joda.time.{Period, DateTime}
-
+import org.joda.time.{ Period, DateTime }
 
 import anorm._
 import play.api.db.DB
@@ -11,13 +10,12 @@ import anorm.SqlParser._
 import play.api.Play.current
 
 case class Project(id: anorm.Pk[Long], number: String, description: String, customerId: Long) {
-  
+
   lazy val customer: Customer = DB.withConnection { implicit connection =>
     SQL("SELECT * FROM customer c WHERE c.id = {id}").on(
-      'id -> customerId
-    ).as(Customer.customerParser.single)
+      'id -> customerId).as(Customer.customerParser.single)
   }
-  
+
 }
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
@@ -35,10 +33,10 @@ object Project {
       get[String]("number") ~
       get[String]("description") ~
       get[Long]("customer_id") map {
-      case (id ~ name ~ number ~ customerId) => {
-        Project(id, name, number, customerId)
+        case (id ~ name ~ number ~ customerId) => {
+          Project(id, name, number, customerId)
+        }
       }
-    }
   }
 
   def getAll: List[Project] = {
@@ -49,25 +47,23 @@ object Project {
     }
   }
 
-
   def save(project: Project): Option[Long] = {
     DB.withConnection {
       implicit c =>
         SQL("insert into project(number, description, customer_id) values ({number},{description}, {customerId})")
-          .on("description" -> project.description, 
-              "number" -> project.number, 
-              "customerId" -> project.customerId).executeInsert()
+          .on("description" -> project.description,
+            "number" -> project.number,
+            "customerId" -> project.customerId).executeInsert()
     }
   }
 
   def delete(id: Long) {
     DB.withConnection {
       implicit connection =>
-        SQL( """
+        SQL("""
           DELETE FROM project where id = {id}
              """).on(
-          'id -> id
-        ).executeUpdate
+          'id -> id).executeUpdate
     }
   }
 
@@ -77,8 +73,8 @@ object Project {
         SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.single
     }
   }
-  
-  def options: Seq[(String,String)]  = {
+
+  def options: Seq[(String, String)] = {
     getAll map {
       c => c.id.toString -> c.number
     }
@@ -95,8 +91,8 @@ object WorkItem {
       get[DateTime]("end_time") ~
       get[Int]("break_time") ~
       get[String]("description") map {
-      case (id ~ projectId ~ startTime ~ endTime ~ breakTime ~ description) => WorkItem(id, projectId, startTime, endTime, breakTime, description)
-    }
+        case (id ~ projectId ~ startTime ~ endTime ~ breakTime ~ description) => WorkItem(id, projectId, startTime, endTime, breakTime, description)
+      }
   }
 
   val projectWorkItemMap = {
@@ -127,7 +123,7 @@ object WorkItem {
           AND EXTRACT(month FROM w.start_time) = {month}
           AND EXTRACT(year FROM w.start_time) = {year}
           order by w.start_time DESC""")
-        select.on("projectId" -> projectId, "month"-> month,"year"-> year).as(workItemParser *)
+        select.on("projectId" -> projectId, "month" -> month, "year" -> year).as(workItemParser *)
     }
   }
 
@@ -139,7 +135,7 @@ object WorkItem {
     DB.withConnection {
       implicit connection =>
         SQL("DELETE FROM work_item where id = {id}").
-        on( 'id -> id).executeUpdate
+          on('id -> id).executeUpdate
     }
   }
 
@@ -148,11 +144,10 @@ object WorkItem {
       implicit c =>
         SQL("insert into work_item(project_id, start_time,end_time,break_time,description) values ({projectId},{startTime},{endTime},{breakTime},{description})")
           .on("projectId" -> workItem.projectId,
-          "startTime" -> workItem.startTime,
-          "endTime" -> workItem.endTime,
-          "breakTime" -> workItem.breakTime,
-          "description" -> workItem.description
-        ).executeInsert()
+            "startTime" -> workItem.startTime,
+            "endTime" -> workItem.endTime,
+            "breakTime" -> workItem.breakTime,
+            "description" -> workItem.description).executeInsert()
     }
   }
 }

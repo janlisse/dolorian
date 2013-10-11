@@ -8,9 +8,7 @@ import anorm.SqlParser._
 
 case class User(name: String, email: String, password: String)
 
-
 object User {
-
 
   /**
    * Parse a User from a ResultSet
@@ -19,8 +17,8 @@ object User {
     get[String]("name") ~
       get[String]("email") ~
       get[String]("password") map {
-      case name ~ email ~ password => User(name, email, password)
-    }
+        case name ~ email ~ password => User(name, email, password)
+      }
   }
 
   /**
@@ -33,7 +31,6 @@ object User {
     }
   }
 
-
   /**
    * Authenticate a User.
    */
@@ -42,8 +39,8 @@ object User {
       implicit connection =>
         SQL("select * from app_user where email = {email} and password = {password}").
           on(
-          'email -> email,
-          'password -> password).as(User.simple.singleOpt)
+            'email -> email,
+            'password -> password).as(User.simple.singleOpt)
     }
   }
 

@@ -1,6 +1,6 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{ Action, Controller }
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -10,16 +10,12 @@ import models.User
 
 object Authentication extends Controller {
 
-
   val loginForm = Form(
     tuple(
       "email" -> text,
-      "password" -> text
-    ) verifying("Invalid email or password", result => result match {
-      case (email, password) => User.authenticate(email, password).isDefined
-    })
-  )
-
+      "password" -> text) verifying ("Invalid email or password", result => result match {
+        case (email, password) => User.authenticate(email, password).isDefined
+      }))
 
   def login = Action {
     implicit Request =>
@@ -31,8 +27,7 @@ object Authentication extends Controller {
    */
   def logout = Action {
     Redirect(routes.Authentication.login).withNewSession.flashing(
-      "success" -> "You've been logged out"
-    )
+      "success" -> "You've been logged out")
   }
 
   /**
@@ -41,10 +36,7 @@ object Authentication extends Controller {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.Application.index).withSession("email" -> user._1)
-    )
+      user => Redirect(routes.Application.index).withSession("email" -> user._1))
   }
-
-
 
 }

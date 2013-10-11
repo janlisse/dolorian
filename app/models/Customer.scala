@@ -7,43 +7,42 @@ import anorm.SqlParser._
 import play.api.Play.current
 
 case class Address(street: String, streetNumber: String, zipCode: String, city: String) {
-  
+
   override def toString(): String = s"$street $streetNumber, $zipCode $city"
 }
 
 case class Customer(id: anorm.Pk[Long] = NotAssigned, name: String, shortName: String, address: Address, invoiceSequence: Option[Int] = None) {
-  
+
   def getAndIncrementSequence = {
-     invoiceSequence map { seq =>
-    	val update = copy(invoiceSequence = Some(seq+1))
-        Customer.update(id.get, update)
-        seq
-     }
-   } 
+    invoiceSequence map { seq =>
+      val update = copy(invoiceSequence = Some(seq + 1))
+      Customer.update(id.get, update)
+      seq
+    }
+  }
 }
 
-
 object Customer {
-  
+
   val addressParser = {
     get[String]("street") ~
-    get[String]("street_number") ~
-    get[String]("city") ~
-    get[String]("zip_code")  map {
-      case street ~ streetNumber ~ city ~ zipCode => Address(street, streetNumber, zipCode, city)
-    }
+      get[String]("street_number") ~
+      get[String]("city") ~
+      get[String]("zip_code") map {
+        case street ~ streetNumber ~ city ~ zipCode => Address(street, streetNumber, zipCode, city)
+      }
   }
-  
+
   val customerParser = {
     get[Pk[Long]]("id") ~
-    get[String]("name") ~
-    get[String]("short_name") ~
-    addressParser  ~
-    get[Option[Int]]("invoice_sequence") map {
-      case (id ~ name ~ shortName ~ address ~ invoiceSequence) => Customer(id, name, shortName, address, invoiceSequence)  
-    }
+      get[String]("name") ~
+      get[String]("short_name") ~
+      addressParser ~
+      get[Option[Int]]("invoice_sequence") map {
+        case (id ~ name ~ shortName ~ address ~ invoiceSequence) => Customer(id, name, shortName, address, invoiceSequence)
+      }
   }
-  
+
   def getAll: List[Customer] = {
     DB.withConnection {
       implicit c =>
@@ -57,16 +56,15 @@ object Customer {
       implicit c =>
         SQL("insert into customer(name, short_name, street, street_number, zip_code, city, invoice_sequence) values ({name}, {short_name}, {street}, {street_number}, {zip_code}, {city}, {invoice_sequence})")
           .on("name" -> customer.name,
-              "short_name" -> customer.shortName, 
-              "street" -> customer.address.street,
-              "street_number" -> customer.address.streetNumber,
-              "zip_code" -> customer.address.zipCode,
-              "city" -> customer.address.city,
-              "invoice_sequence" -> customer.invoiceSequence.getOrElse(1)
-          ).executeInsert()
+            "short_name" -> customer.shortName,
+            "street" -> customer.address.street,
+            "street_number" -> customer.address.streetNumber,
+            "zip_code" -> customer.address.zipCode,
+            "city" -> customer.address.city,
+            "invoice_sequence" -> customer.invoiceSequence.getOrElse(1)).executeInsert()
     }
   }
-  
+
   def findById(id: Long): Option[Customer] = {
     DB.withConnection {
       implicit c =>
@@ -80,7 +78,7 @@ object Customer {
         SQL("DELETE FROM customer where id = {id}").on('id -> id).executeUpdate
     }
   }
-  
+
   def update(id: Long, customer: Customer) = {
     DB.withConnection { implicit connection =>
       SQL(
@@ -89,27 +87,22 @@ object Customer {
           set invoice_sequence = {invoice_sequence}, name = {name}, short_name = {short_name}, 
           street = {street}, street_number = {street_number}, city = {city}, zip_code = {zip_code}
           where id = {id}
-        """
-      ).on(
-        'id -> id,
-        'invoice_sequence -> customer.invoiceSequence.getOrElse(1),
-        'name -> customer.name,
-        'short_name -> customer.shortName,
-        'city -> customer.address.city,
-        'zip_code -> customer.address.zipCode,
-        'street -> customer.address.street,
-        'street_number -> customer.address.streetNumber
-      ).executeUpdate()
+        """).on(
+          'id -> id,
+          'invoice_sequence -> customer.invoiceSequence.getOrElse(1),
+          'name -> customer.name,
+          'short_name -> customer.shortName,
+          'city -> customer.address.city,
+          'zip_code -> customer.address.zipCode,
+          'street -> customer.address.street,
+          'street_number -> customer.address.streetNumber).executeUpdate()
     }
   }
-  
-  def options: Seq[(String,String)]  = {
+
+  def options: Seq[(String, String)] = {
     getAll map {
       c => c.id.toString -> c.name
     }
   }
-  
-  
-  
-  
+
 }

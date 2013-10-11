@@ -35,10 +35,11 @@ trait Secured {
     }
   }
 
-  def withUser(f: User => Request[AnyContent] => Result) = withAuth { username => implicit request =>
-    User.findOneByUsername(username).map { user =>
-      f(user)(request)
-    }.getOrElse(onUnauthorized(request))
+  def withUser(f: User => Request[AnyContent] => Result) = withAuth { username =>
+    implicit request =>
+      User.findOneByUsername(username).map { user =>
+        f(user)(request)
+      }.getOrElse(onUnauthorized(request))
   }
 
 }

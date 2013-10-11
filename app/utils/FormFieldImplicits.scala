@@ -1,6 +1,6 @@
 package utils
 
-import play.api.data.format.{Formats, Formatter}
+import play.api.data.format.{ Formats, Formatter }
 import play.api.data.FormError
 import java.math.BigDecimal
 
@@ -19,23 +19,22 @@ object FormFieldImplicits {
       Formats.stringFormat.bind(key, data).right.flatMap { s =>
         scala.util.control.Exception.allCatch[java.math.BigDecimal]
           .either {
-          val bd = new java.math.BigDecimal(s)
-          precision.map({
-            case (p, s) =>
-              if (bd.precision - bd.scale > p - s) {
-                throw new java.lang.ArithmeticException("Invalid precision")
-              }
-              bd.setScale(s)
-          }).getOrElse(bd)
-        }
+            val bd = new java.math.BigDecimal(s)
+            precision.map({
+              case (p, s) =>
+                if (bd.precision - bd.scale > p - s) {
+                  throw new java.lang.ArithmeticException("Invalid precision")
+                }
+                bd.setScale(s)
+            }).getOrElse(bd)
+          }
           .left.map { e =>
-          Seq(
-            precision match {
-              case Some((p, s)) => FormError(key, "error.real.precision", Seq(p, s))
-              case None => FormError(key, "error.real", Nil)
-            }
-          )
-        }
+            Seq(
+              precision match {
+                case Some((p, s)) => FormError(key, "error.real.precision", Seq(p, s))
+                case None => FormError(key, "error.real", Nil)
+              })
+          }
       }
     }
 
