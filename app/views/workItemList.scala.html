@@ -1,16 +1,16 @@
-@(works: List[WorkItem])(implicit flash: Flash, session: Session)
+@(workItems: List[WorkItem])(implicit flash: Flash, session: Session)
 
 @import utils._
 
-@main(title = "Home") {
+@main(title = "Arbeitszeiten") {
 
 
-    @if(works.isEmpty) {
-        <div class="alert alert-info">
+    @if(workItems.isEmpty) {
+        <h3>
             Noch keine Arbeitszeiten angelegt.
-        </div>
+        </h3>
     } else {
-        <h3>Erfasste Arbeitszeiten</h3>
+        <h3>Arbeitszeiten</h3>
 
         <table class="table table-striped">
             <thead>
@@ -25,18 +25,18 @@
                 </tr>
             </thead>
             <tbody>
-            @works.map { work =>
+            @workItems.map { work =>
                 <tr>
                     <td>@FormatUtil.formatDate(work.startTime)</td>
                     <td>@FormatUtil.formatTime(work.startTime)</td>
                     <td>@FormatUtil.formatTime(work.endTime)</td>
-                    <td>@work.breakTime</td>
+                    <td>@work.breakTime min</td>
                     <td>@work.totalTime.getHours:@work.totalTime.getMinutes</td>
                     <td>@work.description</td>
                     <td>
-                        <div class='btn btn-info'>Edit</div>
+                        <div class='btn btn-info'><i class="icon-edit icon-white"></i> Bearbeiten</div>
                         @helper.form(routes.WorkItems.delete(work.id.get)) {
-                            <button type="submit" class='btn btn-danger'>Löschen</button>
+                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
                         }
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
         </table>
 
         <div class="btn-group">
-            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+            <a class="btn dropdown-toggle btn-success" data-toggle="dropdown" href="#">
                 Export
                 <span class="caret"></span>
             </a>

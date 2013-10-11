@@ -4,39 +4,33 @@
 @main(title = "Vorlagen") {
 
     @if(templates.isEmpty) {
-        <div class="alert alert-info">
+        <h3>
             Noch keine Vorlagen angelegt.
-        </div>
+        </h3>
     } else {
-        <h3>Angelegte Rechnungsvorlagen</h3>
+        <h3>Rechnungsvorlagen</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Nr</th>
-                    <th>Projekt</th>
+                    <th>Projekt-Nummer</th>
                     <th>Vorlagen Datei</th>
                     <th>Stundensatz</th>
-                    <th>Rechnungsnummer</th>
                 </tr>
             </thead>
             <tbody>
             @templates.map { template =>
                 <tr>
-                    <td><span class="badge badge-inverse">@template.id.get</span></td>
-                    <td>@template.projectId</td>
+                    <td><span class="badge badge-inverse">@template.project.number</span></td>
                     <td>@template.templateFileKey.getOrElse("-")</td>
-                    <td>@template.hourlyRate</td>
-                    <td>@template.invoiceNumber</td>
+                    <td>@template.hourlyRate €</td>
                     <td>
                     @helper.form(routes.InvoiceTemplates.delete(template.id.get)) {
-                        <button type="submit" class='btn btn-danger'>Löschen</button>
+                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
                     }
                     </td>
                 </tr>
             }
         </table>
-
     }
-
 }

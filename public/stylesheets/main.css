@@ -39,3 +39,8 @@ footer {
 label[for="fileuploadBtn"] {
     margin-bottom: 10px;
 }
+
+
+.input-tiny {
+	width: 40px;
+}

@@ -16,6 +16,7 @@
             <legend>Neues Projekt anlegen</legend>
             @helper.inputText(projectForm("number"),'_label -> "Nummer")
             @helper.inputText(projectForm("description"),'_label -> "Beschreibung")
+            @select(projectForm("customerId"), Customer.options,'_label -> "Kunde")
             <div class="controls">
                 <button type="submit" class="btn btn-primary">Speichern</button>
             </div>

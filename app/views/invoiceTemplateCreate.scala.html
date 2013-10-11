@@ -5,9 +5,14 @@
 
 @headContent = {
 	<script src='@routes.Assets.at("javascripts/bootstrap-filestyle-1.0.3.min.js")' type='text/javascript' ></script>
+	<script>
+	$(function() {
+		$(":file").filestyle({classButton: "btn btn-primary", buttonText: "Datei auswählen"});
+	});
+	</script>
 }
 
-    @main(title = "Rechnungs-Vorlage") {
+    @main(title = "Rechnungs-Vorlage", headContent) {
 
         @invoiceTemplateForm.globalError.map { error =>
             <div class="alert alert-error">
@@ -22,9 +27,7 @@
                 <input type="file" class="filestyle" id="fileuploadBtn" name="templateFile" data-classButton="btn btn-primary">
 
                 @select(invoiceTemplateForm("projectId"),Project.options,'_label -> "Projekt")
-                
                 @helper.inputText(invoiceTemplateForm("hourlyRate"),'_label -> "Stundensatz", 'placeholder -> "65.00")
-                @helper.inputText(invoiceTemplateForm("invoiceNumber"),'_label -> "Rechnungsnummer")
 
                 <div class="controls">
                     <button type="submit" class="btn btn-primary">Speichern</button>

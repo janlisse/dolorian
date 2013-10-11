@@ -1,0 +1,35 @@
+@(id: Long, customerForm: Form[Customer])(implicit flash: Flash, session: Session)
+
+@import views.html.helper._
+@implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
+
+@main(title = "Neuen Kunden anlegen") {
+
+    @customerForm.globalError.map { error =>
+        <div class="alert alert-error">
+            @error.message
+        </div>
+    }
+
+    <form id="form" action="@routes.Customers.update(id)" method="POST">
+        <fieldset>
+            <legend>Kunden bearbeiten</legend>
+            @helper.inputText(customerForm("name"),'_label -> "Name")
+            @helper.inputText(customerForm("shortName"),'_label -> "Kürzel (3 Zeichen)", 'class -> "input-tiny")
+            @helper.inputText(customerForm("address.street"),'_label -> "Strasse")
+            @helper.inputText(customerForm("address.streetNumber"),'_label -> "Hausnummer", 'class -> "input-tiny")
+            @helper.inputText(customerForm("address.city"),'_label -> "Ort")
+            @helper.inputText(customerForm("address.zipCode"),'_label -> "Postleitzahl", 'class -> "input-mini")
+            @helper.inputText(customerForm("invoiceSequence"), '_label -> "Rechnungs-Sequenz-Nr",'class -> "input-tiny")
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </fieldset>
+    </form>
+
+}
+
+
+
+
+

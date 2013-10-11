@@ -13,7 +13,8 @@ object Projects extends Controller with Secured {
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "number" -> nonEmptyText,
-      "description" -> nonEmptyText
+      "description" -> nonEmptyText,
+      "customerId" -> longNumber
     )(Project.apply)(Project.unapply)
   )
 

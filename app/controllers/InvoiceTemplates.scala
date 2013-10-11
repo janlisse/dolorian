@@ -15,8 +15,7 @@ object InvoiceTemplates extends Controller with Secured {
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "templateFileKey" -> optional(nonEmptyText),
       "projectId" -> longNumber,
-      "hourlyRate" -> of(FormFieldImplicits.bigDecimalFormat),
-      "invoiceNumber" -> nonEmptyText
+      "hourlyRate" -> of(FormFieldImplicits.bigDecimalFormat)
     )(InvoiceTemplate.apply)(InvoiceTemplate.unapply)
   )
 

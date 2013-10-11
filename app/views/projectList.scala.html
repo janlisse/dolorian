@@ -4,36 +4,35 @@
 @main(title = "Projekte") {
 
     @if(projects.isEmpty) {
-        <div class="alert alert-info">
+        <h3>
             Noch keine Projekte angelegt.
-        </div>
+        </h3>
     } else {
-        <h3>Angelegte Projekte</h3>
+        <h3>Projekte</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Nr</th>
                     <th>Nummer</th>
                     <th>Beschreibung</th>
+                    <th>Kunde</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody>
             @projects.map { project =>
                 <tr>
-                    <td><span class="badge badge-inverse">@project.id.get</span></td>
-                    <td>@project.number</td>
+                    <td><span class="badge badge-inverse">@project.number</span></td>
                     <td>@project.description</td>
+                    <td>@project.customer.name</td>
                     <td>
                     @helper.form(routes.Projects.delete(project.id.get)) {
-                        <button type="submit" class='btn btn-danger'>Löschen</button>
+                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
                     }
                     </td>
                 </tr>
             }
         </table>
-
     }
 
 }

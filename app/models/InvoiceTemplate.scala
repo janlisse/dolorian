@@ -2,6 +2,7 @@ package models
 
 import anorm._
 import play.api.db.DB
+import play.api.Play.current
 import java.math.BigDecimal
 import anorm.SqlParser._
 import anorm.~
@@ -13,10 +14,14 @@ import java.util.UUID
 import java.io.InputStream
 import java.io.File
 
-case class InvoiceTemplate(id: Pk[Long], templateFileKey: Option[String], projectId: Long, hourlyRate: BigDecimal, invoiceNumber: String) {
+case class InvoiceTemplate(id: Pk[Long], templateFileKey: Option[String], projectId: Long, hourlyRate: BigDecimal) {
 
+  lazy val project: Project = DB.withConnection { implicit connection =>
+    SQL("SELECT * FROM project p WHERE p.id = {id}").on(
+      'id -> projectId).as(Project.projectParser.single)
+  } 
+  
   def inputStream = InvoiceTemplate.loadFromS3(templateFileKey.get)
-
 }
 
 
@@ -30,10 +35,9 @@ object InvoiceTemplate extends S3Support {
     get[Pk[Long]]("id") ~
       get[Option[String]]("template_file") ~
       get[Long]("project_id") ~
-      get[BigDecimal]("hourly_rate") ~
-      get[String]("invoice_number") map {
-      case (id ~ templateFileKey ~ projectId ~ hourlyRate ~ invoiceNumber) => {
-        InvoiceTemplate(id, templateFileKey, projectId, hourlyRate, invoiceNumber)
+      get[BigDecimal]("hourly_rate") map {
+      case (id ~ templateFileKey ~ projectId ~ hourlyRate) => {
+        InvoiceTemplate(id, templateFileKey, projectId, hourlyRate)
       }
     }
   }
@@ -42,11 +46,10 @@ object InvoiceTemplate extends S3Support {
     val key = saveToS3(file, fileName)
     DB.withConnection {
       implicit c =>
-        SQL("insert into invoice_template(template_file, project_id, hourly_rate, invoice_number) values ({templateFile},{projectId},{hourlyRate},{invoiceNumber})")
+        SQL("insert into invoice_template(template_file, project_id, hourly_rate) values ({templateFile},{projectId},{hourlyRate})")
           .on("templateFile" -> key,
           "projectId" -> invoiceTemplate.projectId,
-          "hourlyRate" -> invoiceTemplate.hourlyRate,
-          "invoiceNumber" -> invoiceTemplate.invoiceNumber
+          "hourlyRate" -> invoiceTemplate.hourlyRate
         ).executeInsert()
     }
   }

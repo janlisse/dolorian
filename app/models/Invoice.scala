@@ -23,6 +23,15 @@ case class Invoice(id: anorm.Pk[Long], template: InvoiceTemplate, invoiceDate: D
   def amountTaxes =  amount * 0.19
   def amountTotal = amount + amountTaxes
   def amountTotalFormatted = Invoice.formatMoney(amountTotal)
+  def invoiceDateFormatted = invoiceDate.toString("dd.MM.yyyy")
+  def invoiceMonth = invoiceDate.toString("MMMM")
+  def invoiceYear = invoiceDate.toString("yyyy")
+  def invoiceNumber = {
+    val customer = template.project.customer
+    val seqNumber = customer.getAndIncrementSequence.getOrElse(1)
+    val shortName = customer.shortName
+    s"$shortName-$invoiceYear-$seqNumber"
+  }
 }
 
 
@@ -37,18 +46,17 @@ object Invoice {
   }
 
   def create(invoice: Invoice) = {
-    val baos = new ByteArrayOutputStream()
-    val documentTemplateFactory = new DocumentTemplateFactory()
+    val baos = new ByteArrayOutputStream
+    val documentTemplateFactory = new DocumentTemplateFactory
     val jodTemplate = documentTemplateFactory.getTemplate(invoice.template.inputStream)
-
     val dataMap = Map(
       "hours" -> invoice.workingHoursTotal,
       "hourlyRate" -> invoice.hourlyRateFormatted,
       "projectNumber" -> invoice.projectNumber,
-      "invoiceDate"     -> invoice.invoiceDate.toString("dd.MM.yyyy"),
-      "invoiceMonth"   -> invoice.invoiceDate.toString("MMMM"),
-      "invoiceYear"    -> invoice.invoiceDate.toString("yyyy"),
-      "invoiceNumber"   -> invoice.template.invoiceNumber,
+      "invoiceDate"     -> invoice.invoiceDateFormatted,
+      "invoiceMonth"   -> invoice.invoiceMonth,
+      "invoiceYear"    -> invoice.invoiceYear,
+      "invoiceNumber"   -> invoice.invoiceNumber,
       "description" -> invoice.projectDescription,
       "amount" -> invoice.amountFormatted,
       "amountTaxes" -> invoice.amountTaxesFormatted,

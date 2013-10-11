@@ -10,7 +10,15 @@ import models.AnormExtension._
 import anorm.SqlParser._
 import play.api.Play.current
 
-case class Project(id: anorm.Pk[Long], number: String, description: String)
+case class Project(id: anorm.Pk[Long], number: String, description: String, customerId: Long) {
+  
+  lazy val customer: Customer = DB.withConnection { implicit connection =>
+    SQL("SELECT * FROM customer c WHERE c.id = {id}").on(
+      'id -> customerId
+    ).as(Customer.customerParser.single)
+  }
+  
+}
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 
@@ -25,9 +33,10 @@ object Project {
   val projectParser = {
     get[Pk[Long]]("id") ~
       get[String]("number") ~
-      get[String]("description") map {
-      case (id ~ name ~ number) => {
-        Project(id, name, number)
+      get[String]("description") ~
+      get[Long]("customer_id") map {
+      case (id ~ name ~ number ~ customerId) => {
+        Project(id, name, number, customerId)
       }
     }
   }
@@ -44,8 +53,10 @@ object Project {
   def save(project: Project): Option[Long] = {
     DB.withConnection {
       implicit c =>
-        SQL("insert into project(number, description) values ({number},{description})")
-          .on("description" -> project.description, "number" -> project.number).executeInsert()
+        SQL("insert into project(number, description, customer_id) values ({number},{description}, {customerId})")
+          .on("description" -> project.description, 
+              "number" -> project.number, 
+              "customerId" -> project.customerId).executeInsert()
     }
   }
 

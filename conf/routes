@@ -9,6 +9,14 @@ GET         /login                             controllers.Authentication.login
 POST        /login                             controllers.Authentication.authenticate
 GET         /logout                            controllers.Authentication.logout
 
+# Customers
+GET         /customers/list                    controllers.Customers.list
+GET     	/customers/new              	   controllers.Customers.create
+POST    	/customers                  	   controllers.Customers.save
+GET     	/customers/:id              	   controllers.Customers.edit(id:Long)
+POST    	/customers/:id                     controllers.Customers.update(id:Long)
+POST        /customers/:id/delete              controllers.Customers.delete(id: Long)
+
 GET         /workItems/add                     controllers.WorkItems.add
 GET         /workItems/list                    controllers.WorkItems.list
 GET         /workItems/export                  controllers.WorkItems.export
