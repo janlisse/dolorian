@@ -8,6 +8,7 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.ico")">
         <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
         <script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))' type='text/javascript' ></script> 
+    	<script src="@routes.Assets.at("javascripts/highlight_menu.js")" type="text/javascript"></script>
     	@headContent
     </head>
 
@@ -31,24 +32,24 @@
                     <div id="sidemenu" class="span2 sidebar-nav-fixed well">
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-time"></i> Zeiterfassung</li>
-                            <li><a href="@routes.WorkItems.add()">Neuer Eintrag</a></li>
-                            <li><a href="@routes.WorkItems.list()">Alle Einträge</a></li>
+                            <li class="nav-menu-item"><a href="@routes.WorkItems.add()">Neuer Eintrag</a></li>
+                            <li class="nav-menu-item"><a href="@routes.WorkItems.list()">Alle Einträge</a></li>
                         </ul>
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-briefcase"></i> Projekte</li>
-                            <li><a href="@routes.Projects.add()">Neues Projekt</a></li>
-                            <li><a href="@routes.Projects.list()">Alle Projekte anzeigen</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Projects.add()">Neues Projekt</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Projects.list()">Alle Projekte anzeigen</a></li>
                         </ul>
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-file"></i> Rechnungen</li>
-                            <li><a href="@routes.Invoices.index()">Neue Rechnung</a></li>
-                            <li><a href="@routes.InvoiceTemplates.index()">Neue Rechnungsvorlage</a></li>
-                            <li><a href="@routes.InvoiceTemplates.list()">Rechnungsvorlagen anzeigen</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Invoices.index()">Neue Rechnung</a></li>
+                            <li class="nav-menu-item"><a href="@routes.InvoiceTemplates.index()">Neue Rechnungsvorlage</a></li>
+                            <li class="nav-menu-item"><a href="@routes.InvoiceTemplates.list()">Rechnungsvorlagen anzeigen</a></li>
                         </ul>
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-user"></i> Kunden</li>
-                            <li><a href="@routes.Customers.create()">Kunden anlegen</a></li>
-                            <li><a href="@routes.Customers.list()">Kundenübersicht</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Customers.create()">Kunden anlegen</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Customers.list()">Kundenübersicht</a></li>
                         </ul>
                     </div>
                 }
