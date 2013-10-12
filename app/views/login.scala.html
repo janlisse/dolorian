@@ -2,8 +2,7 @@
 
 @implicitField = @{ helper.FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-@main(title = "Login") {
-
+@main(title = Messages("login.title")) {
 
     @form.globalError.map { error =>
         <div class="alert alert-error">
@@ -13,15 +12,14 @@
 
     <form id="form" action="@routes.Authentication.login()" method="POST">
         <fieldset>
-        <legend>Login</legend>
+        <legend>@Messages("login.title")</legend>
 
-		@helper.inputText(form("email"),'_label -> "Email")
-        @helper.inputPassword(form("password"),'_label -> "Passwort")
+		@helper.inputText(form("email"),'_label -> Messages("login.email"))
+        @helper.inputPassword(form("password"),'_label -> Messages("login.password"))
 
         <div class="controls">
-           <button type="submit" class="btn btn-primary">Login</button>
+           <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
         </div>
         </fieldset>
     </form>
-
 }

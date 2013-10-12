@@ -6,6 +6,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
 import models.Address
+import play.api.i18n.Messages
 
 object Customers extends Controller with Secured {
 
@@ -40,7 +41,7 @@ object Customers extends Controller with Secured {
           errors => BadRequest(views.html.customerCreate(errors)),
           customer => {
             Customer.save(customer)
-            Redirect(routes.Customers.list)
+            Redirect(routes.Customers.list).flashing("success" -> Messages("customer.create.success", customer.name))
           })
   }
 
@@ -59,7 +60,7 @@ object Customers extends Controller with Secured {
           errors => BadRequest(views.html.customerEdit(id, errors)),
           customer => {
             Customer.update(id, customer)
-            Redirect(routes.Customers.list).flashing("success" -> "Kunde %s erfolgreich geändert".format(customer.name))
+            Redirect(routes.Customers.list).flashing("success" -> Messages("customer.edit.success"))
           })
   }
 
@@ -67,7 +68,7 @@ object Customers extends Controller with Secured {
     username =>
       implicit request =>
         Customer.delete(id)
-        Redirect(routes.Projects.list).flashing("success" -> "Kunde erfolgreich gelöscht!")
+        Redirect(routes.Customers.list).flashing("success" -> Messages("customer.delete.success"))
   }
 
 }

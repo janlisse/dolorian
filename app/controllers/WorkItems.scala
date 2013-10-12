@@ -13,6 +13,7 @@ import com.lowagie.text.pdf._
 import java.io.ByteArrayOutputStream
 import com.lowagie.text.pdf.draw.LineSeparator
 import org.joda.time.Minutes
+import play.api.i18n.Messages
 
 object WorkItems extends Controller with Secured {
 
@@ -25,7 +26,7 @@ object WorkItems extends Controller with Secured {
       "startTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "endTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "breakTime" -> number,
-      "description" -> nonEmptyText)(WorkItem.apply)(WorkItem.unapply).verifying("Time must be positive", {
+      "description" -> nonEmptyText)(WorkItem.apply)(WorkItem.unapply).verifying(Messages("workitem.validation.time"), {
         result => result.totalTime.toStandardMinutes.isGreaterThan(Minutes.ZERO)
       }))
 
@@ -39,7 +40,7 @@ object WorkItems extends Controller with Secured {
     username =>
       implicit request =>
         WorkItem.delete(id)
-        Redirect(routes.WorkItems.list).flashing("success" -> "Arbeitszeit erfolgreich gelöscht!")
+        Redirect(routes.WorkItems.list).flashing("success" -> Messages("workitem.delete.success"))
   }
 
   def list = withAuth {
@@ -57,7 +58,7 @@ object WorkItems extends Controller with Secured {
           },
           work => {
             WorkItem.save(work)
-            Redirect(routes.WorkItems.list)
+            Redirect(routes.WorkItems.list).flashing("success" -> Messages("workitem.create.success"))
           })
   }
 
@@ -77,9 +78,9 @@ object WorkItems extends Controller with Secured {
           document.open()
 
           val font = new Font(Font.HELVETICA, 16, Font.BOLD, java.awt.Color.BLACK)
-          val caption = new Paragraph(new Chunk("Leistungserfassung " + lastMonth.toString("MM/yyyy"), font))
-          val customerLine = new Paragraph(new Chunk("Auftragnehmer: " + user.name, defaultFont))
-          val projectLine = new Paragraph(new Chunk("Projektnummer: " + project.number, defaultFont))
+          val caption = new Paragraph(new Chunk(Messages("workitem.export.caption")+" " + lastMonth.toString("MM/yyyy"), font))
+          val customerLine = new Paragraph(new Chunk(Messages("workitem.export.contractor")+": " + user.name, defaultFont))
+          val projectLine = new Paragraph(new Chunk(Messages("workitem.export.projectNumber")+": " + project.number, defaultFont))
           document.add(caption)
           document.add(Chunk.NEWLINE)
           document.add(customerLine)
@@ -88,12 +89,12 @@ object WorkItems extends Controller with Secured {
           document.add(new Chunk(sep))
 
           val table = new PdfPTable(3)
-          val c1 = pdfHeaderCell("Datum")
+          val c1 = pdfHeaderCell(Messages("workitem.export.date"))
           table.addCell(c1)
-          val c2 = pdfHeaderCell("Stunden")
+          val c2 = pdfHeaderCell(Messages("workitem.export.hours"))
           table.addCell(c2)
 
-          val c3 = pdfHeaderCell("Leistungen")
+          val c3 = pdfHeaderCell(Messages("workitem.export.description"))
           table.addCell(c3)
           table.setHeaderRows(1)
 
@@ -116,7 +117,7 @@ object WorkItems extends Controller with Secured {
           hoursTotal += minutesTotal / 60;
           minutesTotal %= 60;
 
-          table.addCell(pdfHeaderCell("Stunden gesamt"))
+          table.addCell(pdfHeaderCell(Messages("workitem.export.hoursTotal")))
           table.addCell(pdfHeaderCell(f"$hoursTotal%02d:$minutesTotal%02d"))
           table.addCell(pdfHeaderCell(" "))
 
@@ -129,11 +130,11 @@ object WorkItems extends Controller with Secured {
 
           val table2 = new PdfPTable(3)
           table2.setWidths(Array(10f, 10f, 30f))
-          val cell1 = new PdfPCell(new Phrase("Datum"))
+          val cell1 = new PdfPCell(new Phrase(Messages("workitem.export.date")))
           cell1.setBorder(Rectangle.TOP)
           val cell2 = emptyCell
           cell2.setBorder(Rectangle.NO_BORDER)
-          val cell3 = new PdfPCell(new Phrase("Stempel / Unterschrift Kunde"))
+          val cell3 = new PdfPCell(new Phrase(Messages("workitem.export.sign")))
           cell3.setBorder(Rectangle.TOP)
 
           table2.addCell(cell1)

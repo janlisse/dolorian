@@ -1,7 +1,9 @@
 @(username: String)(implicit flash: Flash, session: Session)
 
-@main(title = "Neue Rechnung erstellen") {
+@import play.api.i18n.Messages
 
-        <h3>Welcome, @username</h3>
+@main(title = Messages("index.title")) {
+
+        <h3>@Messages("index.welcome.message", username)</h3>
 
 }

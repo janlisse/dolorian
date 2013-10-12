@@ -3,7 +3,7 @@
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-@main(title = "Neuen Kunden anlegen") {
+@main(title = Messages("customer.create.title")) {
 
     @customerForm.globalError.map { error =>
         <div class="alert alert-error">
@@ -13,15 +13,15 @@
 
     <form id="form" action="@routes.Customers.save()" method="POST">
         <fieldset>
-            <legend>Neuen Kunden anlegen</legend>
-            @helper.inputText(customerForm("name"),'_label -> "Name")
-            @helper.inputText(customerForm("shortName"),'_label -> "Kürzel (3 Zeichen)", 'class -> "input-mini")
-            @helper.inputText(customerForm("address.street"),'_label -> "Strasse")
-            @helper.inputText(customerForm("address.streetNumber"),'_label -> "Hausnummer", 'class -> "input-mini")
-            @helper.inputText(customerForm("address.city"),'_label -> "Ort")
-            @helper.inputText(customerForm("address.zipCode"),'_label -> "Postleitzahl", 'class -> "input-mini")
+            <legend>@Messages("customer.create.title")</legend>
+            @helper.inputText(customerForm("name"),'_label -> Messages("customer.name"))
+            @helper.inputText(customerForm("shortName"),'_label -> Messages("customer.shortname"), 'class -> "input-mini")
+            @helper.inputText(customerForm("address.street"),'_label -> Messages("customer.street"))
+            @helper.inputText(customerForm("address.streetNumber"),'_label -> Messages("customer.streetNumber"), 'class -> "input-mini")
+            @helper.inputText(customerForm("address.city"),'_label -> Messages("customer.city"))
+            @helper.inputText(customerForm("address.zipCode"),'_label -> Messages("customer.zipCode"), 'class -> "input-mini")
             <div class="controls">
-                <button type="submit" class="btn btn-primary">Speichern</button>
+                <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
             </div>
         </fieldset>
     </form>

@@ -6,6 +6,7 @@ import play.api.data.Forms._
 import anorm.NotAssigned
 import models.{ InvoiceTemplate, Project }
 import utils.FormFieldImplicits
+import play.api.i18n.Messages
 
 object InvoiceTemplates extends Controller with Secured {
 
@@ -32,7 +33,7 @@ object InvoiceTemplates extends Controller with Secured {
     username =>
       implicit request =>
         InvoiceTemplate.delete(id)
-        Redirect(routes.InvoiceTemplates.list).flashing("success" -> "Vorlage erfolgreich gelöscht!")
+        Redirect(routes.InvoiceTemplates.list).flashing("success" -> Messages("template.delete.success"))
   }
 
   def submit = withAuth(parse.multipartFormData) {
@@ -46,8 +47,8 @@ object InvoiceTemplates extends Controller with Secured {
               },
               template => {
                 InvoiceTemplate.save(template, file.ref.file, file.filename)
-                Redirect(routes.InvoiceTemplates.list)
+                Redirect(routes.InvoiceTemplates.list).flashing("success" -> Messages("template.create.success"))
               })
-        }.getOrElse(Redirect(routes.InvoiceTemplates.index()).flashing("error" -> "Missing file!"))
+        }.getOrElse(Redirect(routes.InvoiceTemplates.index()).flashing("error" -> Messages("template.missing.file")))
   }
 }

@@ -3,7 +3,7 @@
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-@main(title = "Arbeitszeit") {
+@main(title = Messages("project.create.title")) {
 
     @projectForm.globalError.map { error =>
         <div class="alert alert-error">
@@ -13,18 +13,13 @@
 
     <form id="form" action="@routes.Projects.submit()" method="POST">
         <fieldset>
-            <legend>Neues Projekt anlegen</legend>
-            @helper.inputText(projectForm("number"),'_label -> "Nummer")
-            @helper.inputText(projectForm("description"),'_label -> "Beschreibung")
-            @select(projectForm("customerId"), Customer.options,'_label -> "Kunde")
+            <legend>@Messages("project.create.title")</legend>
+            @helper.inputText(projectForm("number"),'_label -> Messages("project.create.number"))
+            @helper.inputText(projectForm("description"),'_label -> Messages("project.create.description"))
+            @select(projectForm("customerId"), Customer.options,'_label -> Messages("project.create.customer"))
             <div class="controls">
-                <button type="submit" class="btn btn-primary">Speichern</button>
+                <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
             </div>
         </fieldset>
     </form>
-
 }
-
-
-
-

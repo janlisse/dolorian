@@ -1,23 +1,23 @@
 @(customers: List[Customer])(implicit flash: Flash, session:Session)
 
 
-@main(title = "Kunden") {
+@main(title = Messages("customer.list.title")) {
 
     @if(customers.isEmpty) {
         <h3>
-            Noch keine Kunden angelegt.
+            @Messages("customer.list.empty")
         </h3>
     } else {
-        <h3>Kunden</h3>
+        <h3>@Messages("customer.list.title")</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Kürzel</th>
-                    <th>Name</th>
-                    <th>Adresse</th>
-                    <th>Rechnungs-Sequenz-Nr</th>
-                    <th>Aktionen</th>
+                    <th>@Messages("customer.list.shortname")</th>
+                    <th>@Messages("customer.list.name")</th>
+                    <th>@Messages("customer.list.address")</th>
+                    <th>@Messages("customer.list.invoiceSeq")</th>
+                    <th>@Messages("list.actions")</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,9 +28,9 @@
                     <td>@customer.address</td>
                     <td>@customer.invoiceSequence</td>
                     <td>
-                    	<a class="btn btn-info" href="@routes.Customers.edit(customer.id.get)"><i class="icon-edit icon-white"></i> Bearbeiten</a>
+                    	<a class="btn btn-info" href="@routes.Customers.edit(customer.id.get)"><i class="icon-edit icon-white"></i> @Messages("button.edit")</a>
                    		@helper.form(routes.Customers.delete(customer.id.get)) {
-                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
+                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
                         }
                     </td>
                 </tr>

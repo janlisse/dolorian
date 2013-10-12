@@ -3,7 +3,7 @@
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-@main(title = "Neuen Kunden anlegen") {
+@main(title = Messages("customer.edit.title")) {
 
     @customerForm.globalError.map { error =>
         <div class="alert alert-error">
@@ -13,16 +13,16 @@
 
     <form id="form" action="@routes.Customers.update(id)" method="POST">
         <fieldset>
-            <legend>Kunden bearbeiten</legend>
-            @helper.inputText(customerForm("name"),'_label -> "Name")
-            @helper.inputText(customerForm("shortName"),'_label -> "Kürzel (3 Zeichen)", 'class -> "input-tiny")
-            @helper.inputText(customerForm("address.street"),'_label -> "Strasse")
-            @helper.inputText(customerForm("address.streetNumber"),'_label -> "Hausnummer", 'class -> "input-tiny")
-            @helper.inputText(customerForm("address.city"),'_label -> "Ort")
-            @helper.inputText(customerForm("address.zipCode"),'_label -> "Postleitzahl", 'class -> "input-mini")
-            @helper.inputText(customerForm("invoiceSequence"), '_label -> "Rechnungs-Sequenz-Nr",'class -> "input-tiny")
+            <legend>@Messages("customer.edit.title")</legend>
+            @helper.inputText(customerForm("name"),'_label -> Messages("customer.name"))
+            @helper.inputText(customerForm("shortName"),'_label -> Messages("customer.shortname"), 'class -> "input-tiny")
+            @helper.inputText(customerForm("address.street"),'_label -> Messages("customer.street"))
+            @helper.inputText(customerForm("address.streetNumber"),'_label -> Messages("customer.streetNumber"), 'class -> "input-tiny")
+            @helper.inputText(customerForm("address.city"),'_label -> Messages("customer.city"))
+            @helper.inputText(customerForm("address.zipCode"),'_label -> Messages("customer.zipCode"), 'class -> "input-mini")
+            @helper.inputText(customerForm("invoiceSequence"), '_label -> Messages("customer.invoiceSequence"),'class -> "input-tiny")
             <div class="controls">
-                <button type="submit" class="btn btn-primary">Speichern</button>
+                <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
             </div>
         </fieldset>
     </form>

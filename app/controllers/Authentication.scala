@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.data.Forms._
 import views._
 import models.User
+import play.api.i18n.Messages
 
 object Authentication extends Controller {
 
@@ -27,7 +28,7 @@ object Authentication extends Controller {
    */
   def logout = Action {
     Redirect(routes.Authentication.login).withNewSession.flashing(
-      "success" -> "You've been logged out")
+      "success" -> Messages("logout.success"))
   }
 
   /**

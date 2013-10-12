@@ -6,13 +6,13 @@
 @headContent = {
 	<script src='@routes.Assets.at("javascripts/bootstrap-filestyle-1.0.3.min.js")' type='text/javascript' ></script>
 	<script>
-	$(function() {
-		$(":file").filestyle({classButton: "btn btn-primary", buttonText: "Datei auswählen"});
-	});
+		$(function() {
+			$(":file").filestyle({classButton: "btn btn-primary", buttonText: '@Messages("template.create.file.text")'});
+		});
 	</script>
 }
 
-    @main(title = "Rechnungs-Vorlage", headContent) {
+@main(title = Messages("template.create.title"), headContent) {
 
         @invoiceTemplateForm.globalError.map { error =>
             <div class="alert alert-error">
@@ -22,24 +22,16 @@
 
         <form id="form" action="@routes.InvoiceTemplates.submit()" method="POST" enctype="multipart/form-data">
             <fieldset>
-                <legend>Neue Rechnungsvorlage anlegen</legend>
-                <label class="control-label" for="templateFile">Vorlagen Datei</label>
+                <legend>@Messages("template.create.title")</legend>
+                <label class="control-label" for="templateFile">@Messages("template.create.file")</label>
                 <input type="file" class="filestyle" id="fileuploadBtn" name="templateFile" data-classButton="btn btn-primary">
 
-                @select(invoiceTemplateForm("projectId"),Project.options,'_label -> "Projekt")
-                @helper.inputText(invoiceTemplateForm("hourlyRate"),'_label -> "Stundensatz", 'placeholder -> "65.00")
+                @select(invoiceTemplateForm("projectId"),Project.options,'_label -> Messages("template.create.project"))
+                @helper.inputText(invoiceTemplateForm("hourlyRate"),'_label -> Messages("template.create.hourlyRate"), 'placeholder -> "65.00")
 
                 <div class="controls">
-                    <button type="submit" class="btn btn-primary">Speichern</button>
+                    <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
                 </div>
             </fieldset>
         </form>
-
-    }
-
-    
-
-
-
-
-
+} 

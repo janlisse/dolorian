@@ -2,26 +2,23 @@
 
 @import utils._
 
-@main(title = "Arbeitszeiten") {
-
+@main(title = Messages("workitem.list.title")) {
 
     @if(workItems.isEmpty) {
-        <h3>
-            Noch keine Arbeitszeiten angelegt.
-        </h3>
+        <h3>@Messages("workitem.list.empty")</h3>
     } else {
-        <h3>Arbeitszeiten</h3>
+        <h3>@Messages("workitem.list.title")</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Datum</th>
-                    <th>Von</th>
-                    <th>Bis</th>
-                    <th>Pause</th>
-                    <th>Gesamtzeit</th>
-                    <th>Beschreibung</th>
-                    <th>Aktionen</th>
+                    <th>@Messages("workitem.date")</th>
+                    <th>@Messages("workitem.start")</th>
+                    <th>@Messages("workitem.end")</th>
+                    <th>@Messages("workitem.break")</th>
+                    <th>@Messages("workitem.totalTime")</th>
+                    <th>@Messages("workitem.description")</th>
+                    <th>@Messages("list.actions")</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,9 +31,9 @@
                     <td>@work.totalTime.getHours:@work.totalTime.getMinutes</td>
                     <td>@work.description</td>
                     <td>
-                        <div class='btn btn-info'><i class="icon-edit icon-white"></i> Bearbeiten</div>
+                        <div class='btn btn-info'><i class="icon-edit icon-white"></i> @Messages("button.edit")</div>
                         @helper.form(routes.WorkItems.delete(work.id.get)) {
-                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
+                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
                         }
                     </td>
                 </tr>
@@ -45,16 +42,13 @@
 
         <div class="btn-group">
             <a class="btn dropdown-toggle btn-success" data-toggle="dropdown" href="#">
-                Export
+                @Messages("workitem.list.export")
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="@routes.WorkItems.export()">Letzter Monat</a></li>
-                <li><a href="@routes.WorkItems.export()">Aktueller Monat</a></li>
+                <li><a href="@routes.WorkItems.export()" target="_blank">@Messages("workitem.list.export.last")</a></li>
+                <li><a href="@routes.WorkItems.export()" target="_blank">@Messages("workitem.list.export.current")</a></li>
             </ul>
         </div>
-
     }
-
-
 }

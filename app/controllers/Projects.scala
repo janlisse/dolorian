@@ -5,6 +5,7 @@ import models.Project
 import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
+import play.api.i18n.Messages
 
 object Projects extends Controller with Secured {
 
@@ -19,7 +20,7 @@ object Projects extends Controller with Secured {
     username =>
       implicit request =>
         Project.delete(id)
-        Redirect(routes.Projects.list).flashing("success" -> "Projekt erfolgreich gelöscht!")
+        Redirect(routes.Projects.list).flashing("success" -> Messages("project.delete.success"))
   }
 
   def add = withAuth {
@@ -43,7 +44,7 @@ object Projects extends Controller with Secured {
           },
           project => {
             Project.save(project)
-            Redirect(routes.Projects.list)
+            Redirect(routes.Projects.list).flashing("success" -> Messages("project.create.success", project.number))
           })
   }
 

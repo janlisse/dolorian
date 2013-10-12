@@ -1,21 +1,18 @@
 @(templates: List[InvoiceTemplate])(implicit flash: Flash, session:Session)
 
-
-@main(title = "Vorlagen") {
+@main(title = Messages("template.list.title")) {
 
     @if(templates.isEmpty) {
-        <h3>
-            Noch keine Vorlagen angelegt.
-        </h3>
+        <h3>@Messages("template.list.empty")</h3>
     } else {
-        <h3>Rechnungsvorlagen</h3>
+        <h3>@Messages("template.list.title")</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Projekt-Nummer</th>
-                    <th>Vorlagen Datei</th>
-                    <th>Stundensatz</th>
+                    <th>@Messages("template.list.project.number")</th>
+                    <th>@Messages("template.list.file")</th>
+                    <th>@Messages("template.list.hourlyRate")</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,7 +23,7 @@
                     <td>@template.hourlyRate €</td>
                     <td>
                     @helper.form(routes.InvoiceTemplates.delete(template.id.get)) {
-                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> Löschen</button>
+                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
                     }
                     </td>
                 </tr>
