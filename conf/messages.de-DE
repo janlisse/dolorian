@@ -1,0 +1,123 @@
+login=Anmelden
+logout=Abmelden
+logout.sucess=Erfolgreich abgemeldet
+
+menu.timetracking=Zeiterfassung
+menu.timetracking.create=Arbeitszeit erfassen
+menu.timetracking.list=Arbeitszeiten anzeigen
+
+menu.projects=Projekte
+menu.projects.create=Projekt anlegen
+menu.projects.list=Projekte anzeigen
+
+menu.invoices=Rechnungen
+menu.invoices.create=Rechnung stellen
+menu.invoices.template.create=Vorlage anlegen
+menu.invoices.template.list=Vorlagen anzeigen
+
+menu.customers=Kunden
+menu.customers.create=Kunden anlegen
+menu.customers.list=Kunden anzeigen
+
+button.delete=Löschen
+button.edit=Bearbeiten
+button.save=Speichern
+button.login=Anmelden
+button.invoice.create=Rechnung erstellen
+
+list.actions=Aktionen
+
+index.title=Immaterial Toolbelt
+index.welcome.message=Willkommen {0}!
+
+login.title=Anmelden
+login.email=Email
+login.password=Passwort
+
+workitem.list.title=Arbeitszeiten
+workitem.list.empty=Noch keine Arbeitszeiten angelegt.
+workitem.date=Datum
+workitem.start=Start
+workitem.end=Ende
+workitem.break=Pause
+workitem.totalTime=Gesamtzeit
+workitem.description=Beschreibung
+
+workitem.list.export=Export
+workitem.list.export.last=Letzter Monat
+workitem.list.export.current=Aktueller Monat
+
+workitem.create.title=Arbeitszeit erfassen
+workitem.create.project=Projekt
+
+workitem.validation.time=Arbeitszeit ergibt keinen positiven Wert
+workitem.create.success=Arbeitszeit erfolgreich gelöscht
+workitem.delete.success=Arbeitszeit erfolgreich gelöscht
+
+workitem.export.caption=Leistungserfassung
+workitem.export.contractor=Auftragnehmer
+workitem.export.projectNumber=Projektnummer
+workitem.export.date=Datum
+workitem.export.hours=Stunden
+workitem.export.description=Leistungen
+workitem.export.hoursTotal=Stunden gesamt
+workitem.export.sign=Stempel / Unterschrift Kunde
+
+project.list.title=Projekte
+project.list.empty=Noch keine Projekte angelegt.
+project.list.number=Projektnummer
+project.list.description=Beschreibung
+project.list.customer.name=Kunde
+
+project.create.title=Neues Projekt anlegen
+project.create.number=Projektnummer
+project.create.description=Beschreibung
+project.create.customer=Kunde
+project.create.success=Projekt {0} erfolgreich gespeichert
+project.delete.success=Projekt erfolgreich gelöscht
+
+customer.create.title=Neuen Kunden anlegen
+customer.create.success=Kunde {0} erfolgreich gespeichert
+customer.edit.success=Änderungen erfolgreich gespeichert
+customer.delete.success=Kunden erfolgreich gelöscht
+customer.edit.title=Kunden bearbeiten
+
+
+customer.name=Name
+customer.shortname=Kürzel (3 Zeichen)
+customer.street=Strasse
+customer.streetNumber=Hausnummer
+customer.city=Ort
+customer.zipCode=Postleitzahl
+customer.invoiceSequence=Rechnungsnummer
+
+
+customer.list.title=Kunden
+customer.list.empty=Noch keine Kunden angelegt.
+customer.list.shortname=Kürzel
+customer.list.name=Name
+customer.list.address=Adresse
+customer.list.invoiceSeq=Rechnungs-Nr
+
+invoice.create.title=Rechnung erstellen
+invoice.create.template.default=-- Vorlage auswählen --
+invoice.create.template=Vorlage
+invoice.create.date=Datum
+invoice.create.totalHours=Arbeitsstunden
+
+
+template.list.title=Rechnungsvorlagen
+template.list.empty=Noch keine Vorlagen angelegt.
+template.list.project.number=Projektnummer
+template.list.file=Vorlagen-Datei
+template.list.hourlyRate=Stundensatz
+
+template.create.title=Neue Rechnungsvorlage anlegen
+template.create.file=Vorlagen-Datei
+template.create.project=Projekt
+template.create.hourlyRate=Stundensatz
+template.create.file.text=Datei auswählen
+
+template.create.success=Vorlage erfolgreich gespeichert
+template.delete.success=Vorlage erfolgreich gelöscht
+template.missing.file=Vorlagen Datei nicht angegeben!
