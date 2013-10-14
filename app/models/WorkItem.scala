@@ -8,15 +8,7 @@ import play.api.db.DB
 import models.AnormExtension._
 import anorm.SqlParser._
 import play.api.Play.current
-
-case class Project(id: anorm.Pk[Long], number: String, description: String, customerId: Long) {
-
-  lazy val customer: Customer = DB.withConnection { implicit connection =>
-    SQL("SELECT * FROM customer c WHERE c.id = {id}").on(
-      'id -> customerId).as(Customer.customerParser.single)
-  }
-
-}
+import scala.reflect._
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 
@@ -24,62 +16,15 @@ case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, en
     val endTimeMinusBreak = endTime.minusMinutes(breakTime)
     new Period(startTime, endTimeMinusBreak)
   }
-}
 
-object Project {
-
-  val projectParser = {
-    get[Pk[Long]]("id") ~
-      get[String]("number") ~
-      get[String]("description") ~
-      get[Long]("customer_id") map {
-        case (id ~ name ~ number ~ customerId) => {
-          Project(id, name, number, customerId)
-        }
-      }
+  val totalTimeFormatted = {
+    val total = totalTime
+    val hours = total.getHours
+    val minutes = total.getMinutes
+    f"$hours%02d:$minutes%02d"
   }
 
-  def getAll: List[Project] = {
-    DB.withConnection {
-      implicit c =>
-        val select = SQL("Select * from project")
-        select.as(projectParser *)
-    }
-  }
-
-  def save(project: Project): Option[Long] = {
-    DB.withConnection {
-      implicit c =>
-        SQL("insert into project(number, description, customer_id) values ({number},{description}, {customerId})")
-          .on("description" -> project.description,
-            "number" -> project.number,
-            "customerId" -> project.customerId).executeInsert()
-    }
-  }
-
-  def delete(id: Long) {
-    DB.withConnection {
-      implicit connection =>
-        SQL("""
-          DELETE FROM project where id = {id}
-             """).on(
-          'id -> id).executeUpdate
-    }
-  }
-
-  def findById(id: Long): Project = {
-    DB.withConnection {
-      implicit c =>
-        SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.single
-    }
-  }
-
-  def options: Seq[(String, String)] = {
-    getAll map {
-      c => c.id.toString -> c.number
-    }
-  }
-
+  val date = startTime.toString("dd.MM.YYYY")
 }
 
 object WorkItem {
@@ -150,4 +95,19 @@ object WorkItem {
             "description" -> workItem.description).executeInsert()
     }
   }
+
+  def totalHours(workItems: List[WorkItem]) = {
+    var hoursTotal: Int = 0
+    var minutesTotal: Int = 0
+    for (workItem <- workItems) {
+      val hours = workItem.totalTime.getHours
+      hoursTotal += hours
+      val minutes = workItem.totalTime.getMinutes
+      minutesTotal += minutes
+    }
+    hoursTotal += minutesTotal / 60
+    minutesTotal %= 60
+    f"$hoursTotal%02d:$minutesTotal%02d"
+  }
+
 }

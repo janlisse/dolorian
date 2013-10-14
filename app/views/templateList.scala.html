@@ -1,4 +1,4 @@
-@(templates: List[InvoiceTemplate])(implicit flash: Flash, session:Session)
+@(templates: List[Template])(implicit flash: Flash, session:Session)
 
 @main(title = Messages("template.list.title")) {
 
@@ -10,19 +10,18 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>@Messages("template.list.project.number")</th>
-                    <th>@Messages("template.list.file")</th>
-                    <th>@Messages("template.list.hourlyRate")</th>
+                    <th>@Messages("template.name")</th>
+                    <th>@Messages("template.key")</th>
+                    <th>@Messages("list.actions")</th>
                 </tr>
             </thead>
             <tbody>
             @templates.map { template =>
                 <tr>
-                    <td><span class="badge badge-inverse">@template.project.number</span></td>
-                    <td>@template.templateFileKey.getOrElse("-")</td>
-                    <td>@template.hourlyRate €</td>
+                    <td><span class="badge badge-inverse">@template.name</span></td>
+                    <td>@template.key</td>
                     <td>
-                    @helper.form(routes.InvoiceTemplates.delete(template.id.get)) {
+                    @helper.form(routes.Templates.delete(template.id.get)) {
                         <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
                     }
                     </td>

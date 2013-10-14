@@ -3,7 +3,16 @@
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
 
-@main(title = Messages("project.create.title")) {
+@headContent = {
+	<script src='@routes.Assets.at("javascripts/bootstrap-filestyle-1.0.3.min.js")' type='text/javascript' ></script>
+	<script>
+		$(function() {
+			$(":file").filestyle({classButton: "btn btn-primary", buttonText: '@Messages("template.create.file.text")'});
+		});
+	</script>
+}
+
+@main(title = Messages("project.create.title"), headContent) {
 
     @projectForm.globalError.map { error =>
         <div class="alert alert-error">
@@ -11,15 +20,21 @@
         </div>
     }
 
-    <form id="form" action="@routes.Projects.submit()" method="POST">
+    <form id="form" action="@routes.Projects.submit()" method="POST" enctype="multipart/form-data">
         <fieldset>
-            <legend>@Messages("project.create.title")</legend>
-            @helper.inputText(projectForm("number"),'_label -> Messages("project.create.number"))
-            @helper.inputText(projectForm("description"),'_label -> Messages("project.create.description"))
-            @select(projectForm("customerId"), Customer.options,'_label -> Messages("project.create.customer"))
-            <div class="controls">
-                <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
-            </div>
+           <legend>@Messages("project.create.title")</legend>
+           @helper.inputText(projectForm("number"),'_label -> Messages("project.create.number"))
+           @helper.textarea(projectForm("description"),'_label -> Messages("project.create.description"))
+           
+           @select(projectForm("customerId"), Customer.options,'_label -> Messages("project.create.customer"))
+           @select(projectForm("invoiceTemplateId"), Template.options,
+           	'_label -> Messages("project.create.invoiceTemplate"), '_default -> Messages("template.default"))
+           @select(projectForm("reportTemplateId"), Template.options,
+           	'_label -> Messages("project.create.reportTemplate"), '_default -> Messages("template.default"))
+           @helper.inputText(projectForm("hourlyRate"),'_label -> Messages("project.create.hourlyRate"),'class -> "input-mini")
+           <div class="controls">
+              <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
+           </div>
         </fieldset>
     </form>
 }

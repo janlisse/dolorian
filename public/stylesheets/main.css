@@ -36,11 +36,15 @@ footer {
     margin-right: .5em;
 }
 
-label[for="fileuploadBtn"] {
-    margin-bottom: 10px;
+.input-tiny {
+	width: 40px;
+}
+
+.bootstrap-filestyle label  {
+	margin-bottom: 10px;
 }
 
 
-.input-tiny {
-	width: 40px;
+.floatNextItem {
+	float: left;
 }

@@ -20,7 +20,6 @@
     }
 
     <form id="form" action="@routes.WorkItems.submit()" method="POST">
-
             <fieldset>
                 <legend>@Messages("workitem.create.title")</legend>
 
@@ -49,7 +48,7 @@
                 </div>
 
                 @helper.inputText(timeForm("breakTime"),'_label -> Messages("workitem.break"))
-				@helper.inputText(timeForm("description"),'_label -> Messages("workitem.description"),'class -> "input-xxlarge")
+				@helper.textarea(timeForm("description"),'_label -> Messages("workitem.description"))
 
 				<input id="start" type="hidden" name="start"/>
 				<input id="end" type="hidden" name="end"/>

@@ -1,4 +1,4 @@
-@(invoiceTemplateForm: Form[InvoiceTemplate], projects: List[Project])(implicit flash: Flash, session:Session)
+@(templateForm: Form[Template])(implicit flash: Flash, session:Session)
 
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
@@ -14,21 +14,18 @@
 
 @main(title = Messages("template.create.title"), headContent) {
 
-        @invoiceTemplateForm.globalError.map { error =>
+        @templateForm.globalError.map { error =>
             <div class="alert alert-error">
                 @error.message
             </div>
         }
 
-        <form id="form" action="@routes.InvoiceTemplates.submit()" method="POST" enctype="multipart/form-data">
+        <form id="form" action="@routes.Templates.submit()" method="POST" enctype="multipart/form-data">
             <fieldset>
                 <legend>@Messages("template.create.title")</legend>
-                <label class="control-label" for="templateFile">@Messages("template.create.file")</label>
+                @helper.inputText(templateForm("name"),'_label -> Messages("template.name"))
+                <label class="control-label filelabel" for="templateFile">@Messages("template.file")</label>
                 <input type="file" class="filestyle" id="fileuploadBtn" name="templateFile" data-classButton="btn btn-primary">
-
-                @select(invoiceTemplateForm("projectId"),Project.options,'_label -> Messages("template.create.project"))
-                @helper.inputText(invoiceTemplateForm("hourlyRate"),'_label -> Messages("template.create.hourlyRate"), 'placeholder -> "65.00")
-
                 <div class="controls">
                     <button type="submit" class="btn btn-primary">@Messages("button.save")</button>
                 </div>

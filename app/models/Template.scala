@@ -5,7 +5,6 @@ import play.api.db.DB
 import play.api.Play.current
 import java.math.BigDecimal
 import anorm.SqlParser._
-import anorm.~
 import play.api.Play
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
@@ -14,75 +13,62 @@ import java.util.UUID
 import java.io.InputStream
 import java.io.File
 
-case class InvoiceTemplate(id: Pk[Long], templateFileKey: Option[String], projectId: Long, hourlyRate: BigDecimal) {
-
-  lazy val project: Project = DB.withConnection { implicit connection =>
-    SQL("SELECT * FROM project p WHERE p.id = {id}").on(
-      'id -> projectId).as(Project.projectParser.single)
-  }
-
-  def inputStream = InvoiceTemplate.loadFromS3(templateFileKey.get)
+case class Template(id: Pk[Long], name: String, key: String) {
+  
+  def inputStream = Template.loadFromS3(key)
 }
 
-object InvoiceTemplate extends S3Support {
-
+object Template extends S3Support {
   import play.api.Play.current
 
   val MIME_TYPE = "application/vnd.oasis.opendocument.text"
 
-  val invoiceTemplateParser = {
+  val templateParser = {
     get[Pk[Long]]("id") ~
-      get[Option[String]]("template_file") ~
-      get[Long]("project_id") ~
-      get[BigDecimal]("hourly_rate") map {
-        case (id ~ templateFileKey ~ projectId ~ hourlyRate) => {
-          InvoiceTemplate(id, templateFileKey, projectId, hourlyRate)
+      get[String]("name") ~
+      get[String]("key") map {
+        case (id ~ name ~ key) => {
+          Template(id, name, key)
         }
       }
   }
 
-  def save(invoiceTemplate: InvoiceTemplate, file: File, fileName: String): Option[Long] = {
+  def save(template: Template, file: File, fileName: String): Option[Long] = {
     val key = saveToS3(file, fileName)
     DB.withConnection {
       implicit c =>
-        SQL("insert into invoice_template(template_file, project_id, hourly_rate) values ({templateFile},{projectId},{hourlyRate})")
-          .on("templateFile" -> key,
-            "projectId" -> invoiceTemplate.projectId,
-            "hourlyRate" -> invoiceTemplate.hourlyRate).executeInsert()
+        SQL("insert into template(name, key) values ({name},{key})")
+          .on("name" -> template.name,
+            "key" -> key).executeInsert()
     }
   }
 
   def delete(id: Long) {
-    val template = InvoiceTemplate.findById(id)
-    template.templateFileKey map {
-      key => deleteFromS3(key)
-    }
+    val template = Template.findById(id)
+    deleteFromS3(template.key)
     DB.withConnection {
       implicit connection =>
-        SQL("""
-          DELETE FROM invoice_template where id = {id}
-             """).on(
-          'id -> id).executeUpdate
+        SQL("DELETE FROM template where id = {id}").on('id -> id).executeUpdate
     }
   }
 
-  def getAll: List[InvoiceTemplate] = {
+  def getAll = {
     DB.withConnection {
       implicit c =>
-        SQL("Select * from invoice_template") as (invoiceTemplateParser *)
+        SQL("Select * from template") as (templateParser *)
     }
   }
 
-  def findById(id: Long): InvoiceTemplate = {
+  def findById(id: Long) = {
     DB.withConnection {
       implicit c =>
-        SQL("Select * from invoice_template t where t.id = {id}").on("id" -> id) as invoiceTemplateParser.single
+        SQL("Select * from template t where t.id = {id}").on("id" -> id) as templateParser.single
     }
   }
 
   def options: Seq[(String, String)] = {
     getAll map {
-      c => c.id.toString -> c.templateFileKey.getOrElse("-")
+      c => c.id.toString -> c.name
     }
   }
 
@@ -102,7 +88,7 @@ trait S3Support {
   def saveToS3(file: File, fileName: String): String = {
     val key = UUID.randomUUID.toString + "/" + fileName
     val objectMetadata = new ObjectMetadata()
-    objectMetadata.setContentType(InvoiceTemplate.MIME_TYPE)
+    objectMetadata.setContentType(Template.MIME_TYPE)
 
     val request = new PutObjectRequest(bucket, key, file)
     request.withCannedAcl(CannedAccessControlList.AuthenticatedRead)

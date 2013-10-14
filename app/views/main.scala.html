@@ -48,8 +48,11 @@
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-file"></i> @Messages("menu.invoices")</li>
                             <li class="nav-menu-item"><a href="@routes.Invoices.index()">@Messages("menu.invoices.create")</a></li>
-                            <li class="nav-menu-item"><a href="@routes.InvoiceTemplates.index()">@Messages("menu.invoices.template.create")</a></li>
-                            <li class="nav-menu-item"><a href="@routes.InvoiceTemplates.list()">@Messages("menu.invoices.template.list")</a></li>
+                        </ul>
+                        <ul class="nav nav-list">
+                            <li class="nav-caption"><i class="icon-user icon-file"></i> @Messages("menu.templates")</li>
+                            <li class="nav-menu-item"><a href="@routes.Templates.add()">@Messages("menu.template.create")</a></li>
+                            <li class="nav-menu-item"><a href="@routes.Templates.list()">@Messages("menu.template.list")</a></li>
                         </ul>
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-user"></i> @Messages("menu.customers")</li>

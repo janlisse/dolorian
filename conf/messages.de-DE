@@ -11,13 +11,17 @@ menu.projects.create=Projekt anlegen
 menu.projects.list=Projekte anzeigen
 
 menu.invoices=Rechnungen
-menu.invoices.create=Rechnung stellen
-menu.invoices.template.create=Vorlage anlegen
-menu.invoices.template.list=Vorlagen anzeigen
+menu.invoices.create=Rechnung erstellen
+
+menu.templates=Vorlagen
+menu.template.create=Vorlage anlegen
+menu.template.list=Vorlagen anzeigen
 
 menu.customers=Kunden
 menu.customers.create=Kunden anlegen
 menu.customers.list=Kunden anzeigen
+
+
 
 button.delete=Löschen
 button.edit=Bearbeiten
@@ -37,9 +41,9 @@ login.password=Passwort
 workitem.list.title=Arbeitszeiten
 workitem.list.empty=Noch keine Arbeitszeiten angelegt.
 workitem.date=Datum
-workitem.start=Start
-workitem.end=Ende
-workitem.break=Pause
+workitem.start=Startzeit
+workitem.end=Endzeit
+workitem.break=Pausenzeit
 workitem.totalTime=Gesamtzeit
 workitem.description=Beschreibung
 
@@ -73,15 +77,21 @@ project.create.title=Neues Projekt anlegen
 project.create.number=Projektnummer
 project.create.description=Beschreibung
 project.create.customer=Kunde
+project.create.hourlyRate=Stundensatz
+project.create.invoiceTemplate=Rechnungs-Vorlage
+project.create.reportTemplate=Report-Vorlage
 project.create.success=Projekt {0} erfolgreich gespeichert
 project.delete.success=Projekt erfolgreich gelöscht
+
+
+template.report.missing=Report-Vorlage fehlt
+template.invoice.missing=Rechnungs-Vorlage fehlt
 
 customer.create.title=Neuen Kunden anlegen
 customer.create.success=Kunde {0} erfolgreich gespeichert
 customer.edit.success=Änderungen erfolgreich gespeichert
 customer.delete.success=Kunden erfolgreich gelöscht
 customer.edit.title=Kunden bearbeiten
-
 
 customer.name=Name
 customer.shortname=Kürzel (3 Zeichen)
@@ -91,7 +101,6 @@ customer.city=Ort
 customer.zipCode=Postleitzahl
 customer.invoiceSequence=Rechnungsnummer
 
-
 customer.list.title=Kunden
 customer.list.empty=Noch keine Kunden angelegt.
 customer.list.shortname=Kürzel
@@ -100,24 +109,21 @@ customer.list.address=Adresse
 customer.list.invoiceSeq=Rechnungs-Nr
 
 invoice.create.title=Rechnung erstellen
-invoice.create.template.default=-- Vorlage auswählen --
 invoice.create.template=Vorlage
 invoice.create.date=Datum
 invoice.create.totalHours=Arbeitsstunden
 
-
+template.name=Name
+template.key=Datei-Id
+template.default=--- Vorlage wählen ---
+template.file=Vorlagen-Datei
 template.list.title=Rechnungsvorlagen
 template.list.empty=Noch keine Vorlagen angelegt.
 template.list.project.number=Projektnummer
 template.list.file=Vorlagen-Datei
 template.list.hourlyRate=Stundensatz
-
-template.create.title=Neue Rechnungsvorlage anlegen
-template.create.file=Vorlagen-Datei
-template.create.project=Projekt
-template.create.hourlyRate=Stundensatz
+template.create.title=Neue Vorlage anlegen
 template.create.file.text=Datei auswählen
-
 template.create.success=Vorlage erfolgreich gespeichert
 template.delete.success=Vorlage erfolgreich gelöscht
 template.missing.file=Vorlagen Datei nicht angegeben!

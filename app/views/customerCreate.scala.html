@@ -15,10 +15,16 @@
         <fieldset>
             <legend>@Messages("customer.create.title")</legend>
             @helper.inputText(customerForm("name"),'_label -> Messages("customer.name"))
-            @helper.inputText(customerForm("shortName"),'_label -> Messages("customer.shortname"), 'class -> "input-mini")
-            @helper.inputText(customerForm("address.street"),'_label -> Messages("customer.street"))
+            @helper.inputText(customerForm("shortName"),'_label -> Messages("customer.shortname"), 'class -> "input-mini", 'maxlength -> "3")
+            
+            <div class="floatNextItem">
+               @helper.inputText(customerForm("address.street"),'_label -> Messages("customer.street"))
+            </div>
             @helper.inputText(customerForm("address.streetNumber"),'_label -> Messages("customer.streetNumber"), 'class -> "input-mini")
-            @helper.inputText(customerForm("address.city"),'_label -> Messages("customer.city"))
+            
+            <div class="floatNextItem">
+               @helper.inputText(customerForm("address.city"),'_label -> Messages("customer.city"))
+            </div>
             @helper.inputText(customerForm("address.zipCode"),'_label -> Messages("customer.zipCode"), 'class -> "input-mini")
             <div class="controls">
                 <button type="submit" class="btn btn-primary">@Messages("button.save")</button>

@@ -12,13 +12,12 @@ import org.apache.commons.io.output.ByteArrayOutputStream
 import java.text.NumberFormat
 import java.util.Locale
 
-case class Invoice(id: anorm.Pk[Long], template: InvoiceTemplate, invoiceDate: DateTime, workingHoursTotal: BigDecimal) {
+case class Invoice(id: anorm.Pk[Long], project: Project, invoiceDate: DateTime, workingHoursTotal: BigDecimal) {
 
-  def hourlyRateFormatted = Invoice.formatMoney(template.hourlyRate.doubleValue)
-  def projectNumber = Project.findById(template.projectId).number
-  def projectDescription = Project.findById(template.projectId).description
+  def hourlyRateFormatted = Invoice.formatMoney(project.hourlyRate.doubleValue)
+  def projectDescription =  project.description
   def amountFormatted = Invoice.formatMoney(amount)
-  def amount = template.hourlyRate.doubleValue * workingHoursTotal.doubleValue
+  def amount = project.hourlyRate.doubleValue * workingHoursTotal.doubleValue
   def amountTaxesFormatted = Invoice.formatMoney(amountTaxes)
   def amountTaxes = amount * 0.19
   def amountTotal = amount + amountTaxes
@@ -27,7 +26,7 @@ case class Invoice(id: anorm.Pk[Long], template: InvoiceTemplate, invoiceDate: D
   def invoiceMonth = invoiceDate.toString("MMMM")
   def invoiceYear = invoiceDate.toString("yyyy")
   def invoiceNumber = {
-    val customer = template.project.customer
+    val customer = project.customer
     val seqNumber = customer.getAndIncrementSequence.getOrElse(1)
     val shortName = customer.shortName
     s"$shortName-$invoiceYear-$seqNumber"
@@ -47,11 +46,12 @@ object Invoice {
   def create(invoice: Invoice) = {
     val baos = new ByteArrayOutputStream
     val documentTemplateFactory = new DocumentTemplateFactory
-    val jodTemplate = documentTemplateFactory.getTemplate(invoice.template.inputStream)
+    val template = Template.findById(invoice.project.invoiceTemplateId)
+    val jodTemplate = documentTemplateFactory.getTemplate(template.inputStream)
     val dataMap = Map(
       "hours" -> invoice.workingHoursTotal,
       "hourlyRate" -> invoice.hourlyRateFormatted,
-      "projectNumber" -> invoice.projectNumber,
+      "projectNumber" -> invoice.project.number,
       "invoiceDate" -> invoice.invoiceDateFormatted,
       "invoiceMonth" -> invoice.invoiceMonth,
       "invoiceYear" -> invoice.invoiceYear,

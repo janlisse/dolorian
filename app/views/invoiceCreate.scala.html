@@ -1,4 +1,4 @@
-@(invoiceForm: Form[(Long, org.joda.time.DateTime, java.math.BigDecimal)], templates: List[InvoiceTemplate], defaultDate: String)(implicit flash: Flash, session: Session)
+@(invoiceForm: Form[(Long, org.joda.time.DateTime, java.math.BigDecimal)], templates: List[Template], defaultDate: String)(implicit flash: Flash, session: Session)
 
 @import views.html.helper._
 @implicitField = @{FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f)}
@@ -21,16 +21,14 @@
             <legend>@Messages("invoice.create.title")</legend>
 
             @select(
-                invoiceForm("templateId"),
-                InvoiceTemplate.options,
-                '_label -> Messages("invoice.create.template"),
-                '_default -> Messages("invoice.create.template.default"),
-                '_showConstraints -> false
+                invoiceForm("projectId"),
+                Project.options,
+                '_label -> Messages("workitem.create.project")            
             )
             <label class="control-label" for="date">@Messages("invoice.create.date")</label>
             <input type="text" id="datepicker" name="invoiceDate" data-date-format="dd/mm/yyyy" class="datepicker"  value="@defaultDate">
 
-            @helper.inputText(invoiceForm("totalHours"), '_label -> Messages("invoice.create.totalHours"), 'placeholder -> "100.5")
+            @helper.inputText(invoiceForm("totalHours"), '_label -> Messages("invoice.create.totalHours"), 'placeholder -> "100.5", 'class -> "input-mini")
             <div class="controls">
                 <button type="submit" class="btn btn-primary">@Messages("button.invoice.create")</button>
             </div>

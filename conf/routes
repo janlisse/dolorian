@@ -29,11 +29,11 @@ GET         /projects/add                      controllers.Projects.add
 POST        /projects/:id/delete               controllers.Projects.delete(id: Long)
 POST        /projects/submit                   controllers.Projects.submit
 
-#InvoiceTemplates
-GET         /invoiceTemplate/add               controllers.InvoiceTemplates.index
-GET         /invoiceTemplate/list              controllers.InvoiceTemplates.list
-POST        /invoiceTemplate/submit            controllers.InvoiceTemplates.submit
-POST        /invoiceTemplate/:id/delete        controllers.InvoiceTemplates.delete(id: Long)
+#Templates
+GET         /template/add               	   controllers.Templates.add
+GET         /template/list                     controllers.Templates.list
+POST        /template/submit                   controllers.Templates.submit
+POST        /template/:id/delete               controllers.Templates.delete(id: Long)
 
 GET         /invoices/add                      controllers.Invoices.index
 POST        /invoices/submit                   controllers.Invoices.submit

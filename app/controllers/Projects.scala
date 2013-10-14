@@ -6,6 +6,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
 import play.api.i18n.Messages
+import utils.FormFieldImplicits
 
 object Projects extends Controller with Secured {
 
@@ -14,7 +15,10 @@ object Projects extends Controller with Secured {
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "number" -> nonEmptyText,
       "description" -> nonEmptyText,
-      "customerId" -> longNumber)(Project.apply)(Project.unapply))
+      "customerId" -> longNumber,
+      "invoiceTemplateId" -> longNumber,
+      "reportTemplateId" -> longNumber,
+      "hourlyRate" -> of(FormFieldImplicits.bigDecimalFormat))(Project.apply)(Project.unapply))
 
   def delete(id: Long) = withAuth {
     username =>
@@ -47,5 +51,4 @@ object Projects extends Controller with Secured {
             Redirect(routes.Projects.list).flashing("success" -> Messages("project.create.success", project.number))
           })
   }
-
 }
