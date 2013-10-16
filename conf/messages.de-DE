@@ -37,6 +37,7 @@ index.welcome.message=Willkommen {0}!
 login.title=Anmelden
 login.email=Email
 login.password=Passwort
+logout.success=Erfolgreich abgemeldet
 
 workitem.rangeSelect=Angezeigter Zeitraum
 workitem.rangeSelect.currentMonth=Aktueller Monat
