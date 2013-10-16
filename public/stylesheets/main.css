@@ -47,4 +47,10 @@ footer {
 
 .floatNextItem {
 	float: left;
+	margin-right: .5em;
+}
+
+#filterForm {
+	margin-bottom: 40px;
+}
 }

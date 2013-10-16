@@ -2,14 +2,11 @@
 
 
 @main(title = Messages("customer.list.title")) {
-
+	
+	<h3>@Messages("customer.list.title")</h3>
     @if(customers.isEmpty) {
-        <h3>
-            @Messages("customer.list.empty")
-        </h3>
+        <div class="alert alert-info">@Messages("customer.list.empty")</div>
     } else {
-        <h3>@Messages("customer.list.title")</h3>
-
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -28,9 +25,9 @@
                     <td>@customer.address</td>
                     <td>@customer.invoiceSequence</td>
                     <td>
-                    	<a class="btn btn-info" href="@routes.Customers.edit(customer.id.get)"><i class="icon-edit icon-white"></i> @Messages("button.edit")</a>
+                    	<a class="btn btn-info" href="@routes.Customers.edit(customer.id.get)"><i class="icon-edit icon-white"></i></a>
                    		@helper.form(routes.Customers.delete(customer.id.get)) {
-                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
+                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i></button>
                         }
                     </td>
                 </tr>

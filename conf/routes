@@ -18,8 +18,8 @@ POST    	/customers/:id                     controllers.Customers.update(id:Long
 POST        /customers/:id/delete              controllers.Customers.delete(id: Long)
 
 GET         /workItems/add                     controllers.WorkItems.add
-GET         /workItems/list                    controllers.WorkItems.list
-GET         /workItems/export                  controllers.WorkItems.export
+GET         /workItems/list        			   controllers.WorkItems.list(start: Option[String] ?= None, end: Option[String] ?= None)
+GET         /workItems/export                  controllers.WorkItems.export(start: Option[String] ?= None, end: Option[String] ?= None, projectId:Long)
 POST        /workItems/submit                  controllers.WorkItems.submit
 POST        /workItems/:id/delete              controllers.WorkItems.delete(id: Long)
 

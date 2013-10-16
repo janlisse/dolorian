@@ -38,24 +38,24 @@ login.title=Anmelden
 login.email=Email
 login.password=Passwort
 
+workitem.rangeSelect=Angezeigter Zeitraum
+workitem.rangeSelect.currentMonth=Aktueller Monat
+workitem.rangeSelect.lastMonth=Letzter Monat
 workitem.list.title=Arbeitszeiten
-workitem.list.empty=Noch keine Arbeitszeiten angelegt.
+workitem.list.empty=Keine Arbeitszeiten im ausgewählten Zeitraum gefunden.
 workitem.date=Datum
 workitem.start=Startzeit
 workitem.end=Endzeit
 workitem.break=Pausenzeit
 workitem.totalTime=Gesamtzeit
 workitem.description=Beschreibung
-
-workitem.list.export=Export
-workitem.list.export.last=Letzter Monat
-workitem.list.export.current=Aktueller Monat
+workitem.report=Export
 
 workitem.create.title=Arbeitszeit erfassen
 workitem.create.project=Projekt
 
 workitem.validation.time=Arbeitszeit ergibt keinen positiven Wert
-workitem.create.success=Arbeitszeit erfolgreich gelöscht
+workitem.create.success=Arbeitszeit erfolgreich angelegt
 workitem.delete.success=Arbeitszeit erfolgreich gelöscht
 
 workitem.export.caption=Leistungserfassung
@@ -82,7 +82,6 @@ project.create.invoiceTemplate=Rechnungs-Vorlage
 project.create.reportTemplate=Report-Vorlage
 project.create.success=Projekt {0} erfolgreich gespeichert
 project.delete.success=Projekt erfolgreich gelöscht
-
 
 template.report.missing=Report-Vorlage fehlt
 template.invoice.missing=Rechnungs-Vorlage fehlt

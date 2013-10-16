@@ -2,13 +2,13 @@ package models
 
 import java.net.URL
 import org.joda.time.{ Period, DateTime }
-
 import anorm._
 import play.api.db.DB
 import models.AnormExtension._
 import anorm.SqlParser._
 import play.api.Play.current
 import scala.reflect._
+import org.joda.time.MutableDateTime
 
 case class WorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime, endTime: DateTime, breakTime: Int, description: String) {
 
@@ -75,6 +75,16 @@ object WorkItem {
   def groupedByProjectId: Map[Long, List[WorkItem]] = {
     getAll.groupBy(_.projectId)
   }
+  
+  def getByRange(range: (DateTime,DateTime)): List[WorkItem] = {
+    DB.withConnection {
+      implicit c =>
+        val select = SQL("""
+          SELECT * FROM work_item w WHERE w.start_time >= {start}
+          AND w.end_time < {end} order by w.start_time DESC""")
+        select.on("start" -> range._1,"end" -> range._2).as(workItemParser *)
+    }
+  }
 
   def delete(id: Long) {
     DB.withConnection {
@@ -111,3 +121,20 @@ object WorkItem {
   }
 
 }
+
+/**
+ * Helper for pagination.
+ */
+case class Page[A](items: Seq[A], page: Int, offset: Long, total: Long) {
+  lazy val prev = Option(page - 1).filter(_ >= 0)
+  lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
+}
+
+
+case class SearchQuery()
+
+object SearchQuery {
+
+ 
+}
+

@@ -6,6 +6,12 @@
 @headContent = {
 	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-datepicker.css")">
 	<script src='@routes.Assets.at("javascripts/bootstrap-datepicker.js")' type='text/javascript' ></script>
+	<script type="text/javascript">
+	   $('.datepicker').datepicker();
+	   $("#form").submit(function (event) {
+	      var date = $('#datepicker').val();
+	   });
+    </script>
 }
 
 @main(title = Messages("invoice.create.title"), headContent) {
@@ -33,12 +39,5 @@
                 <button type="submit" class="btn btn-primary">@Messages("button.invoice.create")</button>
             </div>
         </fieldset>
-        <script type="text/javascript">
-	        $('.datepicker').datepicker();
-	        $("#form").submit(function (event) {
-	            var date = $('#datepicker').val();
-	        });
-        </script>
     </form>
-
 }

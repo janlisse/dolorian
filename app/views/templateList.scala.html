@@ -2,11 +2,10 @@
 
 @main(title = Messages("template.list.title")) {
 
+	<h3>@Messages("template.list.title")</h3>
     @if(templates.isEmpty) {
-        <h3>@Messages("template.list.empty")</h3>
+        <div class="alert alert-info">@Messages("template.list.empty")</div>
     } else {
-        <h3>@Messages("template.list.title")</h3>
-
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -22,7 +21,7 @@
                     <td>@template.key</td>
                     <td>
                     @helper.form(routes.Templates.delete(template.id.get)) {
-                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
+                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i></button>
                     }
                     </td>
                 </tr>

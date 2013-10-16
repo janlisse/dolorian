@@ -1,7 +1,6 @@
 package controllers
 
 import play.api.mvc.Controller
-import models.InvoiceTemplate
 
 object Application extends Controller with Secured {
 

@@ -7,18 +7,21 @@ import play.api.data.Forms._
 import models._
 import org.joda.time.{ DateTime, Period }
 import anorm.NotAssigned
-import com.lowagie.text._
-import com.lowagie.text.pdf._
 import java.io.ByteArrayOutputStream
-import com.lowagie.text.pdf.draw.LineSeparator
 import org.joda.time.Minutes
 import play.api.i18n.Messages
 import net.sf.jooreports.templates.DocumentTemplateFactory
 import scala.collection.JavaConverters._
 import java.util.Arrays
+import org.joda.time.format.DateTimeFormat
 
 object WorkItems extends Controller with Secured {
 
+  def currentMonthStart = new DateTime().dayOfMonth().withMinimumValue()
+  def currentMonthEnd = new DateTime().plusMonths(1).dayOfMonth().withMinimumValue()
+
+  val dateStringFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
+  
   val timeForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
@@ -40,13 +43,16 @@ object WorkItems extends Controller with Secured {
     username =>
       implicit request =>
         WorkItem.delete(id)
-        Redirect(routes.WorkItems.list).flashing("success" -> Messages("workitem.delete.success"))
+        Redirect(routes.WorkItems.list()).flashing("success" -> Messages("workitem.delete.success"))
   }
 
-  def list = withAuth {
+  def list(startOption: Option[String], endOption: Option[String]) = withAuth {
     username =>
       implicit request =>
-        Ok(views.html.workItemList(WorkItem.getAll))
+        //TODO handle bad input
+        val groupedByProject = WorkItem.getByRange(mapRange(startOption, endOption)).
+        groupBy(_.projectId).map( item => (Project.findById(item._1), item._2))
+        Ok(views.html.workItemList(groupedByProject))
   }
 
   def submit = withAuth {
@@ -58,17 +64,16 @@ object WorkItems extends Controller with Secured {
           },
           work => {
             WorkItem.save(work)
-            Redirect(routes.WorkItems.list).flashing("success" -> Messages("workitem.create.success"))
+            Redirect(routes.WorkItems.list()).flashing("success" -> Messages("workitem.create.success"))
           })
   }
 
-  def export = withUser {
+  def export(startOption: Option[String], endOption: Option[String], projectId: Long) = withUser {
     user =>
       implicit request =>
-        val currentDate = new DateTime
-        val lastMonth = currentDate.minusMonths(1)
-        val project = Project.getAll.head
-        val workItems = WorkItem.getByProjectMonthAndYear(project.id.get, lastMonth.monthOfYear.get, lastMonth.year.get)
+        val range = mapRange(startOption, endOption)
+        val workItems = WorkItem.getByRange(range)
+        val project = Project.findById(projectId)
         val baos = new ByteArrayOutputStream
         val documentTemplateFactory = new DocumentTemplateFactory
         val template = Template.findById(project.reportTemplateId)
@@ -80,7 +85,7 @@ object WorkItems extends Controller with Secured {
         }.asJava
 
         val dataMap = Map(
-          "month" -> lastMonth.toString("MM/yyyy"),
+          "month" -> range._1.toString("MM/yyyy"),
           "contractor" -> user.name,
           "projectNumber" -> project.number,
           "workItems" -> javaWorkItems,
@@ -89,5 +94,11 @@ object WorkItems extends Controller with Secured {
         jodTemplate.createDocument(dataMap.toMap.asJava, baos)
         Ok(baos.toByteArray).as(Template.MIME_TYPE).
           withHeaders("Content-Disposition" -> "attachment; filename=report.odt")
+  }
+  
+  def mapRange(startOption: Option[String], endOption: Option[String]) = {
+    val startDate = startOption.map( start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthStart)
+    val endDate = endOption.map( start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthEnd)
+    (startDate, endDate)
   }
 }

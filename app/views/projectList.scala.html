@@ -1,12 +1,11 @@
 @(projects: List[Project])(implicit flash: Flash, session:Session)
 
 @main(title = Messages("project.list.title")) {
-
+	
+	<h3>@Messages("project.list.title")</h3>
     @if(projects.isEmpty) {
-        <h3>@Messages("project.list.empty")</h3>
+        <div class="alert alert-info">@Messages("project.list.empty")</div>
     } else {
-        <h3>@Messages("project.list.title")</h3>
-
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -24,7 +23,7 @@
                     <td>@project.customer.name</td>
                     <td>
                     @helper.form(routes.Projects.delete(project.id.get)) {
-                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i> @Messages("button.delete")</button>
+                        <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i></button>
                     }
                     </td>
                 </tr>
