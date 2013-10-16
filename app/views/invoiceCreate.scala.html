@@ -1,4 +1,4 @@
-@(invoiceForm: Form[(Long, org.joda.time.DateTime, java.math.BigDecimal)], templates: List[Template], defaultDate: String)(implicit flash: Flash, session: Session)
+@(invoiceForm: Form[(Long, org.joda.time.DateTime, java.math.BigDecimal)], templates: List[Template], defaultDate: String)(implicit flash: Flash, session: Session, lang: Lang)
 
 @import views.html.helper._
 @implicitField = @{FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f)}

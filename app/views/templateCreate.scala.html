@@ -1,4 +1,4 @@
-@(templateForm: Form[Template])(implicit flash: Flash, session:Session)
+@(templateForm: Form[Template])(implicit flash: Flash, session:Session, lang: Lang)
 
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }

@@ -1,4 +1,4 @@
-@(id: Long, customerForm: Form[Customer])(implicit flash: Flash, session: Session)
+@(id: Long, customerForm: Form[Customer])(implicit flash: Flash, session: Session, lang: Lang)
 
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
