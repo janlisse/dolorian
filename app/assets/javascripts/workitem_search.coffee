@@ -6,11 +6,14 @@ $ ->
    range = getParameterByName('range')
    $('#rangeSelect').val(range) if range
    
-   $('#reportButton').click (event) ->
-      range = getRange($('#rangeSelect').val())
-      projectId = $('.tab-pane').attr('rel')
-      document.location.href = '/workItems/export?'+rangeToUrlParams(range)+"&projectId="+projectId
+   addReportButtonClickHandler()
+   
 
+addReportButtonClickHandler = ->
+   $('.reportButton').click (event) ->
+      range = getRange($('#rangeSelect').val())
+      projectId = $('.tab-pane.active').attr('rel')
+      document.location.href = '/workItems/export?'+rangeToUrlParams(range)+"&projectId="+projectId
 
 rangeToUrlParams = (range) ->
    'start='+range.start.format('YYYY-MM-DD')+'&end='+range.end.format('YYYY-MM-DD')+'&range='+range.name
@@ -21,14 +24,14 @@ getRange = (rangeOption) ->
    if rangeOption is 'currentMonth'
       return getCurrentMonthRange()
          
-getLastMonthRange = () -> 
+getLastMonthRange = -> 
    range = {
       name: 'lastMonth'
       start  : moment().startOf('month').subtract('months', 1)
       end : moment().startOf('month')
    }
 
-getCurrentMonthRange = () -> 
+getCurrentMonthRange = -> 
    range = {
       name: 'currentMonth'
       start  : moment().startOf('month')

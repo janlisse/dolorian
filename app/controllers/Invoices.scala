@@ -27,8 +27,7 @@ object Invoices extends Controller with Secured {
   def defaultDate: String = {
     val today = new DateTime
     val lastMonth = today.minusMonths(1)
-    val defaultDate = lastMonth.dayOfMonth().withMaximumValue().toString("dd/MM/yyyy")
-    defaultDate
+    lastMonth.dayOfMonth().withMaximumValue().toString("dd/MM/yyyy")
   }
 
   def submit = withAuth {

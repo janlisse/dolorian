@@ -72,7 +72,7 @@ object WorkItems extends Controller with Secured {
     user =>
       implicit request =>
         val range = mapRange(startOption, endOption)
-        val workItems = WorkItem.getByRange(range)
+        val workItems = WorkItem.getByRange(range).filter(_.projectId == projectId)
         val project = Project.findById(projectId)
         val baos = new ByteArrayOutputStream
         val documentTemplateFactory = new DocumentTemplateFactory

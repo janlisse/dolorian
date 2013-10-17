@@ -6,11 +6,21 @@ import play.api.Play.current
 import models.Customer
 import models.Address
 import java.math.BigDecimal
+import play.api.Logger
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.{ GetObjectRequest, ObjectMetadata, CannedAccessControlList, PutObjectRequest }
+import java.util.UUID
+import java.io.InputStream
+import java.io.File 
+import models.S3Configuration
 
 object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
+    S3Configuration
     TestData.insert()
+    Logger.info("Application has started...");
   }
 }
 
@@ -31,4 +41,7 @@ object TestData {
   }
 
 }
+
+
+
 
