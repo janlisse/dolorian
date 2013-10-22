@@ -59,17 +59,26 @@
 		                </tr>
 		            </thead>
 		            <tbody>
-		            @workItems.map { work =>
+		            @workItems.map { workItem =>
 		                <tr>
-		                    <td>@FormatUtil.formatDate(work.startTime)</td>
-		                    <td>@FormatUtil.formatTime(work.startTime)</td>
-		                    <td>@FormatUtil.formatTime(work.endTime)</td>
-		                    <td>@work.breakTime min</td>
-		                    <td>@work.totalTimeFormatted</td>
-		                    <td>@work.description</td>
+		                	<td>@workItem.dateFormatted</td>
+		                    @workItem match { 
+			                    	case detailed:DetailedWorkItem => {
+				                    	<td>@FormatUtil.formatTime(detailed.startTime)</td>
+				                    	<td>@FormatUtil.formatTime(detailed.endTime)</td>
+				                    	<td>@detailed.breakTime.getOrElse(0) min</td>
+			                    	}
+			                     	case _ => {
+			                     		<td>-</td>
+				                    	<td>-</td>
+				                    	<td>-</td>
+			                     	}
+		                    	}
+		                    <td>@workItem.durationFormatted</td>
+		                    <td>@workItem.description</td>
 		                    <td>
 		                        <div class='btn btn-info'><i class="icon-edit icon-white"></i></div>
-		                        @helper.form(routes.WorkItems.delete(work.id.get)) {
+		                        @helper.form(routes.WorkItems.delete(workItem.id.get)) {
 		                            <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i></button>
 		                        }
 		                    </td>

@@ -9,6 +9,7 @@
         <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
         <script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))' type='text/javascript' ></script> 
     	<script src="@routes.Assets.at("javascripts/highlight_menu.js")" type="text/javascript"></script>
+    	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
     	<script>
 	    	window.setTimeout(function() {
 	    	    $(".alert-success").fadeOut(1000)
@@ -34,9 +35,10 @@
         <div id="contentWrapper" class="container-fluid">
             <div class="row-fluid">
                 @session.get("email").map { username =>
-                    <div id="sidemenu" class="span2 sidebar-nav-fixed well">
+                    <div id="sidemenu" class="span2 sidebar-nav-fixed">
                         <ul class="nav nav-list">
                             <li class="nav-caption"><i class="icon-user icon-time"></i> @Messages("menu.timetracking")</li>
+                            <li class="nav-menu-item"><a href="@routes.WorkItems.quickTrack()">@Messages("menu.timetracking.quickTrack")</a></li>
                             <li class="nav-menu-item"><a href="@routes.WorkItems.add()">@Messages("menu.timetracking.create")</a></li>
                             <li class="nav-menu-item"><a href="@routes.WorkItems.list()">@Messages("menu.timetracking.list")</a></li>
                         </ul>
@@ -61,7 +63,7 @@
                         </ul>
                     </div>
                 }
-                <div id="content" class="span9">
+                <div id="content" class="span8">
                     @flash.get("success").map { msg =>
                         <div class="alert alert-success">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -75,11 +77,11 @@
                         </div>
                     }
 
-                    <div class="well">
+                    <div>
                     @content
                     </div>
                     <footer>
-                        <p>&copy; Immaterial Industries 2013</p>
+                        
                     </footer>
                 </div>
             </div>

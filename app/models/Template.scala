@@ -13,10 +13,20 @@ import java.util.UUID
 import java.io.InputStream
 import java.io.File
 
+trait Template {
+  def id: Pk[Long]
+  def name: String
+  def key: String
+  def typeName: String
+  def inputStream: java.io.InputStream
+}
 
-case class Template(id: Pk[Long], name: String, key: String) {
-  
+case class S3Template(id: Pk[Long], name: String, key: String, typeName: String = "s3") extends Template {
   def inputStream = Template.loadFromS3(key)
+}
+
+case class ClasspathTemplate(id: Pk[Long], name: String, key: String, typeName: String = "default") extends Template {
+  def inputStream = Play.application.resourceAsStream(key).getOrElse(throw new RuntimeException("Invalid classpath key: " + key))
 }
 
 object Template extends S3Support {
@@ -27,26 +37,37 @@ object Template extends S3Support {
   val templateParser = {
     get[Pk[Long]]("id") ~
       get[String]("name") ~
-      get[String]("key") map {
-        case (id ~ name ~ key) => {
-          Template(id, name, key)
+      get[String]("key") ~
+      get[String]("type") map {
+        case (id ~ name ~ key ~ templateType) => {
+          templateType match {
+            case "s3" => S3Template(id, name, key)
+            case "default" => ClasspathTemplate(id, name, key)
+          }
         }
       }
   }
 
-  def save(template: Template, file: File, fileName: String): Option[Long] = {
-    val key = saveToS3(file, fileName, MIME_TYPE)
+  def save(template: S3Template, file: File, fileName: String): Option[Long] = {
+      saveToS3(file, fileName, MIME_TYPE)
+      saveToDB(template)
+  }
+  
+  def saveToDB(template:Template) = {
     DB.withConnection {
       implicit c =>
-        SQL("insert into template(name, key) values ({name},{key})")
+        SQL("insert into template(name, key, type) values ({name},{key},{type})")
           .on("name" -> template.name,
-            "key" -> key).executeInsert()
+            "key" -> template.key,
+            "type" -> template.typeName).executeInsert()
     }
   }
 
   def delete(id: Long) {
-    val template = Template.findById(id)
-    deleteFromS3(template.key)
+    Template.findById(id) match {
+      case s3: S3Template => deleteFromS3(s3.key)
+      case _ =>
+    }
     DB.withConnection {
       implicit connection =>
         SQL("DELETE FROM template where id = {id}").on('id -> id).executeUpdate

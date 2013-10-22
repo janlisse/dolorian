@@ -10,7 +10,8 @@ create sequence s_customer_id;
 create table template (
   id bigint DEFAULT nextval('s_template_id') PRIMARY KEY ,
   name varchar(255),
-  key varchar(255)
+  key varchar(255),
+  type varchar(20)
 );
 
 create table customer (
@@ -40,6 +41,8 @@ create table work_item (
   start_time timestamp,
   end_time timestamp,
   break_time int,
+  duration bigint,
+  date date,
   description  varchar(255)
 );
 
@@ -54,8 +57,8 @@ create table app_user (
 # --- !Downs
 
 drop table if exists work_item;
-drop table if exists template;
 drop table if exists project;
+drop table if exists template;
 drop table if exists customer;
 drop sequence s_work_item_id;
 drop sequence s_project_id;

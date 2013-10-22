@@ -21,7 +21,9 @@ GET         /workItems/add                     controllers.WorkItems.add
 GET         /workItems/list        			   controllers.WorkItems.list(start: Option[String] ?= None, end: Option[String] ?= None)
 GET         /workItems/export                  controllers.WorkItems.export(start: Option[String] ?= None, end: Option[String] ?= None, projectId:Long)
 POST        /workItems/submit                  controllers.WorkItems.submit
+POST        /workItems/submitSimple            controllers.WorkItems.submitSimpleWorkItem
 POST        /workItems/:id/delete              controllers.WorkItems.delete(id: Long)
+GET         /workItems/quickTrack              controllers.WorkItems.quickTrack
 
 # Projects
 GET         /projects/list                     controllers.Projects.list
@@ -38,6 +40,7 @@ POST        /template/:id/delete               controllers.Templates.delete(id: 
 GET         /invoices/add                      controllers.Invoices.index
 POST        /invoices/submit                   controllers.Invoices.submit
 
-# Map static resources from the /public folder to the /assets URL path
+# Map static resources 
 GET         /assets/*file                      controllers.Assets.at(path="/public", file)
 GET         /webjars/*file                     controllers.WebJarAssets.at(file)
+GET         /javascriptRoutes                  controllers.Application.javascriptRoutes

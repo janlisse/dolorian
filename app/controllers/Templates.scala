@@ -4,18 +4,21 @@ import play.api.mvc.Controller
 import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
-import models.{ Template, Project }
+import models.{ Template, S3Template, Project }
 import utils.FormFieldImplicits
 import play.api.i18n.Messages
 
+
 object Templates extends Controller with Secured {
 
+  
   val templateForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "name" -> nonEmptyText,
-      "key" -> ignored("")
-      )(Template.apply)(Template.unapply))
+      "key" -> ignored(""),
+      "type" -> ignored("s3")
+      )(S3Template.apply)(S3Template.unapply))
 
   def add = withAuth {
     username =>

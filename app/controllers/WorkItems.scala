@@ -14,6 +14,14 @@ import net.sf.jooreports.templates.DocumentTemplateFactory
 import scala.collection.JavaConverters._
 import java.util.Arrays
 import org.joda.time.format.DateTimeFormat
+import org.joda.time.Duration
+import org.joda.time.format.PeriodFormatterBuilder
+import org.joda.time.PeriodType
+import org.joda.time.LocalDate
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import play.api.data.validation.ValidationError
+import models.WorkItem._
 
 object WorkItems extends Controller with Secured {
 
@@ -21,22 +29,40 @@ object WorkItems extends Controller with Secured {
   def currentMonthEnd = new DateTime().plusMonths(1).dayOfMonth().withMinimumValue()
 
   val dateStringFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
-  
+
+  // Define serialisation for JSON validation error messages.
+  implicit val JsPathWrites = Writes[JsPath](p => JsString(p.toString))
+
+  implicit val ValidationErrorWrites =
+    Writes[ValidationError](e => {
+      JsString(Messages(e.message, e.args : _*))})
+
+  implicit val jsonValidateErrorWrites = (
+    (JsPath \ "path").write[JsPath] and
+      (JsPath \ "errors").write[Seq[ValidationError]] tupled)
+
   val timeForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "projectId" -> longNumber,
       "startTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "endTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
-      "breakTime" -> number,
-      "description" -> nonEmptyText)(WorkItem.apply)(WorkItem.unapply).verifying(Messages("workitem.validation.time"), {
-        result => result.totalTime.toStandardMinutes.isGreaterThan(Minutes.ZERO)
+      "breakTime" -> optional(number),
+      "date" -> ignored(new LocalDate()),
+      "description" -> nonEmptyText)(DetailedWorkItem.apply)(DetailedWorkItem.unapply).verifying(Messages("workitem.validation.time"), {
+        result => result.duration.toStandardMinutes.isGreaterThan(Minutes.ZERO)
       }))
 
   def add = withAuth {
     username =>
       implicit request =>
-        Ok(views.html.workItemCreate(timeForm, Project.getAll))
+        Ok(views.html.workItemCreate(timeForm))
+  }
+
+  def quickTrack = withAuth {
+    username =>
+      implicit request =>
+        Ok(views.html.workItemQuickTrack())
   }
 
   def delete(id: Long) = withAuth {
@@ -51,7 +77,7 @@ object WorkItems extends Controller with Secured {
       implicit request =>
         //TODO handle bad input
         val groupedByProject = WorkItem.getByRange(mapRange(startOption, endOption)).
-        groupBy(_.projectId).map( item => (Project.findById(item._1), item._2))
+          groupBy(_.projectId).map(item => (Project.findById(item._1), item._2))
         Ok(views.html.workItemList(groupedByProject))
   }
 
@@ -60,7 +86,7 @@ object WorkItems extends Controller with Secured {
       implicit request =>
         timeForm.bindFromRequest.fold(
           errors => {
-            BadRequest(views.html.workItemCreate(errors, Project.getAll))
+            BadRequest(views.html.workItemCreate(errors))
           },
           work => {
             WorkItem.save(work)
@@ -81,7 +107,7 @@ object WorkItems extends Controller with Secured {
 
         /** necessary conversion because jodreports/freemarker doesn't work with raw Scala types **/
         val javaWorkItems = workItems.map { item =>
-          new WorkItemJavaWrapper(item.description, item.date, item.totalTimeFormatted)
+          new WorkItemJavaWrapper(item.description, item.dateFormatted, item.durationFormatted)
         }.asJava
 
         val dataMap = Map(
@@ -95,10 +121,23 @@ object WorkItems extends Controller with Secured {
         Ok(baos.toByteArray).as(Template.MIME_TYPE).
           withHeaders("Content-Disposition" -> "attachment; filename=report.odt")
   }
-  
+
+  def submitSimpleWorkItem = withAuth(parse.json) {
+    username =>
+      implicit request =>
+        val workItemJson = request.body
+        workItemJson.validate[SimpleWorkItem].fold(
+          valid = { simpleWorkItem =>
+            WorkItem.save(simpleWorkItem)
+            Ok("Saved")
+          },
+          invalid = { errors => BadRequest(Json.toJson(errors))
+          })
+  }
+
   def mapRange(startOption: Option[String], endOption: Option[String]) = {
-    val startDate = startOption.map( start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthStart)
-    val endDate = endOption.map( start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthEnd)
+    val startDate = startOption.map(start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthStart)
+    val endDate = endOption.map(start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthEnd)
     (startDate, endDate)
   }
 }

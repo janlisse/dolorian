@@ -3,6 +3,7 @@ logout=Abmelden
 logout.sucess=Erfolgreich abgemeldet
 
 menu.timetracking=Zeiterfassung
+menu.timetracking.quickTrack=Schnellerfassung
 menu.timetracking.create=Arbeitszeit erfassen
 menu.timetracking.list=Arbeitszeiten anzeigen
 
@@ -21,12 +22,11 @@ menu.customers=Kunden
 menu.customers.create=Kunden anlegen
 menu.customers.list=Kunden anzeigen
 
-
-
 button.delete=Löschen
 button.edit=Bearbeiten
 button.save=Speichern
 button.login=Anmelden
+button.close=Schliessen
 button.invoice.create=Rechnung erstellen
 
 list.actions=Aktionen
@@ -58,6 +58,12 @@ workitem.create.project=Projekt
 workitem.validation.time=Arbeitszeit ergibt keinen positiven Wert
 workitem.create.success=Arbeitszeit erfolgreich angelegt
 workitem.delete.success=Arbeitszeit erfolgreich gelöscht
+
+workitem.quicktrack.headline=Erfasse deine Arbeitszeit!
+workitem.quicktrack.workTime=Arbeitszeit
+workitem.quicktrack.description.placeholder=Taskbeschreibung hier angeben
+workitem.quicktrack.save.headline=Arbeitszeit speichern
+workitem.quicktrack.button.start=Start
 
 workitem.export.caption=Leistungserfassung
 workitem.export.contractor=Auftragnehmer
@@ -127,3 +133,9 @@ template.create.file.text=Datei auswählen
 template.create.success=Vorlage erfolgreich gespeichert
 template.delete.success=Vorlage erfolgreich gelöscht
 template.missing.file=Vorlagen Datei nicht angegeben!
+
+validate.error.duration.min.length=Arbeitszeit muss mindestens {0} Minuten betragen
+validate.error.duration.format=Arbeitszeit muss im Format hh:mm:ss angegeben werden
+validate.error.duration=Fehlerhafte Angabe der Arbeitszeit
+
+error.minLength=Mindestens {0} Zeichen erforderlich
