@@ -49,11 +49,11 @@ object Template extends S3Support {
   }
 
   def save(template: S3Template, file: File, fileName: String): Option[Long] = {
-      saveToS3(file, fileName, MIME_TYPE)
-      saveToDB(template)
+    val key = saveToS3(file, fileName, MIME_TYPE)
+    saveToDB(template.copy(key = key))
   }
-  
-  def saveToDB(template:Template) = {
+
+  def saveToDB(template: Template) = {
     DB.withConnection {
       implicit c =>
         SQL("insert into template(name, key, type) values ({name},{key},{type})")
