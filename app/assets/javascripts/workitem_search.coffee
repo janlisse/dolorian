@@ -1,7 +1,7 @@
 $ ->
-   $('#rangeSelect').change -> 
+   $('#rangeSelect').change ->
       range = getRange($(@).val())
-      document.location.href = '/workItems/list?'+rangeToUrlParams(range)      
+      document.location.href = '/workItems/list?'+rangeToUrlParams(range)
    
    range = getParameterByName('range')
    $('#rangeSelect').val(range) if range
@@ -11,6 +11,7 @@ $ ->
 
 addReportButtonClickHandler = ->
    $('.reportButton').click (event) ->
+      event.preventDefault()
       range = getRange($('#rangeSelect').val())
       projectId = $('.tab-pane.active').attr('rel')
       document.location.href = '/workItems/export?'+rangeToUrlParams(range)+"&projectId="+projectId
@@ -23,25 +24,25 @@ getRange = (rangeOption) ->
       return getLastMonthRange()
    if rangeOption is 'currentMonth'
       return getCurrentMonthRange()
-         
-getLastMonthRange = -> 
+
+getLastMonthRange = ->
    range = {
       name: 'lastMonth'
       start  : moment().startOf('month').subtract('months', 1)
       end : moment().startOf('month')
    }
 
-getCurrentMonthRange = -> 
+getCurrentMonthRange = ->
    range = {
       name: 'currentMonth'
       start  : moment().startOf('month')
       end : moment().startOf('month').add('months', 1)
    }
-	        
+
 getParameterByName = (name) ->
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]")
     regex = new RegExp("[\\?&]" + name + "=([^&#]*)")
     results = regex.exec(location.search)
-    decodeURIComponent(results[1].replace(/\+/g, " "))  if (results) 
+    decodeURIComponent(results[1].replace(/\+/g, " "))  if (results)
         
 	

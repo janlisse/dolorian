@@ -50,6 +50,7 @@ workitem.end=Endzeit
 workitem.break=Pausenzeit
 workitem.totalTime=Gesamtzeit
 workitem.description=Beschreibung
+workitem.list.total=Total
 workitem.report=Export
 
 workitem.create.title=Arbeitszeit erfassen

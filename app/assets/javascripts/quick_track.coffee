@@ -1,4 +1,4 @@
-$(document).ready ->
+$ ->
    $('#closeButton, button.close').click (event) ->
       event.preventDefault()
       clearWorkItemForm()

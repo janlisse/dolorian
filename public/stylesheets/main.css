@@ -77,3 +77,11 @@ footer {
 	font-size: 31.5px;
 	font-style: bold;
 }
+
+.table-hover tbody tr:last-child:hover>td, .table-hover tbody tr:last-child:hover>th {
+    background-color: #08c; 
+}
+
+.resultRow {
+	background-color: #08c;
+}

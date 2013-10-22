@@ -43,7 +43,7 @@ case class SimpleWorkItem(id: anorm.Pk[Long], projectId: Long,
   def roundedDuration = {
     require(roundingFactor > 1 || 60 % roundingFactor != 0, "RoundingFactor must be a fraction of 60")
     val mod = duration.getMinutes % roundingFactor
-    duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else (roundingFactor - mod))
+    duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else (roundingFactor - mod)).normalizedStandard
   }
 
   override val durationFormatted = {
