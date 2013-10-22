@@ -77,7 +77,7 @@ object WorkItems extends Controller with Secured {
       implicit request =>
         //TODO handle bad input
         val groupedByProject = WorkItem.getByRange(mapRange(startOption, endOption)).
-          groupBy(_.projectId).map(item => (Project.findById(item._1), item._2))
+          groupBy(_.projectId).map(item => (Project.findById(item._1).get, item._2))
         Ok(views.html.workItemList(groupedByProject))
   }
 
@@ -99,7 +99,7 @@ object WorkItems extends Controller with Secured {
       implicit request =>
         val range = mapRange(startOption, endOption)
         val workItems = WorkItem.getByRange(range).filter(_.projectId == projectId)
-        val project = Project.findById(projectId)
+        val project = Project.findById(projectId).get
         val baos = new ByteArrayOutputStream
         val documentTemplateFactory = new DocumentTemplateFactory
         val template = Template.findById(project.reportTemplateId)

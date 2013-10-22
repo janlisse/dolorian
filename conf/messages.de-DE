@@ -90,6 +90,7 @@ project.create.invoiceTemplate=Rechnungs-Vorlage
 project.create.reportTemplate=Report-Vorlage
 project.create.success=Projekt {0} erfolgreich gespeichert
 project.delete.success=Projekt erfolgreich gelöscht
+project.edit.success=Projekt erfolgreich geändert
 
 template.report.missing=Report-Vorlage fehlt
 template.invoice.missing=Rechnungs-Vorlage fehlt

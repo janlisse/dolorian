@@ -1,7 +1,8 @@
-@(projectForm: Form[Project])(implicit flash: Flash, session: Session, lang: Lang)
+@(id: Long, projectForm: Form[Project])(implicit flash: Flash, session: Session, lang: Lang)
 
 @import views.html.helper._
 @implicitField = @{ FieldConstructor(views.html.helper.twitterBootstrapFieldConstructor.f) }
+
 
 @main(title = Messages("project.create.title")) {
 
@@ -11,7 +12,7 @@
         </div>
     }
 
-    <form id="form" action="@routes.Projects.submit()" method="POST">
+    <form id="form" action="@routes.Projects.update(id)" method="POST">
         <fieldset>
            <legend>@Messages("project.create.title")</legend>
            @helper.inputText(projectForm("number"),'_label -> Messages("project.create.number"))

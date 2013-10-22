@@ -30,6 +30,8 @@ GET         /projects/list                     controllers.Projects.list
 GET         /projects/add                      controllers.Projects.add
 POST        /projects/:id/delete               controllers.Projects.delete(id: Long)
 POST        /projects/submit                   controllers.Projects.submit
+GET     	/projects/:id              	       controllers.Projects.edit(id:Long)
+POST    	/projects/:id                      controllers.Projects.update(id:Long)
 
 #Templates
 GET         /template/add               	   controllers.Templates.add

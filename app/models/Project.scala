@@ -69,16 +69,35 @@ object Project extends S3Support {
     }
   }
 
-  def findById(id: Long): Project = {
+  def findById(id: Long): Option[Project] = {
     DB.withConnection {
       implicit c =>
-        SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.single
+        SQL("Select * from project p where p.id = {id}").on("id" -> id) as projectParser.singleOpt
     }
   }
 
   def options: Seq[(String, String)] = {
     getAll map {
       c => c.id.toString -> c.number
+    }
+  }
+
+  def update(id: Long, project: Project) = {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+          update project
+          set number = {number}, description = {description}, customer_id = {customerId}, invoice_template_id = {invoiceTemplateId}, 
+          report_template_id = {reportTemplateId}, hourly_rate = {hourlyRate}
+          where id = {id}
+        """).on(
+          'id -> id,
+          "number" -> project.number,
+          "description" -> project.description,
+          "customerId" -> project.customerId,
+          "invoiceTemplateId" -> project.invoiceTemplateId,
+          "reportTemplateId" -> project.reportTemplateId,
+          "hourlyRate" -> project.hourlyRate).executeUpdate()
     }
   }
 

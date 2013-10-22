@@ -51,4 +51,24 @@ object Projects extends Controller with Secured {
             Redirect(routes.Projects.list).flashing("success" -> Messages("project.create.success", project.number))
           })
   }
+  
+  def edit(id: Long) = withAuth {
+    username =>
+      implicit request =>
+        Project.findById(id).map { project =>
+          Ok(views.html.projectEdit(id, projectForm.fill(project)))
+        }.getOrElse(NotFound)
+  }
+
+  def update(id: Long) = withAuth {
+    username =>
+      implicit request =>
+        projectForm.bindFromRequest.fold(
+          errors => BadRequest(views.html.projectEdit(id, errors)),
+          customer => {
+            Project.update(id, customer)
+            Redirect(routes.Projects.list).flashing("success" -> Messages("project.edit.success"))
+          })
+  }
+
 }

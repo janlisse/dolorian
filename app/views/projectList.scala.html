@@ -22,6 +22,7 @@
                     <td>@project.description</td>
                     <td>@project.customer.name</td>
                     <td>
+                    <a class="btn btn-info" href="@routes.Projects.edit(project.id.get)"><i class="icon-edit icon-white"></i></a>
                     @helper.form(routes.Projects.delete(project.id.get)) {
                         <button type="submit" class='btn btn-danger'><i class="icon-trash icon-white"></i></button>
                     }

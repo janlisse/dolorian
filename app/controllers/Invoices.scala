@@ -39,7 +39,7 @@ object Invoices extends Controller with Secured {
           },
           form => {
             val project = Project.findById(form._1)
-            val invoice = Invoice(NotAssigned, project, form._2, form._3)
+            val invoice = Invoice(NotAssigned, project.get, form._2, form._3)
             Ok(Invoice.create(invoice)).as(Template.MIME_TYPE).
               withHeaders("Content-Disposition" -> "attachment; filename=rechnung.odt")
           })
