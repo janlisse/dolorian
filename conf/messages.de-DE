@@ -1,6 +1,6 @@
 login=Anmelden
 logout=Abmelden
-logout.sucess=Erfolgreich abgemeldet
+logout.success=Erfolgreich abgemeldet
 
 menu.timetracking=Zeiterfassung
 menu.timetracking.quickTrack=Schnellerfassung
