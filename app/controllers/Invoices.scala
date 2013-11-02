@@ -9,25 +9,30 @@ import utils.FormFieldImplicits
 import org.joda.time.DateTime
 import org.apache.commons.io.output.ByteArrayOutputStream
 import models.Template
+import play.api.libs.json.Json
+import models.InvoiceStatus
+import views.html.defaultpages.badRequest
 
 object Invoices extends Controller with Secured {
 
   val invoiceForm = Form(
-    tuple(
+    mapping(
+      "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "projectId" -> longNumber,
-      "invoiceDate" -> jodaDate("dd/MM/yyyy"),
-      "totalHours" -> of(FormFieldImplicits.bigDecimalFormat)))
+      "invoiceDate" -> jodaLocalDate("dd/MM/yyyy"),
+      "totalHours" -> of(FormFieldImplicits.bigDecimalFormat),
+      "status" -> ignored(InvoiceStatus.Created),
+      "invoiceNumber" -> optional(nonEmptyText))(Invoice.apply)(Invoice.unapply))
 
   def index = withAuth {
     username =>
       implicit request =>
-        Ok(views.html.invoiceCreate(invoiceForm, Template.getAll, defaultDate))
+        Ok(views.html.invoiceCreate(invoiceForm, Template.getAll, Invoice.defaultDate))
   }
 
-  def defaultDate: String = {
-    val today = new DateTime
-    val lastMonth = today.minusMonths(1)
-    lastMonth.dayOfMonth().withMaximumValue().toString("dd/MM/yyyy")
+  def survey = withAuth {
+    username =>
+      implicit request => Ok(views.html.invoiceSurvey())
   }
 
   def submit = withAuth {
@@ -35,14 +40,41 @@ object Invoices extends Controller with Secured {
       implicit request =>
         invoiceForm.bindFromRequest.fold(
           errors => {
-            BadRequest(views.html.invoiceCreate(errors, Template.getAll, defaultDate))
+            BadRequest(views.html.invoiceCreate(errors, Template.getAll, Invoice.defaultDate))
           },
-          form => {
-            val project = Project.findById(form._1)
-            val invoice = Invoice(NotAssigned, project.get, form._2, form._3)
+          invoice => {
+            Invoice.save(invoice)
             Ok(Invoice.create(invoice)).as(Template.MIME_TYPE).
               withHeaders("Content-Disposition" -> "attachment; filename=rechnung.odt")
           })
   }
 
+  def list = withAuth {
+    username =>
+      implicit request =>
+        Ok(Json.toJson(Invoice.getAll))
+  }
+
+  def delete(id: Long) = withAuth {
+    username =>
+      implicit request =>
+        Invoice.findById(id).map(invoice => {
+          if (invoice.status == InvoiceStatus.Created) {
+            Invoice.delete(id)
+            Ok("Success")
+          } else BadRequest("Only invoices with status Created can be deleted!")
+        }).getOrElse(BadRequest("Invalid id"))
+  }
+
+  def updateStatus(id: Long) = withAuth(parse.json) {
+    username =>
+      implicit request =>
+        val updateJson = request.body
+        Invoice.findById(id).map(invoice => {
+          val newStatus: InvoiceStatus.InvoiceStatus = InvoiceStatus.withName((updateJson \ "status").as[String])
+          Invoice.updateStatus(id, newStatus)
+          invoice.incrementInvoiceSequence
+          Ok("Success")
+        }).getOrElse(BadRequest("Invalid id"))
+  }
 }

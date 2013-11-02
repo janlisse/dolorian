@@ -28,12 +28,11 @@ class CustomerSpec extends FlatSpec with ShouldMatchers {
     }
   }
 
-  "A Customer" should "increment invoiceSequence on get" in {
+  "A Customer" should "increment invoiceSequence" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val customerId = Customer.save(testCustomer).get
       val customer = Customer.findById(customerId).get
-      val seq = customer.getAndIncrementSequence
-      seq should equal(Some(1))
+      customer.incrementSequence
       val customerWithIncrementedSeq = Customer.findById(customerId).get
       customerWithIncrementedSeq.invoiceSequence should equal(Some(2))
     }

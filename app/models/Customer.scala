@@ -13,11 +13,10 @@ case class Address(street: String, streetNumber: String, zipCode: String, city: 
 
 case class Customer(id: anorm.Pk[Long] = NotAssigned, name: String, shortName: String, address: Address, invoiceSequence: Option[Int] = None) {
 
-  def getAndIncrementSequence = {
+  def incrementSequence = {
     invoiceSequence map { seq =>
       val update = copy(invoiceSequence = Some(seq + 1))
       Customer.update(id.get, update)
-      seq
     }
   }
 }

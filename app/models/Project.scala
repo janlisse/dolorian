@@ -59,13 +59,9 @@ object Project extends S3Support {
   }
 
   def delete(id: Long) {
-    val project = Project.findById(id)
     DB.withConnection {
       implicit connection =>
-        SQL("""
-          DELETE FROM project where id = {id}
-             """).on(
-          'id -> id).executeUpdate
+        SQL("DELETE FROM project where id = {id}").on('id -> id).executeUpdate
     }
   }
 

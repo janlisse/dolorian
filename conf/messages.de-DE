@@ -13,6 +13,7 @@ menu.projects.list=Projekte anzeigen
 
 menu.invoices=Rechnungen
 menu.invoices.create=Rechnung erstellen
+menu.invoices.survey=Rechungsverwaltung
 
 menu.templates=Vorlagen
 menu.template.create=Vorlage anlegen
@@ -120,6 +121,12 @@ invoice.create.title=Rechnung erstellen
 invoice.create.template=Vorlage
 invoice.create.date=Datum
 invoice.create.totalHours=Arbeitsstunden
+invoice.number.filter=Rechnungsnummer eingeben
+invoice.status.filter=-- Status wählen --
+invoices.list.empty=Keine Rechnungen gefunden
+invoice.status.created=Erstellt
+invoice.status.sent=Verschickt
+invoice.status.paid=Bezahlt
 
 template.name=Name
 template.key=Datei-Id

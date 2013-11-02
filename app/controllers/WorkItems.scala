@@ -35,7 +35,8 @@ object WorkItems extends Controller with Secured {
 
   implicit val ValidationErrorWrites =
     Writes[ValidationError](e => {
-      JsString(Messages(e.message, e.args : _*))})
+      JsString(Messages(e.message, e.args: _*))
+    })
 
   implicit val jsonValidateErrorWrites = (
     (JsPath \ "path").write[JsPath] and

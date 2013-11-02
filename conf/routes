@@ -41,8 +41,13 @@ POST        /template/:id/delete               controllers.Templates.delete(id: 
 
 GET         /invoices/add                      controllers.Invoices.index
 POST        /invoices/submit                   controllers.Invoices.submit
+GET         /invoices/survey                   controllers.Invoices.survey
+GET         /invoices/list                     controllers.Invoices.list
+DELETE      /invoices/:id					   controllers.Invoices.delete(id:Long)
+PUT         /invoices/:id					   controllers.Invoices.updateStatus(id:Long)
 
-# Map static resources 
-GET         /assets/*file                      controllers.Assets.at(path="/public", file)
+# Map static resources
+GET         /lib/require.js                    controllers.WebJarAssets.requirejs
 GET         /webjars/*file                     controllers.WebJarAssets.at(file)
 GET         /javascriptRoutes                  controllers.Application.javascriptRoutes
+GET         /*file                             controllers.Assets.at(path="/public", file)
