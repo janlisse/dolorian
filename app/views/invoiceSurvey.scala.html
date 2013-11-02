@@ -6,7 +6,7 @@
 	<script data-main="/javascripts/angular/app" src='/lib/require.js' type='text/javascript'></script>
 }
 
-@main(title = Messages("invoices.survey"), headContent) {
+@main(title = Messages("invoice.survey"), headContent) {
 
     <div ng-controller="InvoiceListCtrl" class="invoiceForm" ng-cloak>
     	
@@ -20,7 +20,7 @@
 			</select>
 		</div>
 		
-		<div class="alert alert-info" ng-show="!(invoices | filter:query | filter: search).length">@Messages("invoices.list.empty")</div>
+		<div class="alert alert-info" ng-show="!(invoices | filter:query | filter: search).length">@Messages("invoice.list.empty")</div>
 		
     	<ul>
     		<li ng-repeat="invoice in invoices | filter:query | filter: search | orderBy:orderProp:true" ng-mouseenter="toggleActive(invoice)" ng-mouseleave="toggleActive(invoice)" ng-class="{'active':invoice.active,'paid':invoice.paid}">
