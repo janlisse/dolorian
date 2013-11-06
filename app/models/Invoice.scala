@@ -34,7 +34,7 @@ case class Invoice(id: anorm.Pk[Long], projectId: Long, invoiceDate: LocalDate, 
   def amountTotal = amount + amountTaxes
   def amountTotalFormatted = Invoice.formatMoney(amountTotal)
   def invoiceDateFormatted = invoiceDate.toString("dd.MM.yyyy")
-  def invoiceMonth = invoiceDate.toString("MMMM")
+  def invoiceMonth = invoiceDate.toString("MMMM", Locale.GERMAN)
   def invoiceYear = invoiceDate.toString("yyyy")
   def generateInvoiceNumber = {
     invoiceNumber.getOrElse({
@@ -100,7 +100,7 @@ object Invoice {
             "invoice_date" -> invoice.invoiceDate,
             "total_hours" -> invoice.workingHoursTotal,
             "invoice_status" -> invoice.status.toString,
-            "invoice_number" -> invoice.generateInvoiceNumber).executeInsert()
+            "invoice_number" -> invoice.invoiceNumber).executeInsert()
     }
   }
 

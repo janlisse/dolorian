@@ -12,6 +12,7 @@ import models.Template
 import play.api.libs.json.Json
 import models.InvoiceStatus
 import views.html.defaultpages.badRequest
+import play.api.i18n.Lang
 
 object Invoices extends Controller with Secured {
 
@@ -43,8 +44,9 @@ object Invoices extends Controller with Secured {
             BadRequest(views.html.invoiceCreate(errors, Template.getAll, Invoice.defaultDate))
           },
           invoice => {
-            Invoice.save(invoice)
-            Ok(Invoice.create(invoice)).as(Template.MIME_TYPE).
+            val invoiceWithNumber = invoice.copy(invoiceNumber = Some(invoice.generateInvoiceNumber))
+            Invoice.save(invoiceWithNumber)
+            Ok(Invoice.create(invoiceWithNumber)).as(Template.MIME_TYPE).
               withHeaders("Content-Disposition" -> "attachment; filename=rechnung.odt")
           })
   }
