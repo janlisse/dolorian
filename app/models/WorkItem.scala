@@ -14,25 +14,18 @@ import org.joda.time.PeriodType
 import org.joda.time.LocalDate
 import play.api.Play
 import play.api.i18n.Messages
+import org.joda.time.format.PeriodFormatterBuilder
 
-trait WorkItem {
+trait WorkItem extends TimeSupport {
 
   def id: anorm.Pk[Long]
   def duration: Period
   def date: LocalDate
   def description: String
   def projectId: Long
+  val durationFormatted = duration.toString(timeParser)
+  val dateFormatted = date.toString("dd.MM.YYYY")
 
-  val durationFormatted = {
-    val total = duration
-    val hours = total.getHours
-    val minutes = total.getMinutes
-    f"$hours%02d:$minutes%02d"
-  }
-
-  val dateFormatted = {
-    date.toString("dd.MM.YYYY")
-  }
 }
 
 case class SimpleWorkItem(id: anorm.Pk[Long], projectId: Long,
@@ -46,12 +39,8 @@ case class SimpleWorkItem(id: anorm.Pk[Long], projectId: Long,
     duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else (roundingFactor - mod)).normalizedStandard
   }
 
-  override val durationFormatted = {
-    val total = roundedDuration
-    val hours = total.getHours
-    val minutes = total.getMinutes
-    f"$hours%02d:$minutes%02d"
-  }
+  override val durationFormatted = roundedDuration.toString(timeParser)
+
 }
 
 case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime,
@@ -60,11 +49,11 @@ case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: Date
 
   def duration: Period = {
     val endTimeMinusBreak = endTime.minusMinutes(breakTime.getOrElse(0))
-    new Period(startTime, endTimeMinusBreak)
+    new Period(startTime, endTimeMinusBreak).normalizedStandard()
   }
 }
 
-object SimpleWorkItem {
+object SimpleWorkItem extends TimeSupport {
 
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
@@ -81,7 +70,7 @@ object SimpleWorkItem {
         case JsString(periodString) => parsePeriod(periodString) match {
           case Some(period) => {
             if (period.toStandardMinutes().getMinutes() < roundingFactor / 2) {
-              JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration.min.length", SimpleWorkItem.roundingFactor/2))))
+              JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration.min.length", SimpleWorkItem.roundingFactor / 2))))
             } else JsSuccess(period)
           }
           case None => JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration.format"))))
@@ -89,24 +78,17 @@ object SimpleWorkItem {
         case _ => JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration"))))
       }
     }
-
-    private def parsePeriod(input: String): Option[Period] = {
-      scala.util.control.Exception.allCatch[Period] opt (timeParser.parsePeriod(input))
-    }
   }
 
   implicit val simpleWorkItemReads: Reads[SimpleWorkItem] = (
     (JsPath \ "projectId").read[Long] and
     (JsPath \ "date").read[LocalDate] and
     (JsPath \ "duration").read[org.joda.time.Period] and
-    (JsPath \ "description").read[String](minLength[String](3))
-    )((projectId, date, duration, description) => SimpleWorkItem(NotAssigned, projectId, date, duration, description))
+    (JsPath \ "description").read[String](minLength[String](3)))((projectId, date, duration, description) => SimpleWorkItem(NotAssigned, projectId, date, duration, description))
 
-  val timeParser = new PeriodFormatterBuilder().appendHours.appendSeparator(":").appendMinutes.toFormatter
-  
 }
 
-object WorkItem {
+object WorkItem extends TimeSupport {
 
   val workItemParser = {
     get[Pk[Long]]("id") ~
@@ -205,25 +187,27 @@ object WorkItem {
   }
 
   def totalHours(workItems: List[WorkItem]) = {
-    var hoursTotal: Int = 0
-    var minutesTotal: Int = 0
-    for (workItem <- workItems) {
-      val hours = workItem.duration.getHours
-      hoursTotal += hours
-      val minutes = workItem.duration.getMinutes
-      minutesTotal += minutes
+    def sum(workItems: List[WorkItem]): Period = workItems match {
+      case x :: tail => x.duration.plus(sum(tail))
+      case Nil => Period.ZERO
     }
-    hoursTotal += minutesTotal / 60
-    minutesTotal %= 60
-    f"$hoursTotal%02d:$minutesTotal%02d"
+    sum(workItems).normalizedStandard().toString(timeParser)
   }
-
 }
 
-/**
- * Helper for pagination.
- */
-case class Page[A](items: Seq[A], page: Int, offset: Long, total: Long) {
-  lazy val prev = Option(page - 1).filter(_ >= 0)
-  lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
+trait TimeSupport {
+
+  val timeParser = new PeriodFormatterBuilder()
+    .printZeroAlways()
+    .minimumPrintedDigits(2)
+    .appendHours
+    .appendSeparator(":")
+    .printZeroAlways()
+    .minimumPrintedDigits(2)
+    .appendMinutes
+    .toFormatter
+
+  def parsePeriod(input: String): Option[Period] = {
+    scala.util.control.Exception.allCatch[Period] opt (timeParser.parsePeriod(input).normalizedStandard())
+  }
 }

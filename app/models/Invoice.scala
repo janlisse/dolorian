@@ -107,13 +107,8 @@ object Invoice {
   def updateStatus(id: Long, status: InvoiceStatus.InvoiceStatus) = {
     DB.withConnection { implicit connection =>
       SQL(
-        """
-          update invoice
-          set invoice_status = {status}
-          where id = {id}
-        """).on(
-          "id" -> id,
-          "status" -> status.toString).executeUpdate()
+        "update invoice set invoice_status = {status} where id = {id}")
+        .on("id" -> id, "status" -> status.toString).executeUpdate()
     }
   }
 
@@ -151,7 +146,7 @@ object Invoice {
       "invoiceDate" -> invoice.invoiceDateFormatted,
       "invoiceMonth" -> invoice.invoiceMonth,
       "invoiceYear" -> invoice.invoiceYear,
-      "invoiceNumber" -> invoice.invoiceNumber,
+      "invoiceNumber" -> invoice.invoiceNumber.get,
       "description" -> invoice.projectDescription,
       "amount" -> invoice.amountFormatted,
       "amountTaxes" -> invoice.amountTaxesFormatted,
