@@ -90,6 +90,17 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
       total should equal("05:09")
     }
   }
+  
+  "WorkItem" should "calculate sum of durations without normalizing hours" in {
+    running(FakeApplication()) {
+      val workitem = SimpleWorkItem(NotAssigned, 1l, new LocalDate(), Period.hours(15).withMinutes(20),"test")
+      val workitem2 = SimpleWorkItem(NotAssigned, 1l, new LocalDate(), Period.hours(20),"test")
+      val workitem3 = SimpleWorkItem(NotAssigned, 1l, new LocalDate(), Period.hours(60),"test")
+      val workitem4 = SimpleWorkItem(NotAssigned, 1l, new LocalDate(), Period.hours(15),"test")
+      val total = WorkItem.totalHours(List(workitem, workitem2, workitem3, workitem4))
+      total should equal("110:20")
+    }
+  }
 
 }
 

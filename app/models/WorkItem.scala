@@ -39,8 +39,6 @@ case class SimpleWorkItem(id: anorm.Pk[Long], projectId: Long,
     duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else (roundingFactor - mod)).normalizedStandard
   }
 
-  override val durationFormatted = roundedDuration.toString(timeParser)
-
 }
 
 case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime,
@@ -191,7 +189,7 @@ object WorkItem extends TimeSupport {
       case x :: tail => x.duration.plus(sum(tail))
       case Nil => Period.ZERO
     }
-    sum(workItems).normalizedStandard().toString(timeParser)
+    sum(workItems).normalizedStandard(PeriodType.time).toString(timeParser)
   }
 }
 
