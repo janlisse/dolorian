@@ -13,17 +13,25 @@ import com.amazonaws.services.s3.model.{ GetObjectRequest, ObjectMetadata, Canne
 import java.util.UUID
 import java.io.InputStream
 import java.io.File
-import models.S3Configuration
 import org.joda.time.LocalDate
 import models.Template
-import models.ClasspathTemplate
 import java.io.FileReader
+import com.google.inject.Guice
+import models._
+
+import com.tzavellas.sse.guice.ScalaModule
+import models.S3TemplateStorage
 
 object Global extends GlobalSettings {
 
+  private lazy val injector = Guice.createInjector(new Bindings)
+      
   override def onStart(app: Application) {
-    S3Configuration
     InitialData.insert()
+  }
+  
+  override def getControllerInstance[A](clazz: Class[A]) = {
+    injector.getInstance(clazz)
   }
 }
 
@@ -34,7 +42,7 @@ object InitialData {
     if (Template.getAll.isEmpty) {
       val invoiceKey = "/public/templates/dis_template.odt"
       val file = Play.application.getFile(invoiceKey)
-      Template.saveToDB(ClasspathTemplate(Id(1l), "defaultInvoiceTemplate", "key"))
+      Template.save(Template(Id(1l), "defaultInvoiceTemplate", "key"))
     }
 
     if (Play.isDev && User.findAll.isEmpty) {
@@ -46,7 +54,12 @@ object InitialData {
         DetailedWorkItem(Id(2l), 1l, new DateTime(2013, 7, 14, 10, 15), new DateTime(2013, 7, 14, 18, 0), None, new LocalDate(),"anything")).foreach(WorkItem.save)
     }
   }
+}
 
+class Bindings extends ScalaModule {
+  def configure() {
+    bind[TemplateStorage].to[S3TemplateStorage]
+  }
 }
 
 

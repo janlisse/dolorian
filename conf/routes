@@ -17,13 +17,13 @@ GET     	/customers/:id              	   controllers.Customers.edit(id:Long)
 POST    	/customers/:id                     controllers.Customers.update(id:Long)
 POST        /customers/:id/delete              controllers.Customers.delete(id: Long)
 
-GET         /workItems/add                     controllers.WorkItems.add
-GET         /workItems/list        			   controllers.WorkItems.list(start: Option[String] ?= None, end: Option[String] ?= None)
-GET         /workItems/export                  controllers.WorkItems.export(start: Option[String] ?= None, end: Option[String] ?= None, projectId:Long)
-POST        /workItems/submit                  controllers.WorkItems.submit
-POST        /workItems/submitSimple            controllers.WorkItems.submitSimpleWorkItem
-POST        /workItems/:id/delete              controllers.WorkItems.delete(id: Long)
-GET         /workItems/quickTrack              controllers.WorkItems.quickTrack
+GET         /workItems/add                     @controllers.WorkItems.add
+GET         /workItems/list        			   @controllers.WorkItems.list(start: Option[String] ?= None, end: Option[String] ?= None)
+GET         /workItems/export                  @controllers.WorkItems.export(start: Option[String] ?= None, end: Option[String] ?= None, projectId:Long)
+POST        /workItems/submit                  @controllers.WorkItems.submit
+POST        /workItems/submitSimple            @controllers.WorkItems.submitSimpleWorkItem
+POST        /workItems/:id/delete              @controllers.WorkItems.delete(id: Long)
+GET         /workItems/quickTrack              @controllers.WorkItems.quickTrack
 
 # Projects
 GET         /projects/list                     controllers.Projects.list
@@ -34,17 +34,17 @@ GET     	/projects/:id              	       controllers.Projects.edit(id:Long)
 POST    	/projects/:id                      controllers.Projects.update(id:Long)
 
 #Templates
-GET         /template/add               	   controllers.Templates.add
-GET         /template/list                     controllers.Templates.list
-POST        /template/submit                   controllers.Templates.submit
-POST        /template/:id/delete               controllers.Templates.delete(id: Long)
+GET         /template/add               	   @controllers.Templates.add
+GET         /template/list                     @controllers.Templates.list
+POST        /template/submit                   @controllers.Templates.submit
+POST        /template/:id/delete               @controllers.Templates.delete(id: Long)
 
-GET         /invoices/add                      controllers.Invoices.index
-POST        /invoices/submit                   controllers.Invoices.submit
-GET         /invoices/survey                   controllers.Invoices.survey
-GET         /invoices/list                     controllers.Invoices.list
-DELETE      /invoices/:id					   controllers.Invoices.delete(id:Long)
-PUT         /invoices/:id					   controllers.Invoices.updateStatus(id:Long)
+GET         /invoices/add                      @controllers.Invoices.index
+POST        /invoices/submit                   @controllers.Invoices.submit
+GET         /invoices/survey                   @controllers.Invoices.survey
+GET         /invoices/list                     @controllers.Invoices.list
+DELETE      /invoices/:id					   @controllers.Invoices.delete(id:Long)
+PUT         /invoices/:id					   @controllers.Invoices.updateStatus(id:Long)
 
 # Map static resources
 GET         /lib/require.js                    controllers.WebJarAssets.requirejs

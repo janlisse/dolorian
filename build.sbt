@@ -13,7 +13,9 @@ libraryDependencies ++= Seq(
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
     "net.sf.jodreports" % "jodreports" % "2.4.0",
     "com.amazonaws" % "aws-java-sdk" % "1.3.11",
-    "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
+    "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test",
+    "com.google.inject" % "guice" % "3.0",
+    "com.tzavellas" % "sse-guice" % "0.7.1"
  )
  
 play.Project.playScalaSettings

@@ -50,7 +50,7 @@ case class Invoice(id: anorm.Pk[Long], projectId: Long, invoiceDate: LocalDate, 
 
 object Invoice {
 
-  import collection.JavaConverters._
+  
   import models.AnormExtension._
   import play.api.libs.json._
   import play.api.libs.functional.syntax._
@@ -133,25 +133,5 @@ object Invoice {
         SQL("DELETE FROM invoice where id = {id}").on('id -> id).executeUpdate
     }
   }
-
-  def create(invoice: Invoice) = {
-    val baos = new ByteArrayOutputStream
-    val documentTemplateFactory = new DocumentTemplateFactory
-    val template = Template.findById(invoice.project.invoiceTemplateId)
-    val jodTemplate = documentTemplateFactory.getTemplate(template.inputStream)
-    val dataMap = Map(
-      "hours" -> invoice.workingHoursTotal,
-      "hourlyRate" -> invoice.hourlyRateFormatted,
-      "projectNumber" -> invoice.project.number,
-      "invoiceDate" -> invoice.invoiceDateFormatted,
-      "invoiceMonth" -> invoice.invoiceMonth,
-      "invoiceYear" -> invoice.invoiceYear,
-      "invoiceNumber" -> invoice.invoiceNumber.get,
-      "description" -> invoice.projectDescription,
-      "amount" -> invoice.amountFormatted,
-      "amountTaxes" -> invoice.amountTaxesFormatted,
-      "amountTotal" -> invoice.amountTotalFormatted)
-    jodTemplate.createDocument(dataMap.toMap.asJava, baos)
-    baos.toByteArray
-  }
+  
 }

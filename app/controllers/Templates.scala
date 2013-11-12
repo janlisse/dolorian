@@ -4,21 +4,20 @@ import play.api.mvc.Controller
 import play.api.data.Form
 import play.api.data.Forms._
 import anorm.NotAssigned
-import models.{ Template, S3Template, Project }
+import models.{ Template, Project }
 import utils.FormFieldImplicits
 import play.api.i18n.Messages
+import com.google.inject._
+import models.TemplateStorage
 
+@Singleton
+class Templates @Inject() (templateStorage: TemplateStorage) extends Controller with Secured {
 
-object Templates extends Controller with Secured {
-
-  
   val templateForm = Form(
     mapping(
       "id" -> ignored(NotAssigned: anorm.Pk[Long]),
       "name" -> nonEmptyText,
-      "key" -> ignored(""),
-      "type" -> ignored("s3")
-      )(S3Template.apply)(S3Template.unapply))
+      "key" -> ignored(""))(Template.apply)(Template.unapply))
 
   def add = withAuth {
     username =>
@@ -49,7 +48,8 @@ object Templates extends Controller with Secured {
                 BadRequest(views.html.templateCreate(errors))
               },
               template => {
-                Template.save(template, file.ref.file, file.filename)
+                val key = templateStorage.save(file.ref.file, file.filename, Template.MIME_TYPE)
+                Template.save(template.copy(key = key))
                 Redirect(routes.Templates.list).flashing("success" -> Messages("template.create.success"))
               })
         }.getOrElse(Redirect(routes.Templates.add()).flashing("error" -> Messages("template.missing.file")))

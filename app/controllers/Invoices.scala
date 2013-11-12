@@ -13,8 +13,13 @@ import play.api.libs.json.Json
 import models.InvoiceStatus
 import views.html.defaultpages.badRequest
 import play.api.i18n.Lang
+import net.sf.jooreports.templates.DocumentTemplateFactory
+import com.google.inject._
+import models.TemplateStorage
+import collection.JavaConverters._
 
-object Invoices extends Controller with Secured {
+@Singleton
+class Invoices @Inject() (templateStorage: TemplateStorage) extends Controller with Secured {
 
   val invoiceForm = Form(
     mapping(
@@ -46,7 +51,24 @@ object Invoices extends Controller with Secured {
           invoice => {
             val invoiceWithNumber = invoice.copy(invoiceNumber = Some(invoice.generateInvoiceNumber))
             Invoice.save(invoiceWithNumber)
-            Ok(Invoice.create(invoiceWithNumber)).as(Template.MIME_TYPE).
+            val baos = new ByteArrayOutputStream
+            val documentTemplateFactory = new DocumentTemplateFactory
+            val template = Template.findById(invoice.project.invoiceTemplateId)
+            val jodTemplate = documentTemplateFactory.getTemplate(templateStorage.load(template.key))
+            val dataMap = Map(
+              "hours" -> invoice.workingHoursTotal,
+              "hourlyRate" -> invoice.hourlyRateFormatted,
+              "projectNumber" -> invoice.project.number,
+              "invoiceDate" -> invoice.invoiceDateFormatted,
+              "invoiceMonth" -> invoice.invoiceMonth,
+              "invoiceYear" -> invoice.invoiceYear,
+              "invoiceNumber" -> invoice.invoiceNumber.get,
+              "description" -> invoice.projectDescription,
+              "amount" -> invoice.amountFormatted,
+              "amountTaxes" -> invoice.amountTaxesFormatted,
+              "amountTotal" -> invoice.amountTotalFormatted)
+            jodTemplate.createDocument(dataMap.toMap.asJava, baos)
+            Ok(baos.toByteArray).as(Template.MIME_TYPE).
               withHeaders("Content-Disposition" -> "attachment; filename=rechnung.odt")
           })
   }

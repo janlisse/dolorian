@@ -22,8 +22,10 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.data.validation.ValidationError
 import models.WorkItem._
+import com.google.inject._
 
-object WorkItems extends Controller with Secured {
+@Singleton
+class WorkItems @Inject()(templateStorage: TemplateStorage) extends Controller with Secured {
 
   def currentMonthStart = new DateTime().dayOfMonth().withMinimumValue()
   def currentMonthEnd = new DateTime().plusMonths(1).dayOfMonth().withMinimumValue()
@@ -104,7 +106,7 @@ object WorkItems extends Controller with Secured {
         val baos = new ByteArrayOutputStream
         val documentTemplateFactory = new DocumentTemplateFactory
         val template = Template.findById(project.reportTemplateId)
-        val jodTemplate = documentTemplateFactory.getTemplate(template.inputStream)
+        val jodTemplate = documentTemplateFactory.getTemplate(templateStorage.load(template.key))
 
         /** necessary conversion because jodreports/freemarker doesn't work with raw Scala types **/
         val javaWorkItems = workItems.map { item =>

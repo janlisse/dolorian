@@ -31,7 +31,7 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
   
   "A SimpleWorkItem" should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val templateId = Template.saveToDB(ClasspathTemplate(NotAssigned, "defaultInvoiceTemplate", "key")).get
+      val templateId = Template.save(Template(NotAssigned, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(NotAssigned, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc", customerId, templateId, templateId,new BigDecimal(50)))
       val id = WorkItem.save(SimpleWorkItem(NotAssigned, projectId.get,  new LocalDate, Duration.standardMinutes(10).toPeriod,"description"))
@@ -41,7 +41,7 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "WorkItems" should "be retrievable by projectId" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val templateId = Template.saveToDB(ClasspathTemplate(NotAssigned, "defaultInvoiceTemplate", "key")).get
+      val templateId = Template.save(Template(NotAssigned, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(NotAssigned, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc", customerId, templateId, templateId,new BigDecimal(50)))
       val projectId2 = Project.save(Project(NotAssigned, "testProject2", "666-cv", customerId, templateId, templateId,new BigDecimal(50)))
@@ -54,7 +54,7 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "WorkItems" should "be retrieved grouped by Project" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val templateId = Template.saveToDB(ClasspathTemplate(NotAssigned, "defaultInvoiceTemplate", "key")).get
+      val templateId = Template.save(Template(NotAssigned, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(NotAssigned, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc", customerId, templateId, templateId,new BigDecimal(50)))
       val projectId2 = Project.save(Project(NotAssigned, "testProject2", "666-cv", customerId, templateId, templateId,new BigDecimal(50)))
@@ -71,7 +71,7 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
 
   "WorkItems" should "be retrieved by Project, Month and Year" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val templateId = Template.saveToDB(ClasspathTemplate(NotAssigned, "defaultInvoiceTemplate", "key")).get
+      val templateId = Template.save(Template(NotAssigned, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(NotAssigned, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(NotAssigned, "testProject", "1234-xc", customerId, 1l, 1l,new BigDecimal(50))).get
       val id = WorkItem.save(DetailedWorkItem(NotAssigned, projectId, new DateTime(2013, 9, 10, 10, 0), new DateTime(), Some(30), new LocalDate(), "description"))

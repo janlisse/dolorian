@@ -19,7 +19,7 @@ case class Project(id: anorm.Pk[Long], number: String, description: String, cust
   }
 }
 
-object Project extends S3Support {
+object Project {
 
   val projectParser = {
     get[Pk[Long]]("id") ~
