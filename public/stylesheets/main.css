@@ -1,59 +1,61 @@
 #breakTime {
-    width : 35px;
-
+	width: 35px;
 }
 
 #contentWrapper {
-    padding-top: 60px;
+	padding-top: 60px;
 }
 
 .sidebar-nav-fixed {
-    padding: 9px 0;
-    position:fixed;
-    left:20px;
-    top:60px;
-    width:250px;
+	padding: 9px 0;
+	position: fixed;
+	left: 20px;
+	top: 60px;
+	width: 250px;
 }
 
 #content {
-    margin-left: 270px;
+	margin-left: 270px;
 }
 
 #content table td:last-of-type {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 footer {
-    padding-top: .5em;
+	padding-top: .5em;
 }
 
 .nav-caption {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .btn-info {
-    float: left;
-    margin-right: .5em;
+	float: left;
+	margin-right: .5em;
 }
 
 .input-tiny {
 	width: 40px;
 }
 
-.bootstrap-filestyle label  {
+.bootstrap-filestyle label {
 	margin-bottom: 10px;
 }
-
 
 .floatNextItem {
 	float: left;
 	margin-right: .5em;
 }
 
-.dropdown:hover #topmenu {
-    display: block;
+#topmenu {
+	margin: 0;
 }
 
-[ng\:cloak], [ng-cloak], .ng-cloak {
-  display: none !important;
+.dropdown:hover #topmenu {
+	display: block;
+}
+
+[ng\:cloak],[ng-cloak],.ng-cloak {
+	display: none !important;
 }
