@@ -62,7 +62,7 @@ class Invoices @Inject() (templateStorage: TemplateStorage) extends Controller w
               "invoiceDate" -> invoice.invoiceDateFormatted,
               "invoiceMonth" -> invoice.invoiceMonth,
               "invoiceYear" -> invoice.invoiceYear,
-              "invoiceNumber" -> invoice.invoiceNumber.get,
+              "invoiceNumber" -> invoiceWithNumber.invoiceNumber.get,
               "description" -> invoice.projectDescription,
               "amount" -> invoice.amountFormatted,
               "amountTaxes" -> invoice.amountTaxesFormatted,
