@@ -51,7 +51,7 @@ class WorkItems @Inject()(templateStorage: TemplateStorage) extends Controller w
       "startTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "endTime" -> jodaDate("dd/MM/yyyy:HH:mm"),
       "breakTime" -> optional(number),
-      "date" -> ignored(new LocalDate()),
+      "date" -> jodaLocalDate("dd/MM/yyyy"),
       "description" -> nonEmptyText)(DetailedWorkItem.apply)(DetailedWorkItem.unapply).verifying(Messages("workitem.validation.time"), {
         result => result.duration.toStandardMinutes.isGreaterThan(Minutes.ZERO)
       }))
