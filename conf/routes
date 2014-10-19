@@ -24,6 +24,8 @@ POST        /workItems/submit                  @controllers.WorkItems.submit
 POST        /workItems/submitSimple            @controllers.WorkItems.submitSimpleWorkItem
 POST        /workItems/:id/delete              @controllers.WorkItems.delete(id: Long)
 GET         /workItems/quickTrack              @controllers.WorkItems.quickTrack
+GET     	/workItems/:id              	   @controllers.WorkItems.edit(id:Long)
+POST    	/workItems/:id                     @controllers.WorkItems.update(id:Long)
 
 # Projects
 GET         /projects/list                     controllers.Projects.list

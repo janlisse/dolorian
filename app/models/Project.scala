@@ -38,7 +38,7 @@ object Project {
   def getAll: List[Project] = {
     DB.withConnection {
       implicit c =>
-        val select = SQL("Select * from project")
+        val select = SQL("Select * from project order by id desc")
         select.as(projectParser *)
     }
   }

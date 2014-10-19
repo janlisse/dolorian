@@ -100,9 +100,6 @@ object WorkItem extends TimeSupport {
         case (id ~ projectId ~
           Some(startTime) ~ Some(endTime) ~ breakTime ~
           None ~ date ~ description) => DetailedWorkItem(id, projectId, startTime, endTime, breakTime, date, description)
-        case (id ~ projectId ~
-          None ~ None ~ None ~ Some(duration) ~
-          date ~ description) => SimpleWorkItem(id, projectId, date, Duration.millis(duration).toPeriod(PeriodType.time), description)
       }
   }
 
@@ -159,6 +156,13 @@ object WorkItem extends TimeSupport {
           on('id -> id).executeUpdate
     }
   }
+  
+  def findById(id: Long): Option[DetailedWorkItem] = {
+    DB.withConnection {
+      implicit c =>
+        SQL("Select * from work_item w where w.id = {id}").on("id" -> id) as workItemParser.singleOpt
+    }
+  }
 
   def save(workItem: DetailedWorkItem): Option[Long] = {
     DB.withConnection {
@@ -181,6 +185,25 @@ object WorkItem extends TimeSupport {
             "duration" -> workItem.duration.toStandardDuration().getMillis(),
             "date" -> workItem.date,
             "description" -> workItem.description).executeInsert()
+    }
+  }
+
+  def update(id: Long, item: DetailedWorkItem) = {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+          update work_item
+          set project_id = {project_id}, start_time = {start_time}, end_time = {end_time}, break_time = {break_time},
+          date = {date}, description = {description}
+          where id = {id}
+        """).on(
+          'id -> id,
+          "project_id" -> item.projectId,
+          "start_time" -> item.startTime,
+          "end_time" -> item.endTime,
+          "break_time" -> item.breakTime,
+          "date" -> item.date,
+          "description" -> item.description).executeUpdate()
     }
   }
 

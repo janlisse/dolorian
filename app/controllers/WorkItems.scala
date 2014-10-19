@@ -137,6 +137,26 @@ class WorkItems @Inject()(templateStorage: TemplateStorage) extends Controller w
           invalid = { errors => BadRequest(Json.toJson(errors))
           })
   }
+  
+  def edit(id: Long) = withAuth {
+    username =>
+      implicit request =>
+        WorkItem.findById(id).map { workItem =>
+          Ok(views.html.workItemEdit(id, timeForm.fill(workItem)))
+        }.getOrElse(NotFound)
+  }
+
+  def update(id: Long) = withAuth {
+    username =>
+      implicit request =>
+        timeForm.bindFromRequest.fold(
+          errors => BadRequest(views.html.workItemEdit(id, errors)),
+          workItem => {
+            WorkItem.update(id, workItem)
+            Redirect(routes.WorkItems.list(None,None)).flashing("success" -> Messages("workitem.edit.success"))
+          })
+  }
+  
 
   def mapRange(startOption: Option[String], endOption: Option[String]) = {
     val startDate = startOption.map(start => dateStringFormat.parseDateTime(start)).getOrElse(currentMonthStart)
