@@ -11,7 +11,7 @@ object Application extends Controller with Secured {
       implicit request =>
         Ok(views.html.index(user.name))
   }
-  
+
   def javascriptRoutes = Action { implicit request =>
     import routes.javascript._
     Ok(

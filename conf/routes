@@ -1,55 +1,11 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
-# ~~~~
 
-GET         /                                  controllers.Application.index
 
-# Authentication
-GET         /login                             controllers.Authentication.login
-POST        /login                             controllers.Authentication.authenticate
-GET         /logout                            controllers.Authentication.logout
+# Delegate routes to sub-projects
 
-# Customers
-GET         /customers/list                    controllers.Customers.list
-GET     	/customers/new              	   controllers.Customers.create
-POST    	/customers                  	   controllers.Customers.save
-GET     	/customers/:id              	   controllers.Customers.edit(id:Long)
-POST    	/customers/:id                     controllers.Customers.update(id:Long)
-POST        /customers/:id/delete              controllers.Customers.delete(id: Long)
+->  / common.Routes
 
-GET         /workItems/add                     @controllers.WorkItems.add
-GET         /workItems/list        			   @controllers.WorkItems.list(start: Option[String] ?= None, end: Option[String] ?= None)
-GET         /workItems/export                  @controllers.WorkItems.export(start: Option[String] ?= None, end: Option[String] ?= None, projectId:Long)
-POST        /workItems/submit                  @controllers.WorkItems.submit
-POST        /workItems/submitSimple            @controllers.WorkItems.submitSimpleWorkItem
-POST        /workItems/:id/delete              @controllers.WorkItems.delete(id: Long)
-GET         /workItems/quickTrack              @controllers.WorkItems.quickTrack
-GET     	/workItems/:id              	   @controllers.WorkItems.edit(id:Long)
-POST    	/workItems/:id                     @controllers.WorkItems.update(id:Long)
+->  / api.Routes
 
-# Projects
-GET         /projects/list                     controllers.Projects.list
-GET         /projects/add                      controllers.Projects.add
-POST        /projects/:id/delete               controllers.Projects.delete(id: Long)
-POST        /projects/submit                   controllers.Projects.submit
-GET     	/projects/:id              	       controllers.Projects.edit(id:Long)
-POST    	/projects/:id                      controllers.Projects.update(id:Long)
-
-#Templates
-GET         /template/add               	   @controllers.Templates.add
-GET         /template/list                     @controllers.Templates.list
-POST        /template/submit                   @controllers.Templates.submit
-POST        /template/:id/delete               @controllers.Templates.delete(id: Long)
-
-GET         /invoices/add                      @controllers.Invoices.index
-POST        /invoices/submit                   @controllers.Invoices.submit
-GET         /invoices/survey                   @controllers.Invoices.survey
-GET         /invoices/list                     @controllers.Invoices.list
-DELETE      /invoices/:id					   @controllers.Invoices.delete(id:Long)
-PUT         /invoices/:id					   @controllers.Invoices.updateStatus(id:Long)
-
-# Map static resources
-GET         /lib/require.js                    controllers.WebJarAssets.requirejs
-GET         /webjars/*file                     controllers.WebJarAssets.at(file)
-GET         /javascriptRoutes                  controllers.Application.javascriptRoutes
-GET         /*file                             controllers.Assets.at(path="/public", file)
+->  / web.Routes
