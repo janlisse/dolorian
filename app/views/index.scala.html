@@ -1,9 +1,0 @@
-@(username: String)(implicit flash: Flash, session: Session, lang: Lang)
-
-@import play.api.i18n.Messages
-
-@main(title = Messages("index.title")) {
-
-        <h3>@Messages("index.welcome.message", username)</h3>
-
-}

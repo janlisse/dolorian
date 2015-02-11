@@ -1,24 +1,26 @@
 package models
 
 import anorm.NotAssigned
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
-import play.api.test._
+import org.scalatest.{FlatSpec, Matchers}
 import play.api.test.Helpers._
+import play.api.test._
 
-class CustomerSpec extends FlatSpec with ShouldMatchers {
+class CustomerSpec extends FlatSpec with Matchers {
 
   val testCustomer = Customer(NotAssigned, "exampleTech GmbH", "EXA", Address("Brunnenstr.", "3", "45701", "Entenhausen"))
 
+  val appWithMemoryDatabase = FakeApplication(additionalConfiguration = inMemoryDatabase("test"))
+
+
   "A Customer" should "be savable" in {
-    running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    running(appWithMemoryDatabase) {
       val customerId = Customer.save(testCustomer)
       customerId should not equal (NotAssigned)
     }
   }
 
   "A Customer" should "be updatable" in {
-    running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    running(appWithMemoryDatabase) {
       val customerId = Customer.save(testCustomer).get
       val customer = Customer.findById(customerId).get
       val newCustomer = customer.copy(invoiceSequence = Some(2))
@@ -29,7 +31,7 @@ class CustomerSpec extends FlatSpec with ShouldMatchers {
   }
 
   "A Customer" should "increment invoiceSequence" in {
-    running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    running(appWithMemoryDatabase) {
       val customerId = Customer.save(testCustomer).get
       val customer = Customer.findById(customerId).get
       customer.incrementSequence

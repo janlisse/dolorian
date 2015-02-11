@@ -13,11 +13,10 @@ object Common {
 	// Common settings for every project
 	def settings (theName: String) = Seq(
 		name := theName,
-		organization := "com.myweb",
 		version := "1.0-SNAPSHOT",
 		scalaVersion := "2.11.1",
 		doc in Compile <<= target.map(_ / "none"),
-		scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-language:reflectiveCalls")
+    scalacOptions ++= Seq("-unchecked", "-deprecation","-feature", "-language:postfixOps")
 	)
 	// Settings for the app, i.e. the root project
 	val appSettings = settings(appName)
@@ -33,15 +32,5 @@ object Common {
 		RjsKeys.mainModule := s"main-$module"
 	)
 	
-	val commonDependencies = Seq(
-		cache,
-		ws,
-		"org.webjars" % "jquery" % "2.1.1",
-		"org.webjars" % "bootstrap" % "3.2.0",
-		"org.webjars" % "requirejs" % "2.1.14-1"
-		// Add here more common dependencies:
-		// jdbc,
-		// anorm,
-		// ...
-	)
+	val commonDependencies = Seq("org.scalatest" % "scalatest_2.11" % "2.2.4" % "test")
 }

@@ -7,8 +7,6 @@ import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
-import net.sf.jooreports.templates.DocumentTemplateFactory
-import org.apache.commons.io.output.ByteArrayOutputStream
 import java.text.NumberFormat
 import java.util.Locale
 import org.joda.time.LocalDate

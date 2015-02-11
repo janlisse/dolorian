@@ -1,14 +1,14 @@
 package models
 
-import anorm.NotAssigned
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
-import play.api.test._
-import play.api.test.Helpers._
-import org.joda.time.LocalDate
 import java.math.BigDecimal
 
-class InvoiceSpec extends FlatSpec with ShouldMatchers {
+import anorm.NotAssigned
+import org.joda.time.LocalDate
+import org.scalatest.{FlatSpec, Matchers}
+import play.api.test.Helpers._
+import play.api.test._
+
+class InvoiceSpec extends FlatSpec with Matchers {
 
   "An Invoice" should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {

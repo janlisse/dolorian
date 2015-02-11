@@ -1,18 +1,14 @@
 package models
 
-import anorm.Id
-import anorm.NotAssigned
-import org.joda.time.DateTime
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
-import play.api.test._
-import play.api.test.Helpers._
 import java.math.BigDecimal
-import org.joda.time.LocalDate
-import org.joda.time.Duration
-import org.joda.time.Period
 
-class WorkItemSpec extends FlatSpec with ShouldMatchers {
+import anorm.NotAssigned
+import org.joda.time.{DateTime, Duration, LocalDate, Period}
+import org.scalatest.{FlatSpec, Matchers}
+import play.api.test.Helpers._
+import play.api.test._
+
+class WorkItemSpec extends FlatSpec with Matchers {
 
   
   "A SimpleWorkItem" should "have a rounded duration" in {
