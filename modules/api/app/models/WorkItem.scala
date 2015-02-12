@@ -1,24 +1,17 @@
 package models
 
-import java.net.URL
-import org.joda.time.{ Period, DateTime }
-import anorm._
-import play.api.db.DB
-import models.AnormExtension._
 import anorm.SqlParser._
-import play.api.Play.current
-import scala.reflect._
-import org.joda.time.MutableDateTime
-import org.joda.time.Duration
-import org.joda.time.PeriodType
-import org.joda.time.LocalDate
-import play.api.Play
-import play.api.i18n.Messages
+import anorm._
+import models.AnormExtension._
 import org.joda.time.format.PeriodFormatterBuilder
+import org.joda.time.{DateTime, LocalDate, Period, PeriodType}
+import play.api.Play
+import play.api.Play.current
+import play.api.db.DB
 
 trait WorkItem extends TimeSupport {
 
-  def id: anorm.Pk[Long]
+  def id: Option[Long]
   def duration: Period
   def date: LocalDate
   def description: String
@@ -28,20 +21,20 @@ trait WorkItem extends TimeSupport {
 
 }
 
-case class SimpleWorkItem(id: anorm.Pk[Long], projectId: Long,
+case class SimpleWorkItem(id: Option[Long], projectId: Long,
   date: LocalDate, duration: Period, description: String) extends WorkItem {
 
-  import SimpleWorkItem._
+  import models.SimpleWorkItem._
 
   def roundedDuration = {
     require(roundingFactor > 1 || 60 % roundingFactor != 0, "RoundingFactor must be a fraction of 60")
     val mod = duration.getMinutes % roundingFactor
-    duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else (roundingFactor - mod)).normalizedStandard
+    duration.withSeconds(0).plusMinutes(if (mod < roundingFactor / 2) -mod else roundingFactor - mod).normalizedStandard
   }
 
 }
 
-case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: DateTime,
+case class DetailedWorkItem(id: Option[Long], projectId: Long, startTime: DateTime,
   endTime: DateTime, breakTime: Option[Int] = Some(0), date: LocalDate,
   description: String) extends WorkItem {
 
@@ -53,11 +46,10 @@ case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: Date
 
 object SimpleWorkItem extends TimeSupport {
 
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
-  import play.api.libs.json.Reads._
   import play.api.data.validation.ValidationError
-  import org.joda.time.format.PeriodFormatterBuilder
+  import play.api.libs.functional.syntax._
+  import play.api.libs.json.Reads._
+  import play.api.libs.json._
 
   val roundingFactor = Play.application.configuration.getInt("workitem.duration.roundingFactor").getOrElse(15)
 
@@ -66,11 +58,10 @@ object SimpleWorkItem extends TimeSupport {
     def reads(json: JsValue): JsResult[Period] = {
       json match {
         case JsString(periodString) => parsePeriod(periodString) match {
-          case Some(period) => {
-            if (period.toStandardMinutes().getMinutes() < roundingFactor / 2) {
+          case Some(period) =>
+            if (period.toStandardMinutes.getMinutes < roundingFactor / 2) {
               JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration.min.length", SimpleWorkItem.roundingFactor / 2))))
             } else JsSuccess(period)
-          }
           case None => JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration.format"))))
         }
         case _ => JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.duration"))))
@@ -82,14 +73,14 @@ object SimpleWorkItem extends TimeSupport {
     (JsPath \ "projectId").read[Long] and
     (JsPath \ "date").read[LocalDate] and
     (JsPath \ "duration").read[org.joda.time.Period] and
-    (JsPath \ "description").read[String](minLength[String](3)))((projectId, date, duration, description) => SimpleWorkItem(NotAssigned, projectId, date, duration, description))
+    (JsPath \ "description").read[String](minLength[String](3)))((projectId, date, duration, description) => SimpleWorkItem(Some(projectId), projectId, date, duration, description))
 
 }
 
 object WorkItem extends TimeSupport {
 
   val workItemParser = {
-    get[Pk[Long]]("id") ~
+    get[Long]("id") ~
       get[Long]("project_id") ~
       get[Option[DateTime]]("start_time") ~
       get[Option[DateTime]]("end_time") ~
@@ -99,7 +90,7 @@ object WorkItem extends TimeSupport {
       get[String]("description") map {
         case (id ~ projectId ~
           Some(startTime) ~ Some(endTime) ~ breakTime ~
-          None ~ date ~ description) => DetailedWorkItem(id, projectId, startTime, endTime, breakTime, date, description)
+          None ~ date ~ description) => DetailedWorkItem(Some(id), projectId, startTime, endTime, breakTime, date, description)
       }
   }
 
@@ -172,7 +163,7 @@ object WorkItem extends TimeSupport {
             "startTime" -> workItem.startTime,
             "endTime" -> workItem.endTime,
             "breakTime" -> workItem.breakTime,
-            "date" -> workItem.startTime.toLocalDate(),
+            "date" -> workItem.startTime.toLocalDate,
             "description" -> workItem.description).executeInsert()
     }
   }
@@ -182,7 +173,7 @@ object WorkItem extends TimeSupport {
       implicit c =>
         SQL("insert into work_item(project_id, duration, date, description) values ({projectId},{duration},{date},{description})")
           .on("projectId" -> workItem.projectId,
-            "duration" -> workItem.duration.toStandardDuration().getMillis(),
+            "duration" -> workItem.duration.toStandardDuration.getMillis,
             "date" -> workItem.date,
             "description" -> workItem.description).executeInsert()
     }
@@ -229,6 +220,6 @@ trait TimeSupport {
     .toFormatter
 
   def parsePeriod(input: String): Option[Period] = {
-    scala.util.control.Exception.allCatch[Period] opt (timeParser.parsePeriod(input).normalizedStandard())
+    scala.util.control.Exception.allCatch[Period] opt timeParser.parsePeriod(input).normalizedStandard
   }
 }

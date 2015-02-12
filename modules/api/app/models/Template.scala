@@ -1,24 +1,21 @@
 package models
 
-import anorm._
-import play.api.db.DB
-import play.api.Play.current
-import java.math.BigDecimal
 import anorm.SqlParser._
-import play.api.Play
-import java.io.File
+import anorm._
+import play.api.Play.current
+import play.api.db.DB
 
-case class Template(id: Pk[Long], name: String, key: String)
+case class Template(id: Option[Long], name: String, key: String)
 
 object Template  {
 
   val MIME_TYPE = "application/vnd.oasis.opendocument.text"
   
   val templateParser = {
-    get[Pk[Long]]("id") ~
+    get[Long]("id") ~
       get[String]("name") ~
       get[String]("key") map {
-        case (id ~ name ~ key) => Template(id, name, key)
+        case (id ~ name ~ key) => Template(Some(id), name, key)
       }
   }
   
@@ -32,7 +29,6 @@ object Template  {
   }
 
   def delete(id: Long) {
-    val template = Template.findById(id)
     DB.withConnection {
       implicit connection =>
         SQL("DELETE FROM template where id = {id}").on('id -> id).executeUpdate

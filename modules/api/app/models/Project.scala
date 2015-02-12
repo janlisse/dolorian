@@ -1,16 +1,13 @@
 package models
 
-import anorm._
-import play.api.db.DB
-import models.AnormExtension._
-import anorm.SqlParser._
-import play.api.Play.current
 import java.math.BigDecimal
-import java.io.File
-import play.api.mvc.MultipartFormData.FilePart
-import play.api.libs.Files.TemporaryFile
 
-case class Project(id: anorm.Pk[Long], number: String, description: String, customerId: Long,
+import anorm.SqlParser._
+import anorm._
+import play.api.Play.current
+import play.api.db.DB
+
+case class Project(id: Option[Long], number: String, description: String, customerId: Long,
   invoiceTemplateId: Long, reportTemplateId: Long, hourlyRate: BigDecimal) {
 
   lazy val customer: Customer = DB.withConnection { implicit connection =>
@@ -22,17 +19,16 @@ case class Project(id: anorm.Pk[Long], number: String, description: String, cust
 object Project {
 
   val projectParser = {
-    get[Pk[Long]]("id") ~
+    get[Long]("id") ~
       get[String]("number") ~
       get[String]("description") ~
       get[Long]("customer_id") ~
       get[Long]("invoice_template_id") ~
       get[Long]("report_template_id") ~
       get[BigDecimal]("hourly_rate") map {
-        case (id ~ name ~ number ~ customerId ~ invoiceTemplateId ~ reportTemplateId ~ hourlyRate) => {
-          Project(id, name, number, customerId, invoiceTemplateId, reportTemplateId, hourlyRate)
-        }
-      }
+        case (id ~ name ~ number ~ customerId ~ invoiceTemplateId ~ reportTemplateId ~ hourlyRate) =>
+          Project(Some(id), name, number, customerId, invoiceTemplateId, reportTemplateId, hourlyRate)
+    }
   }
 
   def getAll: List[Project] = {

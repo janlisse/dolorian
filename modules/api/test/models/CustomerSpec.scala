@@ -1,13 +1,12 @@
 package models
 
-import anorm.NotAssigned
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.test.Helpers._
 import play.api.test._
 
 class CustomerSpec extends FlatSpec with Matchers {
 
-  val testCustomer = Customer(NotAssigned, "exampleTech GmbH", "EXA", Address("Brunnenstr.", "3", "45701", "Entenhausen"))
+  val testCustomer = Customer(None, "exampleTech GmbH", "EXA", Address("Brunnenstr.", "3", "45701", "Entenhausen"))
 
   val appWithMemoryDatabase = FakeApplication(additionalConfiguration = inMemoryDatabase("test"))
 
@@ -15,7 +14,7 @@ class CustomerSpec extends FlatSpec with Matchers {
   "A Customer" should "be savable" in {
     running(appWithMemoryDatabase) {
       val customerId = Customer.save(testCustomer)
-      customerId should not equal (NotAssigned)
+      customerId should not equal None
     }
   }
 

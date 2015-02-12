@@ -1,17 +1,16 @@
 package models
 
-import anorm._
-import play.api.db.DB
-import models.AnormExtension._
 import anorm.SqlParser._
+import anorm._
 import play.api.Play.current
+import play.api.db.DB
 
 case class Address(street: String, streetNumber: String, zipCode: String, city: String) {
 
-  override def toString(): String = s"$street $streetNumber, $zipCode $city"
+  override def toString: String = s"$street $streetNumber, $zipCode $city"
 }
 
-case class Customer(id: anorm.Pk[Long] = NotAssigned, name: String, shortName: String, address: Address, invoiceSequence: Option[Int] = None) {
+case class Customer(id: Option[Long] = None, name: String, shortName: String, address: Address, invoiceSequence: Option[Int] = None) {
 
   def incrementSequence = {
     invoiceSequence map { seq =>
@@ -33,12 +32,12 @@ object Customer {
   }
 
   val customerParser = {
-    get[Pk[Long]]("id") ~
+    get[Long]("id") ~
       get[String]("name") ~
       get[String]("short_name") ~
       addressParser ~
       get[Option[Int]]("invoice_sequence") map {
-        case (id ~ name ~ shortName ~ address ~ invoiceSequence) => Customer(id, name, shortName, address, invoiceSequence)
+        case (id ~ name ~ shortName ~ address ~ invoiceSequence) => Customer(Some(id), name, shortName, address, invoiceSequence)
       }
   }
 

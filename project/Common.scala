@@ -16,7 +16,7 @@ object Common {
 		version := "1.0-SNAPSHOT",
 		scalaVersion := "2.11.1",
 		doc in Compile <<= target.map(_ / "none"),
-    scalacOptions ++= Seq("-unchecked", "-deprecation","-feature", "-language:postfixOps")
+    scalacOptions ++= Seq("-unchecked", "-deprecation","-feature", "-language:postfixOps", "-language:reflectiveCalls")
 	)
 	// Settings for the app, i.e. the root project
 	val appSettings = settings(appName)

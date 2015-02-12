@@ -1,22 +1,21 @@
 package models
 
-import org.joda.time.DateTime
 import java.math.BigDecimal
-import play.api.db.DB
-import anorm._
-import anorm.SqlParser._
-import anorm.~
-import play.api.Play.current
 import java.text.NumberFormat
 import java.util.Locale
-import org.joda.time.LocalDate
+
+import anorm.SqlParser._
+import anorm.{~, _}
+import org.joda.time.{DateTime, LocalDate}
+import play.api.Play.current
+import play.api.db.DB
 
 object InvoiceStatus extends Enumeration {
   type InvoiceStatus = Value
   val Created, Sent, Paid = Value
 }
 
-case class Invoice(id: anorm.Pk[Long], projectId: Long, invoiceDate: LocalDate, workingHoursTotal: BigDecimal, status: InvoiceStatus.Value, invoiceNumber: Option[String]) {
+case class Invoice(id: Option[Long], projectId: Long, invoiceDate: LocalDate, workingHoursTotal: BigDecimal, status: InvoiceStatus.Value, invoiceNumber: Option[String]) {
 
   lazy val project: Project = DB.withConnection { implicit connection =>
     SQL("SELECT * FROM project p WHERE p.id = {id}").on(
@@ -48,10 +47,9 @@ case class Invoice(id: anorm.Pk[Long], projectId: Long, invoiceDate: LocalDate, 
 
 object Invoice {
 
-  
+
   import models.AnormExtension._
   import play.api.libs.json._
-  import play.api.libs.functional.syntax._
 
   val MONEY_FORMAT = NumberFormat.getCurrencyInstance(Locale.GERMANY)
 
@@ -69,19 +67,17 @@ object Invoice {
   }
 
   val invoiceParser = {
-    get[Pk[Long]]("id") ~
+      get[Long]("id") ~
       get[Long]("project_id") ~
       get[LocalDate]("invoice_date") ~
       get[BigDecimal]("total_hours") ~
       get[String]("invoice_status") ~
       get[String]("invoice_number") map {
-        case (id ~ project_id ~ invoice_date ~ total_hours ~ status ~ invoice_number) => Invoice(id, project_id, invoice_date, total_hours, InvoiceStatus.withName(status), Some(invoice_number))
-      }
+      case (id ~ project_id ~ invoice_date ~ total_hours ~ status ~ invoice_number) => Invoice(Some(id), project_id, invoice_date, total_hours, InvoiceStatus.withName(status), Some(invoice_number))
+    }
   }
 
-  def formatMoney(value: Double): String = {
-    return MONEY_FORMAT.format(value)
-  }
+  def formatMoney(value: Double): String = MONEY_FORMAT.format(value)
 
   def defaultDate: String = {
     val today = new DateTime
@@ -92,7 +88,7 @@ object Invoice {
   def save(invoice: Invoice): Option[Long] = {
     DB.withConnection {
       implicit c =>
-        SQL("""insert into invoice(project_id, invoice_number, invoice_date, total_hours, invoice_status) values({project_id}, {invoice_number}, {invoice_date}, {total_hours}, {invoice_status})""")
+        SQL( """insert into invoice(project_id, invoice_number, invoice_date, total_hours, invoice_status) values({project_id}, {invoice_number}, {invoice_date}, {total_hours}, {invoice_status})""")
           .on("project_id" -> invoice.projectId,
             "invoice_number" -> invoice.invoiceNumber,
             "invoice_date" -> invoice.invoiceDate,
@@ -131,5 +127,5 @@ object Invoice {
         SQL("DELETE FROM invoice where id = {id}").on('id -> id).executeUpdate
     }
   }
-  
+
 }
