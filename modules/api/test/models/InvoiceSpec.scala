@@ -9,7 +9,7 @@ import play.api.test._
 
 class InvoiceSpec extends FlatSpec with Matchers {
 
-  "An Invoice" should "be savable" in {
+  "invoice" should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
@@ -19,7 +19,7 @@ class InvoiceSpec extends FlatSpec with Matchers {
     }
   }
   
-  "An Invoice status" should "be updatable" in {
+  it should "be updatable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get

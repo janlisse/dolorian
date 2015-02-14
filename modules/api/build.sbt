@@ -1,11 +1,11 @@
-Common.serviceSettings("api")
+name := "api"
 
-// Add here the specific settings for this module
+Common.settings
 
-
-libraryDependencies ++= Common.commonDependencies ++: Seq(
+libraryDependencies ++= Seq(
 	jdbc,
   anorm,
+  "org.scalatestplus" %% "play" % "1.1.0" % "test",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "com.amazonaws" % "aws-java-sdk" % "1.3.11"
 )

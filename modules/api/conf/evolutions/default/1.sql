@@ -6,6 +6,7 @@ create sequence s_work_item_id;
 create sequence s_project_id;
 create sequence s_template_id;
 create sequence s_customer_id;
+create sequence s_invoice_id;
 
 create table template (
   id bigint DEFAULT nextval('s_template_id') PRIMARY KEY ,
@@ -53,6 +54,15 @@ create table app_user (
   UNIQUE(email, password)
 );
 
+create table invoice (
+  id bigint DEFAULT nextval('s_invoice_id') PRIMARY KEY ,
+  invoice_number varchar(50),
+  project_id bigint references project(id),
+  invoice_date date,
+  total_hours decimal,
+  invoice_status varchar(20)
+);
+
 
 # --- !Downs
 
@@ -65,3 +75,5 @@ drop sequence s_project_id;
 drop sequence s_template_id;
 drop sequence s_customer_id;
 drop table if exists app_user;
+drop table if exists invoice;
+drop sequence s_invoice_id;

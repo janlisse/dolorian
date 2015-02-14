@@ -10,7 +10,7 @@ import play.api.test._
 class WorkItemSpec extends FlatSpec with Matchers {
 
   
-  "A SimpleWorkItem" should "have a rounded duration" in {
+  "WorkItem" should "have a rounded duration" in {
     running(FakeApplication()) {
       val workitem = SimpleWorkItem(None, 1l, new LocalDate(), Period.minutes(26).withSeconds(40),"test")
       workitem.roundedDuration.getMinutes should equal (30)
@@ -24,7 +24,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
   
-  "A SimpleWorkItem" should "be savable" in {
+  it should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
@@ -34,7 +34,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
 
-  "WorkItems" should "be retrievable by projectId" in {
+  it should "be retrievable by projectId" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
@@ -47,7 +47,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
 
-  "WorkItems" should "be retrieved grouped by Project" in {
+  it should "be retrieved grouped by Project" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
@@ -64,7 +64,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
 
-  "WorkItems" should "be retrieved by Project, Month and Year" in {
+  it should "be retrieved by Project, Month and Year" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", "key")).get
       val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
@@ -76,7 +76,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
   
-  "WorkItem" should "calculate sum of durations" in {
+  it should "calculate sum of durations" in {
     running(FakeApplication()) {
       val workitem = SimpleWorkItem(None, 1l, new LocalDate(), Period.minutes(6),"test")
       val workitem2 = SimpleWorkItem(None, 1l, new LocalDate(), Period.hours(2).withMinutes(59),"test")
@@ -86,7 +86,7 @@ class WorkItemSpec extends FlatSpec with Matchers {
     }
   }
   
-  "WorkItem" should "calculate sum of durations without normalizing hours" in {
+  it should "calculate sum of durations without normalizing hours" in {
     running(FakeApplication()) {
       val workitem = SimpleWorkItem(None, 1l, new LocalDate(), Period.hours(15).withMinutes(20),"test")
       val workitem2 = SimpleWorkItem(None, 1l, new LocalDate(), Period.hours(20),"test")
