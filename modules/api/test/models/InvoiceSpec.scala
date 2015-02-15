@@ -14,7 +14,7 @@ class InvoiceSpec extends FlatSpec with Matchers {
   "invoice" should "be savable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None,"name", Some("1234-xc"),"testProject", customerId, templateId, templateId, new BigDecimal(50))).get
       val invoiceId = Invoice.save(Invoice(None, projectId, new LocalDate, new BigDecimal(100), InvoiceStatus.Created, Some("123"))).get
       invoiceId should not equal None
@@ -24,7 +24,7 @@ class InvoiceSpec extends FlatSpec with Matchers {
   it should "be updatable" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None,"name", Some("1234-xc"),"testProject", customerId, templateId, templateId, new BigDecimal(50))).get
       val invoiceId = Invoice.save(Invoice(None, projectId, new LocalDate, new BigDecimal(100), InvoiceStatus.Created, Some("123"))).get
       Invoice.updateStatus(invoiceId, InvoiceStatus.Sent)

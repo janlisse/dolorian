@@ -4,19 +4,28 @@ import anorm.SqlParser._
 import anorm._
 import play.api.Play.current
 import play.api.db.DB
+import play.api.libs.json.Reads._
+import play.api.libs.json.{Json, Writes, JsPath, Reads}
+import play.api.libs.functional.syntax._
 
-case class Address(street: String, streetNumber: String, zipCode: String, city: String) {
+case class Address(street: String, streetNumber: String, zipCode: String, city: String)
+case class Customer(name: String, shortName: String, address: Address, id: Option[Long] = None)
 
-  override def toString: String = s"$street $streetNumber, $zipCode $city"
-}
+object Address {
 
-case class Customer(id: Option[Long] = None, name: String, shortName: String, address: Address, invoiceSequence: Option[Int] = None) {
+  implicit val addressReads: Reads[Address] = (
+    (JsPath \ "street").read[String] and
+      (JsPath \ "streetNumber").read[String] and
+      (JsPath \ "zipCode").read[String] and
+      (JsPath \ "city").read[String]
+    )(Address.apply _)
 
-  def incrementSequence = {
-    invoiceSequence map { seq =>
-      val update = copy(invoiceSequence = Some(seq + 1))
-      Customer.update(id.get, update)
-    }
+  implicit val addressWrites = new Writes[Address] {
+    def writes(address: Address) = Json.obj(
+      "street" -> address.street,
+      "streetNumber" -> address.streetNumber,
+      "zipCode" -> address.zipCode,
+      "city" -> address.city)
   }
 }
 
@@ -27,18 +36,17 @@ object Customer {
       get[String]("street_number") ~
       get[String]("city") ~
       get[String]("zip_code") map {
-        case street ~ streetNumber ~ city ~ zipCode => Address(street, streetNumber, zipCode, city)
-      }
+      case street ~ streetNumber ~ city ~ zipCode => Address(street, streetNumber, zipCode, city)
+    }
   }
 
   val customerParser = {
     get[Long]("id") ~
       get[String]("name") ~
       get[String]("short_name") ~
-      addressParser ~
-      get[Option[Int]]("invoice_sequence") map {
-        case (id ~ name ~ shortName ~ address ~ invoiceSequence) => Customer(Some(id), name, shortName, address, invoiceSequence)
-      }
+      addressParser map {
+      case (id ~ name ~ shortName ~ address) => Customer(name, shortName, address, Some(id))
+    }
   }
 
   def getAll: List[Customer] = {
@@ -52,14 +60,13 @@ object Customer {
   def save(customer: Customer): Option[Long] = {
     DB.withConnection {
       implicit c =>
-        SQL("insert into customer(name, short_name, street, street_number, zip_code, city, invoice_sequence) values ({name}, {short_name}, {street}, {street_number}, {zip_code}, {city}, {invoice_sequence})")
+        SQL("insert into customer(name, short_name, street, street_number, zip_code, city) values ({name}, {short_name}, {street}, {street_number}, {zip_code}, {city})")
           .on("name" -> customer.name,
             "short_name" -> customer.shortName,
             "street" -> customer.address.street,
             "street_number" -> customer.address.streetNumber,
             "zip_code" -> customer.address.zipCode,
-            "city" -> customer.address.city,
-            "invoice_sequence" -> customer.invoiceSequence.getOrElse(1)).executeInsert()
+            "city" -> customer.address.city).executeInsert()
     }
   }
 
@@ -82,12 +89,11 @@ object Customer {
       SQL(
         """
           update customer
-          set invoice_sequence = {invoice_sequence}, name = {name}, short_name = {short_name}, 
+          set name = {name}, short_name = {short_name},
           street = {street}, street_number = {street_number}, city = {city}, zip_code = {zip_code}
           where id = {id}
         """).on(
           'id -> id,
-          'invoice_sequence -> customer.invoiceSequence.getOrElse(1),
           'name -> customer.name,
           'short_name -> customer.shortName,
           'city -> customer.address.city,
@@ -103,4 +109,16 @@ object Customer {
     }
   }
 
+  implicit val customerReads: Reads[Customer] = (
+    (JsPath \ "name").read[String] and
+      (JsPath \ "shortName").read[String] and
+      (JsPath \ "address").read[Address]
+    )( (name, shortName, address) => Customer(name, shortName, address))
+
+  implicit val customerWrites = new Writes[Customer] {
+    def writes(customer: Customer) = Json.obj(
+      "name" -> customer.name,
+      "shortName" -> customer.shortName,
+      "address" -> customer.address)
+  }
 }

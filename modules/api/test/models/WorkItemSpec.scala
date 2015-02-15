@@ -32,7 +32,7 @@ class WorkItemSpec extends PlaySpec with OneAppPerTest {
   
   "it must be savable" in {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None, "name", Some("1234-xc"),"testProject", customerId, templateId, templateId,new BigDecimal(50)))
       val id = WorkItem.save(SimpleWorkItem(None, projectId.get,  new LocalDate, Duration.standardMinutes(10).toPeriod,"description"))
       id must not equal None
@@ -40,7 +40,7 @@ class WorkItemSpec extends PlaySpec with OneAppPerTest {
 
   "it must be retrievable by projectId" in {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None, "name", Some("1234-xc"),"testProject", customerId, templateId, templateId,new BigDecimal(50)))
       val projectId2 = Project.save(Project(None, "name2", Some("666-cv"),"testProject", customerId, templateId, templateId,new BigDecimal(50)))
       val id = WorkItem.save(DetailedWorkItem(None, projectId.get, new DateTime(), new DateTime(), Some(30),new LocalDate(), "description"))
@@ -51,7 +51,7 @@ class WorkItemSpec extends PlaySpec with OneAppPerTest {
 
   "be retrieved grouped by Project" in {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None, "name", Some("1234-xc"),"testProject", customerId, templateId, templateId,new BigDecimal(50)))
       val projectId2 = Project.save(Project(None, "name2", Some("666-cv"),"testProject", customerId, templateId, templateId,new BigDecimal(50)))
       val id = WorkItem.save(DetailedWorkItem(None, projectId.get, new DateTime(), new DateTime(), Some(30), new LocalDate(), "description"))
@@ -65,7 +65,7 @@ class WorkItemSpec extends PlaySpec with OneAppPerTest {
 
   "be retrieved by Project, Month and Year" in {
       val templateId = Template.save(Template(None, "defaultInvoiceTemplate", JsString("Fiver"))).get
-      val customerId = Customer.save(Customer(None, "big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
+      val customerId = Customer.save(Customer("big company", "BIG", Address("mainstreet", "45", "12345", "denver"))).get
       val projectId = Project.save(Project(None, "name",Some("1234-xc"), "testProject", customerId, 1l, 1l,new BigDecimal(50))).get
       val id = WorkItem.save(DetailedWorkItem(None, projectId, new DateTime(2013, 9, 10, 10, 0), new DateTime(), Some(30), new LocalDate(), "description"))
       val id2 = WorkItem.save(DetailedWorkItem(None, projectId, new DateTime(2013, 8, 10, 10, 0), new DateTime(), Some(30), new LocalDate(), "task1"))

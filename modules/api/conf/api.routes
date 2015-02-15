@@ -1,5 +1,5 @@
 # API Routes
 # ~~~~
 
-# Home page
-GET     /							controllers.api.Application.index
+GET         /api/v1/customers        controllers.api.Customers.list
+POST        /api/v1/customer         controllers.api.Customers.save

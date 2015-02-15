@@ -36,13 +36,10 @@ case class Invoice(id: Option[Long], projectId: Long, invoiceDate: LocalDate, wo
   def generateInvoiceNumber = {
     invoiceNumber.getOrElse({
       val customer = project.customer
-      val seqNumber = customer.invoiceSequence.getOrElse(1)
       val shortName = customer.shortName
-      s"$shortName-$invoiceYear-$seqNumber"
+      s"$shortName-$invoiceYear"
     })
   }
-  def incrementInvoiceSequence = project.customer.incrementSequence
-
 }
 
 object Invoice {

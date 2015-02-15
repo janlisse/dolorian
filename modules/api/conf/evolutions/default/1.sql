@@ -11,7 +11,7 @@ create sequence s_invoice_id;
 create table template (
   id bigint DEFAULT nextval('s_template_id') PRIMARY KEY ,
   name varchar(255),
-  content text,
+  content text
 );
 
 create table customer (
@@ -21,8 +21,7 @@ create table customer (
   street varchar(255),
   street_number varchar(255),
   city varchar(255),
-  zip_code varchar(255),
-  invoice_sequence int DEFAULT 0
+  zip_code varchar(255)
 );
 
 create table project (
