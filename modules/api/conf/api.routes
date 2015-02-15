@@ -1,5 +1,8 @@
 # API Routes
 # ~~~~
 
+GET         /api/v1/logout           controllers.api.Security.logout
+POST        /api/v1/login            controllers.api.Security.login
+
 GET         /api/v1/customers        controllers.api.Customers.list
 POST        /api/v1/customer         controllers.api.Customers.save

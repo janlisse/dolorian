@@ -10,9 +10,7 @@ case class User(name: String, email: String, password: String)
 
 object User {
 
-  /**
-   * Parse a User from a ResultSet
-   */
+
   val simple = {
     get[String]("name") ~
       get[String]("email") ~
@@ -21,9 +19,7 @@ object User {
       }
   }
 
-  /**
-   * Retrieve all users.
-   */
+
   def findAll: Seq[User] = {
     DB.withConnection {
       implicit connection =>
@@ -31,9 +27,7 @@ object User {
     }
   }
 
-  /**
-   * Authenticate a User.
-   */
+
   def authenticate(email: String, password: String): Option[User] = {
     DB.withConnection {
       implicit connection =>
@@ -52,9 +46,6 @@ object User {
     }
   }
 
-  /**
-   * Create a User.
-   */
   def create(user: User): User = {
     DB.withConnection {
       implicit connection =>

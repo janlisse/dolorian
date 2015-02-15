@@ -36,7 +36,7 @@ object Login {
 }
 
 
-object RestApi extends Controller {
+object Security extends Controller {
 
   import Authenticated._
   import scala.concurrent.duration._
