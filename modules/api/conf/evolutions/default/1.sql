@@ -11,8 +11,7 @@ create sequence s_invoice_id;
 create table template (
   id bigint DEFAULT nextval('s_template_id') PRIMARY KEY ,
   name varchar(255),
-  key varchar(255),
-  type varchar(20)
+  content text,
 );
 
 create table customer (
@@ -28,6 +27,7 @@ create table customer (
 
 create table project (
   id bigint DEFAULT nextval('s_project_id') PRIMARY KEY,
+  name varchar(255),
   number varchar(50),
   description varchar(255),
   customer_id bigint references customer(id),
@@ -67,13 +67,13 @@ create table invoice (
 # --- !Downs
 
 drop table if exists work_item;
+drop table if exists invoice;
 drop table if exists project;
-drop table if exists template;
 drop table if exists customer;
+drop table if exists template;
+drop table if exists app_user;
 drop sequence s_work_item_id;
 drop sequence s_project_id;
 drop sequence s_template_id;
 drop sequence s_customer_id;
-drop table if exists app_user;
-drop table if exists invoice;
 drop sequence s_invoice_id;

@@ -6,7 +6,7 @@ import anorm._
 
 object AnormExtension {
 
-  val dateFormatGeneration: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSS");
+  val dateFormatGeneration: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSS")
 
   implicit def rowToDateTime: Column[DateTime] = Column.nonNull { (value, meta) =>
     val MetaDataItem(qualified, nullable, clazz) = meta
@@ -30,7 +30,7 @@ object AnormExtension {
 
   implicit val dateTimeToStatement = new ToStatement[DateTime] {
     def set(s: java.sql.PreparedStatement, index: Int, aValue: DateTime): Unit = {
-      s.setTimestamp(index, new java.sql.Timestamp(aValue.withMillisOfSecond(0).getMillis()))
+      s.setTimestamp(index, new java.sql.Timestamp(aValue.withMillisOfSecond(0).getMillis))
     }
   }
 

@@ -4,27 +4,27 @@ import anorm.SqlParser._
 import anorm._
 import play.api.Play.current
 import play.api.db.DB
+import play.api.libs.json.{JsValue, Json}
 
-case class Template(id: Option[Long], name: String, key: String)
+
+case class Template(id: Option[Long], name: String, content: JsValue)
 
 object Template  {
 
-  val MIME_TYPE = "application/vnd.oasis.opendocument.text"
-  
   val templateParser = {
     get[Long]("id") ~
       get[String]("name") ~
-      get[String]("key") map {
-        case (id ~ name ~ key) => Template(Some(id), name, key)
+      get[String]("content") map {
+        case (id ~ name ~ content) => Template(Some(id), name, Json.parse(content))
       }
   }
   
-  def save(template: Template) = {
+  def save(template: Template): Option[Long] = {
     DB.withConnection {
       implicit c =>
-        SQL("insert into template(name, key) values ({name},{key})")
+        SQL("insert into template(name, content) values ({name},{content})")
           .on("name" -> template.name,
-            "key" -> template.key).executeInsert()
+            "content" -> Json.stringify(template.content)).executeInsert()
     }
   }
 
