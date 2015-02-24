@@ -109,8 +109,9 @@ class WorkItems @Inject()(templateStorage: TemplateStorage) extends Controller w
         val jodTemplate = documentTemplateFactory.getTemplate(templateStorage.load(template.key))
 
         /** necessary conversion because jodreports/freemarker doesn't work with raw Scala types **/
-        val javaWorkItems = workItems.map { item =>
-          new WorkItemJavaWrapper(item.description, item.dateFormatted, item.durationFormatted)
+        val javaWorkItems = workItems.map {
+          case item:DetailedWorkItem => new WorkItemJavaWrapper(item.description, item.dateFormatted, item.durationFormatted, item.startTimeFormatted, item.endTimeFormatted, item.breakTimeFormatted)
+          case item:SimpleWorkItem => new WorkItemJavaWrapper(item.description, item.dateFormatted, item.durationFormatted, null, null, null)
         }.asJava
 
         val dataMap = Map(

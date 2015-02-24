@@ -1,20 +1,16 @@
 package models
 
 import java.net.URL
-import org.joda.time.{ Period, DateTime }
+import org.joda.time._
 import anorm._
 import play.api.db.DB
 import models.AnormExtension._
 import anorm.SqlParser._
 import play.api.Play.current
 import scala.reflect._
-import org.joda.time.MutableDateTime
-import org.joda.time.Duration
-import org.joda.time.PeriodType
-import org.joda.time.LocalDate
 import play.api.Play
 import play.api.i18n.Messages
-import org.joda.time.format.PeriodFormatterBuilder
+import org.joda.time.format.{DateTimeFormatterBuilder, PeriodFormatterBuilder}
 
 trait WorkItem extends TimeSupport {
 
@@ -49,6 +45,11 @@ case class DetailedWorkItem(id: anorm.Pk[Long], projectId: Long, startTime: Date
     val endTimeMinusBreak = endTime.minusMinutes(breakTime.getOrElse(0))
     new Period(startTime, endTimeMinusBreak).normalizedStandard()
   }
+
+  val startTimeFormatted = startTime.toString("HH:mm")
+  val endTimeFormatted = endTime.toString("HH:mm")
+  val breakTimeFormatted = Duration.standardMinutes(breakTime.getOrElse(0): Int).toPeriod(PeriodType.time()).toString(timeParser)
+
 }
 
 object SimpleWorkItem extends TimeSupport {

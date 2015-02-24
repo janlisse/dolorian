@@ -102,5 +102,18 @@ class WorkItemSpec extends FlatSpec with ShouldMatchers {
     }
   }
 
+  "WorkItem" should "format start & end time properly" in {
+    running(FakeApplication()) {
+      val dt = new DateTime()
+      val startTime = dt.withHourOfDay(10).withMinuteOfHour(30)
+      val endTime = dt.withHourOfDay(17).withMinuteOfHour(0)
+
+      val workitem = DetailedWorkItem(NotAssigned, 1l, startTime, endTime, Some(30), new LocalDate(), "description")
+
+      workitem.startTimeFormatted should equal("10:30")
+      workitem.endTimeFormatted should equal("17:00")
+    }
+  }
+
 }
 
